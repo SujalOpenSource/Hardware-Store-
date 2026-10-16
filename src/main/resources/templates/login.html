@@ -1,10 +1,168 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Hardware Store</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 410px;
+            padding: 36px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.10);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            font-size: 42px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin: 12px 0 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 18px 0 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: 2px solid #2563eb;
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #1d4ed8;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        .message {
+            margin-top: 18px;
+            padding: 11px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .error {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .success {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<main class="login-card">
+
+    <div class="brand">
+        <div class="brand-icon">🔧</div>
+        <h1>Hardware Store</h1>
+        <p class="subtitle">Administrator Sign In</p>
+    </div>
+
+    <form th:action="@{/login}" method="post">
+
+        <label for="username">Username</label>
+        <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter administrator username"
+                autocomplete="username"
+                required
+                autofocus
+        >
+
+        <label for="password">Password</label>
+        <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+        >
+
+        <button type="submit">Sign In</button>
+    </form>
+
+    <div th:if="${param.error}" class="message error">
+        Invalid username or password.
+    </div>
+
+    <div th:if="${param.logout}" class="message success">
+        You have been logged out successfully.
+    </div>
+
+    <div class="footer">
+        Hardware Store Management System
+    </div>
+
+</main>
 </body>
 </html>
