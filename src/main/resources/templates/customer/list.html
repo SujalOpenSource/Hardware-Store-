@@ -8,7 +8,7 @@
 <body>
 
 <h1>Customer Management</h1>
-```html
+
 <form th:action="@{/customers/search}" method="get">
     <input type="text"
            name="keyword"
@@ -20,7 +20,7 @@
 </form>
 
 <br>
-```
+
 
 <a th:href="@{/customers/new}">Add New Customer</a>
 
@@ -43,7 +43,7 @@
         <td th:text="${customer.name}"></td>
         <td th:text="${customer.phone}"></td>
         <td th:text="${customer.email}"></td>
-        <```html
+
         <td>
             <a th:href="@{/customers/edit/{id}(id=${customer.id})}">
                 Edit
@@ -55,7 +55,7 @@
                 <button type="submit">Delete</button>
             </form>
         </td>
-        ```
+
     </tr>
 
     <tr th:if="${#lists.isEmpty(customers)}">
