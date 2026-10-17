@@ -1,5 +1,6 @@
 package com.hardwarestore.customer;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
 import com.hardwarestore.customer.Customer;
 import com.hardwarestore.customer.CustomerService;
 import org.springframework.stereotype.Controller;
@@ -68,6 +69,22 @@ public class CustomerController {
         customerService.saveCustomer(customer);
 
         return "redirect:/customers";
+    }
+
+    // Search customers by name, phone, or email
+    @GetMapping("/customers/search")
+    public String searchCustomers(
+            @RequestParam("keyword") String keyword,
+            Model model) {
+
+        model.addAttribute(
+                "customers",
+                customerService.searchCustomers(keyword)
+        );
+
+        model.addAttribute("keyword", keyword);
+
+        return "customer/list";
     }
 
 

@@ -54,7 +54,6 @@ public class Customer {
     }
     public String getFullname() {
         return fullname;
-
     }
     public void setFullname(String fullname) {
         this.fullname = fullname;
@@ -77,6 +76,12 @@ public class Customer {
     public void setAddress(String address) {
         this.address = address;
     }
-
+    
+    public boolean isDeleted() {
+        return deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
 }

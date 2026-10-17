@@ -20,18 +20,28 @@ public class CustomerService {
 
     // Get all customers
     public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+        return customerRepository.findByDeletedFalse();
     }
 
     // Get a customer by ID
     public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id)
+        return customerRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() ->
                         new RuntimeException("Customer not found: " + id));
     }
 
+
+
+    // Search by name, phone, or email
+    public List<Customer> searchCustomers(String keyword) {
+        return customerRepository.searchActiveCustomers(keyword);
+    }
+
+
     // Delete a customer
     public void deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
+        Customer customer = getCustomerById(id);
+        customer.setDeleted(true);
+        customerRepository.save(customer);
     }
 }
