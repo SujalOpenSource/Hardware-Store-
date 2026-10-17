@@ -1,10 +1,48 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Customer List</title>
 </head>
 <body>
+
+<h1>Customer Management</h1>
+
+<a th:href="@{/customers/new}">Add New Customer</a>
+
+<br><br>
+
+<table border="1" cellpadding="10">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}"></td>
+        <td th:text="${customer.name}"></td>
+        <td th:text="${customer.phone}"></td>
+        <td th:text="${customer.email}"></td>
+        <td>
+            <form th:action="@{/customers/delete/{id}(id=${customer.id})}"
+                  method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(customers)}">
+        <td colspan="5">No customers registered yet.</td>
+    </tr>
+    </tbody>
+</table>
 
 </body>
 </html>
