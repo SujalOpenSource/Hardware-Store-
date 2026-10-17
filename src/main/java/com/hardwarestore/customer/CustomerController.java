@@ -1,5 +1,4 @@
-
-        package com.hardwarestore.customer;
+package com.hardwarestore.customer;
 
 import com.hardwarestore.customer.Customer;
 import com.hardwarestore.customer.CustomerService;
@@ -50,46 +49,4 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return "redirect:/customers";
     }
-
-    // Display the edit customer form
-    @GetMapping("/customers/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Customer customer = customerService.getCustomerById(id);
-
-        if (customer == null) {
-            return "redirect:/customers";
-        }
-
-        model.addAttribute("customer", customer);
-        return "customer/form";
-    }
-
-    // Update customer information
-    @PostMapping("/customers/update/{id}")
-    public String updateCustomer(
-            @PathVariable Long id,
-            @ModelAttribute("customer") Customer customer) {
-        customer.setId(id);
-        customerService.saveCustomer(customer);
-        return "redirect:/customers";
-    }
-
-// Search customers
-    @GetMapping("/customers/search")
-    public String searchCustomers(
-            @org.springframework.web.bind.annotation.RequestParam(
-                    required = false) String keyword,
-            Model model) {
-
-        model.addAttribute(
-                "customers",
-                customerService.searchCustomers(keyword)
-        );
-
-        model.addAttribute("keyword", keyword);
-
-        return "customer/list";
-    }
-
-
 }
