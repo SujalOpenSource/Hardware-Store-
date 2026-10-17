@@ -1,5 +1,5 @@
 package com.hardwarestore.customer;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name="customers")
 public class Customer {
+
+    @Column(nullable = false)
+    private boolean deleted = false;
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;

@@ -31,6 +31,7 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>Address</th>
         <th>Phone</th>
         <th>Email</th>
         <th>Actions</th>
@@ -40,7 +41,8 @@
     <tbody>
     <tr th:each="customer : ${customers}">
         <td th:text="${customer.id}"></td>
-        <td th:text="${customer.name}"></td>
+        <td th:text="${customer.fullname}"></td>
+        <td th:text="${customer.address}"></td>
         <td th:text="${customer.phone}"></td>
         <td th:text="${customer.email}"></td>
 
