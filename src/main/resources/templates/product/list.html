@@ -1,10 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Product Management | Hardware Store</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        h1 { margin-bottom: 5px; }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 13px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .product-image {
+            width: 75px;
+            height: 65px;
+            object-fit: contain;
+            border-radius: 7px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            padding: 3px;
+        }
+
+        .no-image {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 75px;
+            height: 65px;
+            background: #f1f5f9;
+            color: #64748b;
+            border-radius: 7px;
+            font-size: 11px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 9px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            border: 0;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .primary { background: #2563eb; color: white; }
+        .secondary { background: #e5e7eb; color: #111827; }
+        .danger { background: #dc2626; color: white; }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+        }
+
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+
+        .badge {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        .active { background: #dcfce7; color: #166534; }
+        .inactive { background: #fee2e2; color: #991b1b; }
+        .low-stock { background: #fef3c7; color: #92400e; }
+
+        .top-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .muted { color: #64748b; font-size: 13px; }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .card { padding: 10px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Product Management</h1>
+            <p class="muted">
+                Manage hardware products, images, prices, and stock.
+            </p>
+        </div>
+
+        <div class="top-links">
+            <a th:href="@{/dashboard}" class="btn secondary">
+                Dashboard
+            </a>
+
+            <a th:href="@{/categories}" class="btn secondary">
+                Categories
+            </a>
+
+            <a th:href="@{/products/new}" class="btn primary">
+                + Add Product
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Purchase Price</th>
+                <th>Selling Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="product : ${products}">
+
+                <td>
+                    <img th:if="${product.imagePath != null
+                                  and !product.imagePath.isBlank()}"
+                         th:src="${product.imagePath}"
+                         th:alt="${product.name}"
+                         class="product-image">
+
+                    <span th:unless="${product.imagePath != null
+                                       and !product.imagePath.isBlank()}"
+                          class="no-image">
+                        No image
+                    </span>
+                </td>
+
+                <td>
+                    <strong th:text="${product.name}">Product name</strong>
+                    <div class="muted"
+                         th:text="${product.description}">
+                    </div>
+                </td>
+
+                <td th:text="${product.sku}">SKU</td>
+
+                <td th:text="${product.category.name}">
+                    Category
+                </td>
+
+                <td>
+                    NPR
+                    <span th:text="${#numbers.formatDecimal(
+                        product.purchasePrice, 1, 2)}"></span>
+                </td>
+
+                <td>
+                    NPR
+                    <span th:text="${#numbers.formatDecimal(
+                        product.sellingPrice, 1, 2)}"></span>
+                </td>
+
+                <td>
+                    <span th:text="${product.stockQuantity}"></span>
+
+                    <div th:if="${product.stockQuantity.compareTo(
+                                    product.minimumStock) <= 0}"
+                         class="badge low-stock">
+                        Low stock
+                    </div>
+                </td>
+
+                <td>
+                    <span th:if="${product.active}"
+                          class="badge active">
+                        Active
+                    </span>
+
+                    <span th:unless="${product.active}"
+                          class="badge inactive">
+                        Inactive
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/products/details/{id}(id=${product.id})}"
+                           class="btn secondary">
+                            Details
+                        </a>
+
+                        <a th:href="@{/products/edit/{id}(id=${product.id})}"
+                           class="btn primary">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/products/delete/{id}(id=${product.id})}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this product?');">
+
+                            <button type="submit" class="btn danger">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(products)}">
+                <td colspan="9" style="text-align:center;padding:30px;">
+                    No products found. Click Add Product to create one.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
 </body>
 </html>

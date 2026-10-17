@@ -1,10 +1,80 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Hardware Store</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 28px;
+            background: #0f172a;
+            color: white;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #dc2626;
+            color: white;
+            cursor: pointer;
+        }
+
+        main {
+            padding: 30px;
+        }
+
+        .welcome {
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+        }
+
+        .welcome h2 {
+            margin-top: 0;
+        }
+    </style>
 </head>
+
 <body>
+
+<header>
+    <h1>🔧 Hardware Store Management</h1>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
+<main>
+    <section class="welcome">
+        <h2>Welcome, Administrator!</h2>
+        <p>You have successfully logged in.</p>
+        <p>
+            The Hardware Store Management System is ready for the next
+            development stage.
+        </p>
+    </section>
+</main>
 
 </body>
 </html>

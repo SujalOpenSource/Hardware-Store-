@@ -1,3 +1,4 @@
+
 package com.hardwarestore;
 
 import org.springframework.boot.SpringApplication;
@@ -9,5 +10,4 @@ public class HardwareStoreApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HardwareStoreApplication.class, args);
 	}
-
 }

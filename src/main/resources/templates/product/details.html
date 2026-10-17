@@ -1,10 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Hardware Store</title>
 
+    <style>
+        body {
+            margin: 0;
+            padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 28px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 330px;
+            object-fit: contain;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .no-image {
+            height: 330px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            color: #64748b;
+            border-radius: 10px;
+        }
+
+        .details p {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .label { color: #64748b; }
+        .value { font-weight: 600; }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            margin: 16px 8px 0 0;
+        }
+
+        .primary { background: #2563eb; color: white; }
+        .secondary { background: #e5e7eb; color: #111827; }
+
+        @media (max-width: 650px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+
+        <h1 th:text="${product.name}">Product Details</h1>
+
+        <div class="layout">
+
+            <div>
+                <img th:if="${product.imagePath != null
+                              and !product.imagePath.isBlank()}"
+                     th:src="${product.imagePath}"
+                     th:alt="${product.name}"
+                     class="product-image">
+
+                <div th:unless="${product.imagePath != null
+                                  and !product.imagePath.isBlank()}"
+                     class="no-image">
+                    No product image uploaded
+                </div>
+            </div>
+
+            <div class="details">
+
+                <p>
+                    <span class="label">SKU:</span>
+                    <span class="value" th:text="${product.sku}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Category:</span>
+                    <span class="value"
+                          th:text="${product.category.name}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Purchase price:</span>
+                    NPR <span class="value"
+                              th:text="${#numbers.formatDecimal(
+                                  product.purchasePrice, 1, 2)}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Selling price:</span>
+                    NPR <span class="value"
+                              th:text="${#numbers.formatDecimal(
+                                  product.sellingPrice, 1, 2)}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Stock quantity:</span>
+                    <span class="value"
+                          th:text="${product.stockQuantity}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Minimum stock:</span>
+                    <span class="value"
+                          th:text="${product.minimumStock}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Description:</span>
+                    <span class="value"
+                          th:text="${product.description != null
+                              and !product.description.isBlank()
+                              ? product.description : 'No description'}"></span>
+                </p>
+
+                <p>
+                    <span class="label">Status:</span>
+                    <span class="value"
+                          th:text="${product.active ? 'Active' : 'Inactive'}"></span>
+                </p>
+
+            </div>
+        </div>
+
+        <a th:href="@{/products}" class="btn secondary">
+            Back to Products
+        </a>
+
+        <a th:href="@{/products/edit/{id}(id=${product.id})}"
+           class="btn primary">
+            Edit Product
+        </a>
+
+    </div>
+</div>
 </body>
 </html>
