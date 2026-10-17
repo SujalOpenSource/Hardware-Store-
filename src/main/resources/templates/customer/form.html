@@ -9,18 +9,17 @@
 
 <h1>Register New Customer</h1>
 
-```html
+
 <form th:action="${customer.id != null} ?
                 @{/customers/update/{id}(id=${customer.id})} :
                 @{/customers/save}"
       th:object="${customer}"
       method="post">
-    ```
 
-    <label for="name">Customer Name:</label>
-    <input type="text" id="name" th:field="*{name}" required>
+
+    <label for="fullname">Customer Full Name:</label>
+    <input type="text" id="fullname" th:field="*{fullname}" required>
     <br><br>
-
     <label for="phone">Phone:</label>
     <input type="text" id="phone" th:field="*{phone}" required>
     <br><br>
