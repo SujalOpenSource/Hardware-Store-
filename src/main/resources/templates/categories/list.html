@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management | Hardware Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000a;
+            overflow-x: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 0;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-size: 13px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Category Management</h1>
+            <p class="muted">
+                Organize your hardware store products.
+            </p>
+        </div>
+
+        <div>
+            <a th:href="@{/dashboard}" class="btn secondary">
+                Dashboard
+            </a>
+
+            <a th:href="@{/categories/new}" class="btn primary">
+                + Add Category
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${successMessage}"
+         class="alert success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert error"
+         th:text="${errorMessage}">
+    </div>
+
+    <div class="card">
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.id}"></td>
+
+                <td th:text="${category.name}"></td>
+
+                <td th:text="${category.description != null
+                    and !category.description.isBlank()
+                    ? category.description : '-'}">
+                </td>
+
+                <td>
+                    <span class="status"
+                          th:if="${category.active}">
+                        Active
+                    </span>
+
+                    <span th:unless="${category.active}">
+                        Inactive
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/categories/edit/{id}(id=${category.id})}"
+                           class="btn secondary">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/categories/delete/{id}(id=${category.id})}"
+                              method="post"
+                              onsubmit="return confirm('Delete this category?');">
+
+                            <button type="submit" class="btn danger">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(categories)}">
+                <td colspan="5" style="text-align:center; padding:32px;">
+                    No categories yet. Click "Add Category" to create one.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

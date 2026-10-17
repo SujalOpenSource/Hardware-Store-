@@ -1,10 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${pageTitle} + ' | Hardware Store'">
+        Product Form
+    </title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .07);
+        }
+
+        h1 { margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .full { grid-column: 1 / -1; }
+
+        label { font-weight: 600; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox input {
+            width: auto;
+        }
+
+        .preview {
+            width: 180px;
+            height: 150px;
+            object-fit: contain;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            padding: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .help {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            .container { padding: 12px; }
+            .card { padding: 20px; }
+            .grid { grid-template-columns: 1fr; }
+            .full { grid-column: auto; }
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="container">
+    <div class="card">
+
+        <h1 th:text="${pageTitle}">Add Product</h1>
+        <p>Enter the product information below.</p>
+
+        <div th:if="${errorMessage}"
+             class="message error"
+             th:text="${errorMessage}">
+            Error message
+        </div>
+
+        <form th:action="@{/products/save}"
+              th:object="${product}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label for="name">Product Name *</label>
+                    <input id="name"
+                           type="text"
+                           th:field="*{name}"
+                           maxlength="150"
+                           required
+                           placeholder="e.g. Copper Electrical Wire">
+                </div>
+
+                <div class="field">
+                    <label for="sku">SKU / Product Code *</label>
+                    <input id="sku"
+                           type="text"
+                           th:field="*{sku}"
+                           maxlength="50"
+                           required
+                           placeholder="e.g. WIRE-001">
+                </div>
+
+                <div class="field full">
+                    <label for="categoryId">Category *</label>
+
+                    <select id="categoryId"
+                            name="categoryId"
+                            required>
+
+                        <option value="">Select a category</option>
+
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"
+                                th:selected="${product.category != null
+                                    and product.category.id != null
+                                    and product.category.id == category.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="purchasePrice">Purchase Price (NPR) *</label>
+                    <input id="purchasePrice"
+                           type="number"
+                           th:field="*{purchasePrice}"
+                           min="0"
+                           step="0.01"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label for="sellingPrice">Selling Price (NPR) *</label>
+                    <input id="sellingPrice"
+                           type="number"
+                           th:field="*{sellingPrice}"
+                           min="0"
+                           step="0.01"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label for="stockQuantity">Current Stock *</label>
+                    <input id="stockQuantity"
+                           type="number"
+                           th:field="*{stockQuantity}"
+                           min="0"
+                           step="0.001"
+                           required>
+                    <span class="help">
+                        Fractional quantities are supported.
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label for="minimumStock">Minimum Stock Alert *</label>
+                    <input id="minimumStock"
+                           type="number"
+                           th:field="*{minimumStock}"
+                           min="0"
+                           step="0.001"
+                           required>
+                </div>
+
+                <div class="field full">
+                    <label for="description">Description</label>
+                    <textarea id="description"
+                              th:field="*{description}"
+                              maxlength="1000"
+                              placeholder="Product details, size, brand, material, etc."></textarea>
+                </div>
+
+                <div class="field full">
+                    <label for="imageFile">Product Image</label>
+
+                    <input id="imageFile"
+                           type="file"
+                           name="imageFile"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+
+                    <span class="help">
+                        JPG, JPEG, PNG or WebP. Maximum size: 5 MB.
+                        Leave empty to keep the current image when editing.
+                    </span>
+
+                    <div th:if="${product.imagePath != null
+                                  and !product.imagePath.isBlank()}">
+                        <p>Current image:</p>
+
+                        <img class="preview"
+                             th:src="${product.imagePath}"
+                             th:alt="${product.name}">
+                    </div>
+
+                    <div id="newImagePreviewContainer" hidden>
+                        <p>Selected image preview:</p>
+                        <img id="newImagePreview"
+                             class="preview"
+                             alt="Selected product image">
+                    </div>
+
+
+                </div>
+
+                <div class="field full">
+                    <label class="checkbox">
+                        <input type="checkbox" th:field="*{active}">
+                        Product is active
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn primary">
+                    Save Product
+                </button>
+
+                <a th:href="@{/products}" class="btn secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageInput = document.getElementById("imageFile");
+    const previewContainer =
+        document.getElementById("newImagePreviewContainer");
+    const preview = document.getElementById("newImagePreview");
+
+    let previewUrl = null;
+
+    imageInput.addEventListener("change", function () {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+        }
+
+        const file = this.files[0];
+
+        if (!file) {
+            previewContainer.hidden = true;
+            preview.removeAttribute("src");
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Please select a JPG, PNG, or WebP image.");
+            this.value = "";
+            previewContainer.hidden = true;
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Image size must not exceed 5 MB.");
+            this.value = "";
+            previewContainer.hidden = true;
+            return;
+        }
+
+        previewUrl = URL.createObjectURL(file);
+        preview.src = previewUrl;
+        previewContainer.hidden = false;
+    });
+</script>
 
 </body>
 </html>

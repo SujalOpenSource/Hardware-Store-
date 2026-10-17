@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${pageTitle} + ' | Hardware Store'">
+        Category Form
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000a;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .muted {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font: inherit;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .checkbox-row input {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 17px;
+            border: 0;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .error {
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <h1 th:text="${pageTitle}">Add Category</h1>
+
+        <p class="muted">
+            Enter the category details below.
+        </p>
+
+        <div th:if="${errorMessage}"
+             class="error"
+             th:text="${errorMessage}">
+        </div>
+
+        <form th:action="@{/categories/save}"
+              th:object="${category}"
+              method="post">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <label for="name">Category Name *</label>
+            <input type="text"
+                   id="name"
+                   th:field="*{name}"
+                   maxlength="100"
+                   placeholder="e.g. Electrical Supplies"
+                   required
+                   autofocus/>
+
+            <label for="description">Description</label>
+            <textarea id="description"
+                      th:field="*{description}"
+                      rows="4"
+                      maxlength="500"
+                      placeholder="Describe the products in this category">
+            </textarea>
+
+            <div class="checkbox-row"
+                 th:if="${category.id != null}">
+                <input type="checkbox"
+                       id="active"
+                       th:field="*{active}"/>
+
+                <label for="active" style="margin:0;">
+                    Category is active
+                </label>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn primary">
+                    Save Category
+                </button>
+
+                <a th:href="@{/categories}"
+                   class="btn secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
