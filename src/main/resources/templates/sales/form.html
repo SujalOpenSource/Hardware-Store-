@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"><title>Record Sale</title>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f4f6f8;padding:28px;color:#263238}
+        .wrap{max-width:1000px;margin:auto;background:#fff;padding:26px;border-radius:12px}
+        label{font-weight:600}select,input{padding:10px;border:1px solid #ccd4dc;border-radius:6px;width:100%;box-sizing:border-box}
+        table{width:100%;border-collapse:collapse;margin-top:20px}th,td{padding:10px;border-bottom:1px solid #e5e8eb;text-align:left}
+        th{background:#eef3f7}.btn{padding:11px 16px;background:#1769aa;color:#fff;border:0;border-radius:7px;cursor:pointer}
+        .error{background:#fff0f0;color:#a11;padding:12px;border-radius:6px}.row{margin:12px 0}
+    </style>
 </head>
-<body>
-
-</body>
-</html>
+<body><div class="wrap">
+    <h1>Record a Sale</h1>
+    <p th:if="${errorMessage}" class="error" th:text="${errorMessage}"></p>
+    <form th:action="@{/com/hardwarestore/sales}" th:object="${saleForm}" method="post">
+        <div class="row">
+            <label for="customerId">Customer</label>
+            <select id="customerId" th:field="*{customerId}" required>
+                <option value="">-- Select customer --</option>
+                <option th:each="c : ${customers}" th:value="${c.id}"
+                        th:text="${c.fullname + ' (' + c.phone + ')'}"></option>
+            </select>
+        </div>
+        <p>Choose one or more products. Leave unused rows empty. Prices are loaded from the database.</p>
+        <table>
+            <thead><tr><th>Product</th><th>Quantity</th></tr></thead>
+            <tbody>
+            <tr th:each="line, stat : *{items}">
+                <td>
+                    <select th:field="*{items[__${stat.index}__].productId}">
+                        <option value="">-- No product --</option>
+                        <option th:each="p : ${products}" th:if="${p.active}"
+                                th:value="${p.id}"
+                                th:text="${p.name + ' | SKU: ' + p.sku + ' | Rs. ' + p.sellingPrice + ' | Stock: ' + p.stockQuantity}"></option>
+                    </select>
+                </td>
+                <td><input type="number" min="0.001" step="0.001"
+                           th:field="*{items[__${stat.index}__].quantity}"
+                           placeholder="e.g. 2 or 1.250"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p><button class="btn" type="submit">Confirm Sale & Generate Invoice</button>
+           <a th:href="@{/com/hardwarestore/sales}">Cancel</a></p>
+    </form>
+</div></body></html>
