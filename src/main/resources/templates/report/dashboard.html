@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><title>Sales Reports</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f8;padding:26px;color:#263238}.wrap{max-width:1100px;margin:auto;background:white;padding:25px;border-radius:12px}
+.cards{display:flex;gap:16px;flex-wrap:wrap}.card{background:#eef3f7;padding:18px;border-radius:8px;min-width:190px}
+input,button{padding:10px;border:1px solid #ccd4dc;border-radius:6px}.btn{background:#1769aa;color:white;text-decoration:none;padding:10px;border-radius:6px}
+table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:10px;border-bottom:1px solid #e4e8ec;text-align:left}th{background:#eef3f7}
+.bar-row{display:grid;grid-template-columns:110px 1fr 130px;gap:10px;align-items:center;margin:9px 0}.bar-bg{height:20px;background:#e6ebef;border-radius:4px;overflow:hidden}.bar{height:20px;background:#2878b5}
+</style></head>
+<body><div class="wrap">
+<h1>Sales Reports</h1>
+<p><a class="btn" th:href="@{/com/hardwarestore/sales}">Sales History</a></p>
+<form method="get" th:action="@{/reports}">
+<label>From <input type="date" name="from" th:value="${report.fromDate}"></label>
+<label>To <input type="date" name="to" th:value="${report.toDate}"></label>
+<button type="submit">Generate Report</button>
+</form>
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+<div class="cards">
+<div class="card"><strong>Total Revenue</strong><h2 th:text="${'Rs. ' + #numbers.formatDecimal(report.revenue, 1, 2)}"></h2></div>
+<div class="card"><strong>Completed Sales</strong><h2 th:text="${report.saleCount}"></h2></div>
+<div class="card"><strong>Period</strong><p th:text="${report.fromDate + ' to ' + report.toDate}"></p></div>
+</div>
+<h2>Revenue by Day</h2>
+<div th:if="${#maps.isEmpty(report.revenueByDay)}">No sales for this period.</div>
+<div th:each="entry : ${report.revenueByDay}" class="bar-row">
+<span th:text="${entry.key}"></span>
+<div class="bar-bg"><div class="bar" th:style="'width:' + (${report.revenue.signum() == 0 ? 0 : entry.value.multiply(100).divide(report.revenue, 2, T(java.math.RoundingMode).HALF_UP).doubleValue()}) + '%'"></div></div>
+<strong th:text="${'Rs. ' + #numbers.formatDecimal(entry.value, 1, 2)}"></strong>
+</div>
+<h2>Best-selling Products (by quantity)</h2>
+<table><thead><tr><th>Product</th><th>Total Quantity Sold</th></tr></thead>
+<tbody><tr th:each="p : ${report.bestSellers}"><td th:text="${p.productName}"></td><td th:text="${p.quantity.stripTrailingZeros().toPlainString()}"></td></tr>
+<tr th:if="${#lists.isEmpty(report.bestSellers)}"><td colspan="2">No product sales for this period.</td></tr></tbody></table>
+<h2>Sales in Selected Period</h2>
+<table><thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Total</th><th>Invoice</th></tr></thead>
+<tbody><tr th:each="s : ${report.sales}">
+<td th:text="${s.invoiceNumber}"></td>
+<td th:text="${#temporals.format(s.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+<td th:text="${s.customer.fullname}"></td>
+<td th:text="${'Rs. ' + #numbers.formatDecimal(s.totalAmount, 1, 2)}"></td>
+<td><a th:href="@{/billing/{id}(id=${s.id})}">View</a> | <a th:href="@{/billing/{id}/pdf(id=${s.id})}">PDF</a></td>
+</tr></tbody></table>
+</div></body></html>

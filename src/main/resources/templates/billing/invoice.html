@@ -1,10 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"><title>Invoice</title>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f4f6f8;padding:28px;color:#222}
+        .invoice{max-width:850px;margin:auto;background:white;padding:34px;border-radius:10px;box-shadow:0 3px 15px #0001}
+        .center{text-align:center}.right{text-align:right}table{width:100%;border-collapse:collapse;margin-top:20px}
+        th,td{padding:12px;border:1px solid #dce1e5;text-align:left}th{background:#eef3f7}
+        .btn{display:inline-block;background:#1769aa;color:white;padding:10px 14px;text-decoration:none;border-radius:6px;margin-right:8px}
+        @media print{body{background:white;padding:0}.invoice{box-shadow:none}.no-print{display:none}}
+    </style>
 </head>
-<body>
-
-</body>
-</html>
+<body><main class="invoice">
+    <div class="center"><h1>HARDWARE STORE</h1><h3>SALES INVOICE</h3></div>
+    <p><strong>Invoice:</strong> <span th:text="${sale.invoiceNumber}"></span></p>
+    <p><strong>Date:</strong> <span th:text="${#temporals.format(sale.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+    <p><strong>Customer:</strong> <span th:text="${sale.customer.fullname}"></span></p>
+    <p><strong>Phone:</strong> <span th:text="${sale.customer.phone}"></span></p>
+    <table>
+        <thead><tr><th>Product</th><th>SKU</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
+        <tbody>
+        <tr th:each="item : ${sale.items}">
+            <td th:text="${item.productName}"></td><td th:text="${item.productSku}"></td>
+            <td th:text="${item.quantity.stripTrailingZeros().toPlainString()}"></td>
+            <td th:text="${'Rs. ' + #numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
+            <td th:text="${'Rs. ' + #numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <h2 class="right" th:text="${'Grand Total: Rs. ' + #numbers.formatDecimal(sale.totalAmount, 1, 2)}"></h2>
+    <p><strong>Amount in words:</strong> <span th:text="${amountInWords}"></span></p>
+    <div class="center"><p><strong>Barcode:</strong> <span th:text="${sale.invoiceNumber}"></span></p>
+        <p>Download the PDF to print the generated scannable barcode.</p></div>
+    <div class="no-print">
+        <a class="btn" th:href="@{/billing/{id}/pdf(id=${sale.id})}">Download PDF Invoice</a>
+        <a class="btn" th:href="@{/com/hardwarestore/sales}">Sales History</a>
+        <button class="btn" onclick="window.print()">Print Page</button>
+    </div>
+</main></body></html>
