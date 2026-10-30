@@ -14,7 +14,7 @@
 <body><div class="wrap">
     <h1>Sales Management</h1>
     <p><a class="btn" th:href="@{/com/hardwarestore/sales/new}">+ Record New Sale</a>
-       <a class="btn" th:href="@{/reports}">View Reports</a>
+       <a class="btn" th:href="@{/templates/report}">View Reports</a>
        <a class="btn" th:href="@{/customers}">Customers</a></p>
     <p th:if="${successMessage}" th:text="${successMessage}"></p>
     <table>

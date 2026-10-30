@@ -31,6 +31,6 @@ public class ReportController {
             model.addAttribute("errorMessage", ex.getMessage());
             model.addAttribute("report", reportService.getReport(to, to));
         }
-        return "reports/dashboard";
+        return "report/dashboard";
     }
 }

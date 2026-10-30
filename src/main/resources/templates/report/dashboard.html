@@ -12,7 +12,7 @@ table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:10px;bor
 <body><div class="wrap">
 <h1>Sales Reports</h1>
 <p><a class="btn" th:href="@{/com/hardwarestore/sales}">Sales History</a></p>
-<form method="get" th:action="@{/reports}">
+<form method="get" th:action="@{/templates/report}">
 <label>From <input type="date" name="from" th:value="${report.fromDate}"></label>
 <label>To <input type="date" name="to" th:value="${report.toDate}"></label>
 <button type="submit">Generate Report</button>

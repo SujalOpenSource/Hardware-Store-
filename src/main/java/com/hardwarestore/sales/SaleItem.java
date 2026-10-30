@@ -19,7 +19,7 @@ public class SaleItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    // Snapshot fields preserve the sale-time description and price on invoices/reports.
+    // Snapshot fields preserve the sale-time description and price on invoices/report.
     @Column(name = "product_name", nullable = false, length = 150)
     private String productName;
 
