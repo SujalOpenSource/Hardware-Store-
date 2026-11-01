@@ -1,0 +1,643 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Reports | Hardware Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: #f4f6fa;
+            color: #263247;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            padding: 11px 17px;
+            background: #344563;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .filter-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.04);
+            margin-bottom: 25px;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: end;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #d9e0e9;
+            border-radius: 6px;
+            min-width: 180px;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e8edf5;
+            color: #344563;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 21px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.04);
+            border-left: 4px solid #2563eb;
+        }
+
+        .summary-card:nth-child(2) {
+            border-left-color: #16a34a;
+        }
+
+        .summary-card:nth-child(3) {
+            border-left-color: #d97706;
+        }
+
+        .summary-card:nth-child(4) {
+            border-left-color: #dc2626;
+        }
+
+        .summary-card .label {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .summary-card .value {
+            font-size: 23px;
+            font-weight: bold;
+            color: #1e293b;
+            overflow-wrap: anywhere;
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.04);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .section h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .section-description {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            text-align: left;
+            padding: 13px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #edf0f5;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .stock-in {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .stock-out {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .low-stock {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .out-stock {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .normal-stock {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+        }
+
+        .error-message {
+            padding: 13px 16px;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1000px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-group,
+            input[type="date"] {
+                width: 100%;
+            }
+
+            .filter-form .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Inventory Reports</h1>
+            <p>Monitor current stock levels and inventory movements.</p>
+        </div>
+
+        <a th:href="@{/inventory}" class="back-btn">
+            ← Back to Inventory
+        </a>
+    </div>
+
+    <div class="error-message"
+         th:if="${errorMessage}"
+         th:text="${errorMessage}">
+    </div>
+
+    <div class="filter-panel">
+        <form th:action="@{/inventory/reports}"
+              method="get"
+              class="filter-form">
+
+            <div class="filter-group">
+                <label for="startDate">Start Date</label>
+                <input type="date"
+                       id="startDate"
+                       name="startDate"
+                       th:value="${startDate}">
+            </div>
+
+            <div class="filter-group">
+                <label for="endDate">End Date</label>
+                <input type="date"
+                       id="endDate"
+                       name="endDate"
+                       th:value="${endDate}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Apply Filters
+            </button>
+
+            <a th:href="@{/inventory/reports}"
+               class="btn btn-secondary">
+                Clear Filters
+            </a>
+
+            <a th:href="@{/inventory/reports/pdf(
+        startDate=${startDate},
+        endDate=${endDate}
+    )}"
+               class="btn btn-primary">
+                ↓ Download PDF
+            </a>
+
+        </form>
+
+
+
+    </div>
+
+    <div th:if="${report != null}">
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <div class="label">Total Products</div>
+                <div class="value"
+                     th:text="${report.summary.totalProducts}">
+                    0
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Total Units in Stock</div>
+                <div class="value"
+                     th:text="${#numbers.formatDecimal(report.summary.totalUnits, 1, 3)}">
+                    0
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Stock Value (Purchase Cost)</div>
+                <div class="value">
+                    Rs. <span th:text="${#numbers.formatDecimal(report.summary.totalStockValue, 1, 2)}">0.00</span>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Low-Stock Products</div>
+                <div class="value"
+                     th:text="${report.summary.lowStockCount}">
+                    0
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Out-of-Stock Products</div>
+                <div class="value"
+                     th:text="${report.summary.outOfStockCount}">
+                    0
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Total Stock In</div>
+                <div class="value"
+                     th:text="${#numbers.formatDecimal(report.summary.stockInQuantity, 1, 3)}">
+                    0
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="label">Total Stock Out</div>
+                <div class="value"
+                     th:text="${#numbers.formatDecimal(report.summary.stockOutQuantity, 1, 3)}">
+                    0
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Current Stock Report -->
+        <div class="section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Current Stock Report</h2>
+                    <div class="section-description">
+                        Current stock quantity and purchase-cost valuation.
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Purchase Price</th>
+                        <th>Current Stock</th>
+                        <th>Minimum Stock</th>
+                        <th>Stock Value</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="product : ${report.products}">
+                        <td th:text="${product.name}">Product</td>
+                        <td th:text="${product.sku}">SKU</td>
+                        <td th:text="${product.category.name}">Category</td>
+
+                        <td>
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(product.purchasePrice, 1, 2)}"></span>
+                        </td>
+
+                        <td th:text="${#numbers.formatDecimal(product.stockQuantity, 1, 3)}">
+                            0
+                        </td>
+
+                        <td th:text="${#numbers.formatDecimal(product.minimumStock, 1, 3)}">
+                            0
+                        </td>
+
+                        <td>
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(product.purchasePrice.multiply(product.stockQuantity), 1, 2)}"></span>
+                        </td>
+
+                        <td>
+                            <span th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) == 0}"
+                                  class="status out-stock">
+                                Out of Stock
+                            </span>
+
+                            <span th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) > 0 and product.stockQuantity.compareTo(product.minimumStock) <= 0}"
+                                  class="status low-stock">
+                                Low Stock
+                            </span>
+
+                            <span th:if="${product.stockQuantity.compareTo(product.minimumStock) > 0}"
+                                  class="status normal-stock">
+                                Normal
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(report.products)}">
+                        <td colspan="8" class="empty-message">
+                            No products found.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Low Stock Report -->
+        <div class="section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Low-Stock Report</h2>
+                    <div class="section-description">
+                        Products whose current quantity is at or below minimum stock.
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Current Stock</th>
+                        <th>Minimum Stock</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="product : ${report.lowStockProducts}">
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.sku}"></td>
+                        <td th:text="${product.category.name}"></td>
+                        <td th:text="${#numbers.formatDecimal(product.stockQuantity, 1, 3)}"></td>
+                        <td th:text="${#numbers.formatDecimal(product.minimumStock, 1, 3)}"></td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(report.lowStockProducts)}">
+                        <td colspan="5" class="empty-message">
+                            No low-stock products found.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Product-wise Movement Report -->
+        <div class="section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Product-wise Stock Movement</h2>
+                    <div class="section-description">
+                        Stock received and issued during the selected period.
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Total Stock In</th>
+                        <th>Total Stock Out</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="row : ${report.productRows}">
+                        <td th:text="${row.productName}"></td>
+                        <td th:text="${row.sku}"></td>
+                        <td th:text="${#numbers.formatDecimal(row.stockIn, 1, 3)}"></td>
+                        <td th:text="${#numbers.formatDecimal(row.stockOut, 1, 3)}"></td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(report.productRows)}">
+                        <td colspan="4" class="empty-message">
+                            No product movement data found.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Detailed Movement History -->
+        <div class="section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Stock Movement History</h2>
+                    <div class="section-description">
+                        Detailed stock-in and stock-out records.
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Movement Type</th>
+                        <th>Quantity</th>
+                        <th>Previous Stock</th>
+                        <th>New Stock</th>
+                        <th>Reason</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="movement : ${report.movements}">
+                        <td th:text="${#temporals.format(movement.createdAt, 'dd MMM yyyy HH:mm')}"></td>
+                        <td th:text="${movement.product.name}"></td>
+                        <td th:text="${movement.product.sku}"></td>
+
+                        <td>
+                            <span th:if="${movement.movementType.name() == 'STOCK_IN'}"
+                                  class="status stock-in">
+                                STOCK IN
+                            </span>
+
+                            <span th:if="${movement.movementType.name() == 'STOCK_OUT'}"
+                                  class="status stock-out">
+                                STOCK OUT
+                            </span>
+                        </td>
+
+                        <td th:text="${#numbers.formatDecimal(movement.quantity, 1, 3)}"></td>
+                        <td th:text="${#numbers.formatDecimal(movement.previousStock, 1, 3)}"></td>
+                        <td th:text="${#numbers.formatDecimal(movement.newStock, 1, 3)}"></td>
+                        <td th:text="${movement.reason}"></td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(report.movements)}">
+                        <td colspan="8" class="empty-message">
+                            No stock movements found for the selected period.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

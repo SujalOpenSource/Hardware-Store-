@@ -2,16 +2,32 @@ package com.hardwarestore.product;
 
 import com.hardwarestore.category.Category;
 import com.hardwarestore.category.CategoryRepository;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
+
+import java.math.BigDecimal;
+
 
 @Service
 @Transactional
 public class ProductService {
+
+
+    public List<Product> searchProducts(String search, Long categoryId) {
+        String keyword = (search == null || search.isBlank())
+                ? null
+                : search.trim();
+
+        return productRepository.searchProducts(
+                keyword,
+                categoryId,
+                Sort.by(Sort.Direction.ASC, "name")
+        );
+    }
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -164,4 +180,6 @@ public class ProductService {
         Product product = findById(id);
         productRepository.delete(product);
     }
+
+
 }

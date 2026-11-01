@@ -1,48 +1,219 @@
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Customer List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Management</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header, .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        h1 { margin: 0 0 8px; }
+
+        .muted { color: #64748b; }
+
+        .panel {
+            margin-top: 24px;
+            padding: 22px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 15px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .primary { background: #2457c5; color: white; }
+        .secondary { background: #e9edf3; color: #1f2937; }
+        .danger { background: #dc2626; color: white; }
+        .small { padding: 8px 10px; }
+
+        input[type="search"] {
+            width: min(330px, 100%);
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            margin-top: 16px;
+            border-radius: 7px;
+        }
+
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+
+        .table-wrap { overflow-x: auto; margin-top: 22px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions form { margin: 0; }
+
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            .panel { padding: 15px; }
+            .toolbar form { width: 100%; }
+            input[type="search"] { width: 100%; }
+        }
+    </style>
 </head>
+
 <body>
+<div class="container">
 
-<h1>Customer Management</h1>
+    <div class="header">
+        <div>
+            <h1>Customers</h1>
+            <p class="muted">Manage your hardware store's customer records.</p>
+        </div>
 
-<a th:href="@{/customers/new}">Add New Customer</a>
+        <a th:href="@{/dashboard}" class="btn secondary">
+            ← Dashboard
+        </a>
+    </div>
 
-<br><br>
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}"></div>
 
-<table border="1" cellpadding="10">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}"></div>
 
-    <tbody>
-    <tr th:each="customer : ${customers}">
-        <td th:text="${customer.id}"></td>
-        <td th:text="${customer.name}"></td>
-        <td th:text="${customer.phone}"></td>
-        <td th:text="${customer.email}"></td>
-        <td>
-            <form th:action="@{/customers/delete/{id}(id=${customer.id})}"
-                  method="post">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
+    <div class="panel">
 
-    <tr th:if="${#lists.isEmpty(customers)}">
-        <td colspan="5">No customers registered yet.</td>
-    </tr>
-    </tbody>
-</table>
+        <div class="toolbar">
+            <div>
+                <h2>Customer Directory</h2>
+                <p class="muted">View, search and manage customers.</p>
+            </div>
 
+            <a th:href="@{/customers/new}" class="btn primary">
+                + Add Customer
+            </a>
+        </div>
+
+        <form th:action="@{/customers}" method="get"
+              class="toolbar" style="margin-top: 22px;">
+
+            <input type="search"
+                   name="keyword"
+                   placeholder="Search name, phone or email"
+                   th:value="${keyword}">
+
+            <button type="submit" class="btn primary">Search</button>
+
+            <a th:href="@{/customers}" class="btn secondary">Clear</a>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.id}"></td>
+                    <td th:text="${customer.name}"></td>
+                    <td th:text="${customer.phone}"></td>
+                    <td th:text="${customer.email != null ? customer.email : '—'}"></td>
+                    <td th:text="${customer.address != null ? customer.address : '—'}"></td>
+
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/customers/edit/{id}(id=${customer.id})}"
+                               class="btn secondary small">Edit</a>
+
+                            <form th:action="@{/customers/delete/{id}(id=${customer.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Delete this customer?');">
+
+                                <button type="submit"
+                                        class="btn danger small">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(customers)}">
+                    <td colspan="6" class="empty">
+                        No customers found. Add your first customer to get started.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 </body>
 </html>

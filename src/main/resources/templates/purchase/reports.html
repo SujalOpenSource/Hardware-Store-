@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Reports</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 26px;
+            background: #f4f6f9;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        h2 {
+            margin: 0 0 20px;
+            font-size: 18px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .card {
+            padding: 23px;
+            margin-bottom: 22px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .success {
+            background: #198754;
+            color: white;
+        }
+
+        .success:hover {
+            background: #157347;
+        }
+
+        .secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .button:hover {
+            opacity: 0.88;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            color: #4b5563;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            height: 42px;
+            padding: 9px 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 19px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            padding: 20px;
+            background: white;
+            border-radius: 9px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-width: 0;
+        }
+
+        .summary-label {
+            display: block;
+            margin-bottom: 12px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .summary-value {
+            display: block;
+            font-size: 23px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .amount {
+            color: #2563eb;
+        }
+
+        .pending-text {
+            color: #b45309;
+        }
+
+        .received-text {
+            color: #15803d;
+        }
+
+        .cancelled-text {
+            color: #dc2626;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover td {
+            background: #fafafa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-received {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .view-link {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            padding: 25px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .message {
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+        }
+
+        @media (max-width: 1050px) {
+            .summary-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .filter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .summary-grid,
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .summary-value {
+                font-size: 19px;
+            }
+
+            .header > .button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .summary-grid,
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Page Header -->
+    <div class="header">
+
+        <div>
+            <h1>Purchase Reports</h1>
+            <p class="subtitle">
+                Analyze purchases, supplier spending and product quantities.
+            </p>
+        </div>
+
+        <a th:href="@{/purchases}" class="button back">
+            &#8592; Back to Purchases
+        </a>
+
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <!-- Report Filters -->
+    <div class="card">
+
+        <h2>Filter Reports</h2>
+
+        <form th:action="@{/purchases/reports}" method="get">
+
+            <div class="filter-grid">
+
+                <div class="field">
+                    <label for="startDate">Start Date</label>
+
+                    <input type="date"
+                           id="startDate"
+                           name="startDate"
+                           th:value="${startDate}">
+                </div>
+
+                <div class="field">
+                    <label for="endDate">End Date</label>
+
+                    <input type="date"
+                           id="endDate"
+                           name="endDate"
+                           th:value="${endDate}">
+                </div>
+
+                <div class="field">
+                    <label for="supplierId">Supplier</label>
+
+                    <select id="supplierId" name="supplierId">
+
+                        <option value="">All Suppliers</option>
+
+                        <option th:each="supplier : ${suppliers}"
+                                th:value="${supplier.id}"
+                                th:text="${supplier.companyName}"
+                                th:selected="${supplierId != null and supplierId.equals(supplier.id)}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="status">Purchase Status</label>
+
+                    <select id="status" name="status">
+
+                        <option value="">All Statuses</option>
+
+                        <option th:each="purchaseStatus : ${statuses}"
+                                th:value="${purchaseStatus}"
+                                th:text="${purchaseStatus}"
+                                th:selected="${selectedStatus == purchaseStatus}">
+                        </option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+
+                <button type="submit" class="button primary">
+                    Generate Report
+                </button>
+
+                <a th:href="@{/purchases/reports}"
+                   class="button secondary">
+                    Clear Filters
+                </a>
+
+            </div>
+
+        </form>
+
+        <div class="filter-actions">
+            <a th:href="@{/purchases/reports/pdf(
+                startDate=${startDate},
+                endDate=${endDate},
+                supplierId=${supplierId},
+                status=${selectedStatus}
+            )}"
+               class="button success">
+                Download PDF
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <span class="summary-label">Total Purchases</span>
+            <span class="summary-value"
+                  th:text="${report.summary.totalPurchases}">
+            </span>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-label">Total Purchase Amount</span>
+            <span class="summary-value amount">
+                Rs.
+                <span th:text="${#numbers.formatDecimal(report.summary.totalAmount, 1, 2)}"></span>
+            </span>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-label">Pending</span>
+            <span class="summary-value pending-text"
+                  th:text="${report.summary.pendingPurchases}">
+            </span>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-label">Received</span>
+            <span class="summary-value received-text"
+                  th:text="${report.summary.receivedPurchases}">
+            </span>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-label">Cancelled</span>
+            <span class="summary-value cancelled-text"
+                  th:text="${report.summary.cancelledPurchases}">
+            </span>
+        </div>
+
+    </div>
+
+    <!-- Supplier Report -->
+    <div class="card">
+
+        <div class="section-heading">
+            <h2>Supplier-wise Report</h2>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Number of Purchases</th>
+                    <th>Total Amount</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="row : ${report.supplierRows}">
+
+                    <td th:text="${row.supplierName}"></td>
+
+                    <td th:text="${row.purchaseCount}"></td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(row.totalAmount, 1, 2)}"></span>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(report.supplierRows)}">
+                    <td colspan="3" class="empty">
+                        No supplier data found for these filters.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Product Report -->
+    <div class="card">
+
+        <div class="section-heading">
+            <h2>Product-wise Report</h2>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Total Quantity Purchased</th>
+                    <th>Total Spending</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="row : ${report.productRows}">
+
+                    <td th:text="${row.productName}"></td>
+
+                    <td th:text="${row.sku}"></td>
+
+                    <td th:text="${#numbers.formatDecimal(row.totalQuantity, 1, 3)}"></td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(row.totalAmount, 1, 2)}"></span>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(report.productRows)}">
+                    <td colspan="4" class="empty">
+                        No product data found for these filters.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Detailed Purchase Report -->
+    <div class="card">
+
+        <div class="section-heading">
+            <h2>Purchase Details</h2>
+            <span class="subtitle"
+                  th:text="${report.purchases.size() + ' purchase records'}">
+            </span>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Purchase Number</th>
+                    <th>Supplier</th>
+                    <th>Purchase Date</th>
+                    <th>Status</th>
+                    <th>Total Amount</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="purchase : ${report.purchases}">
+
+                    <td th:text="${purchase.purchaseNumber}"></td>
+
+                    <td th:text="${purchase.supplier.companyName}"></td>
+
+                    <td th:text="${#temporals.format(purchase.purchaseDate, 'dd MMM yyyy')}"></td>
+
+                    <td>
+                        <span class="status"
+                              th:classappend="${purchase.status.name() == 'PENDING' ? ' status-pending' :
+                                  (purchase.status.name() == 'RECEIVED' ? ' status-received' : ' status-cancelled')}"
+                              th:text="${purchase.status}">
+                        </span>
+                    </td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(purchase.totalAmount, 1, 2)}"></span>
+                    </td>
+
+                    <td>
+                        <a class="view-link"
+                           th:href="@{/purchases/{id}(id=${purchase.id})}">
+                            View
+                        </a>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(report.purchases)}">
+                    <td colspan="6" class="empty">
+                        No purchases found for the selected filters.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

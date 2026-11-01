@@ -1,7 +1,9 @@
+
 package com.hardwarestore.product;
 
 import com.hardwarestore.category.Category;
 import com.hardwarestore.category.CategoryService;
+import com.hardwarestore.supplier.SupplierProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
@@ -17,20 +21,42 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final ProductImageService productImageService;
+    private final SupplierProductService supplierProductService;
 
     public ProductController(
             ProductService productService,
             CategoryService categoryService,
-            ProductImageService productImageService) {
+            ProductImageService productImageService,
+            SupplierProductService supplierProductService) {
 
         this.productService = productService;
         this.categoryService = categoryService;
         this.productImageService = productImageService;
+        this.supplierProductService = supplierProductService;
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("products", productService.findAll());
+    public String list(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long categoryId,
+            Model model) {
+
+        List<Product> products =
+                productService.searchProducts(search, categoryId);
+
+        List<Long> productIds = products.stream()
+                .map(Product::getId)
+                .toList();
+
+        Map<Long, String> supplierNames =
+                supplierProductService.findSupplierNamesByProductIds(productIds);
+
+        model.addAttribute("products", products);
+        model.addAttribute("supplierNames", supplierNames);
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("search", search == null ? "" : search);
+        model.addAttribute("selectedCategoryId", categoryId);
+
         return "product/list";
     }
 
@@ -60,33 +86,27 @@ public class ProductController {
         String oldImagePath = null;
 
         try {
-            // Capture the old image before editing.
             if (product.getId() != null) {
                 oldImagePath = productService
                         .findById(product.getId())
                         .getImagePath();
             }
 
-            // Save the new image first, if one was selected.
             if (imageFile != null && !imageFile.isEmpty()) {
-                newImagePath =
-                        productImageService.saveImage(imageFile);
-
+                newImagePath = productImageService.saveImage(imageFile);
                 product.setImagePath(newImagePath);
             }
 
-            Product savedProduct =
-                    productService.save(product, categoryId);
+            productService.save(product, categoryId);
 
-            // Delete the previous image only after saving succeeds.
-            if (newImagePath != null &&
-                    oldImagePath != null &&
-                    !oldImagePath.equals(newImagePath)) {
+            if (newImagePath != null
+                    && oldImagePath != null
+                    && !oldImagePath.equals(newImagePath)) {
+
                 try {
                     productImageService.deleteImage(oldImagePath);
-                } catch (IOException exception) {
-                    // The product is saved; a leftover old file
-                    // can be cleaned up separately.
+                } catch (IOException ignored) {
+                    // Product was saved successfully.
                 }
             }
 
@@ -99,30 +119,20 @@ public class ProductController {
 
         } catch (IllegalArgumentException | IOException exception) {
 
-            // Avoid leaving a newly uploaded file behind if
-            // validation or persistence fails.
             if (newImagePath != null) {
                 try {
                     productImageService.deleteImage(newImagePath);
                 } catch (IOException ignored) {
-                    // The original error is more useful here.
+                    // Preserve the original error.
                 }
             }
 
-            model.addAttribute(
-                    "categories", categoryService.findAll()
-            );
-
+            model.addAttribute("categories", categoryService.findAll());
             model.addAttribute(
                     "pageTitle",
-                    product.getId() == null
-                            ? "Add Product"
-                            : "Edit Product"
+                    product.getId() == null ? "Add Product" : "Edit Product"
             );
-
-            model.addAttribute(
-                    "errorMessage", exception.getMessage()
-            );
+            model.addAttribute("errorMessage", exception.getMessage());
 
             if (product.getCategory() == null) {
                 product.setCategory(new Category());
@@ -144,16 +154,16 @@ public class ProductController {
             Product product = productService.findById(id);
 
             model.addAttribute("product", product);
-            model.addAttribute(
-                    "categories", categoryService.findAll()
-            );
+            model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("pageTitle", "Edit Product");
 
             return "product/form";
 
         } catch (IllegalArgumentException exception) {
+
             redirectAttributes.addFlashAttribute(
-                    "errorMessage", exception.getMessage()
+                    "errorMessage",
+                    exception.getMessage()
             );
 
             return "redirect:/products";
@@ -167,15 +177,14 @@ public class ProductController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            model.addAttribute(
-                    "product", productService.findById(id)
-            );
-
+            model.addAttribute("product", productService.findById(id));
             return "product/details";
 
         } catch (IllegalArgumentException exception) {
+
             redirectAttributes.addFlashAttribute(
-                    "errorMessage", exception.getMessage()
+                    "errorMessage",
+                    exception.getMessage()
             );
 
             return "redirect:/products";
@@ -197,17 +206,20 @@ public class ProductController {
                 try {
                     productImageService.deleteImage(imagePath);
                 } catch (IOException ignored) {
-                    // Product deletion has succeeded.
+                    // Product deletion succeeded.
                 }
             }
 
             redirectAttributes.addFlashAttribute(
-                    "successMessage", "Product deleted successfully."
+                    "successMessage",
+                    "Product deleted successfully."
             );
 
         } catch (IllegalArgumentException exception) {
+
             redirectAttributes.addFlashAttribute(
-                    "errorMessage", exception.getMessage()
+                    "errorMessage",
+                    exception.getMessage()
             );
         }
 

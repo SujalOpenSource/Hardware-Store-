@@ -1,139 +1,344 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Product Management | Hardware Store</title>
+    <title>Products | Hardware Store Management</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
-            padding: 25px;
-            font-family: Arial, sans-serif;
-            background: #f3f5f9;
-            color: #1f2937;
+            padding: 24px;
+            background: #f4f6f9;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .container {
-            max-width: 1450px;
-            margin: auto;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
             flex-wrap: wrap;
+            gap: 16px;
             margin-bottom: 22px;
         }
 
-        h1 { margin-bottom: 5px; }
+        .header h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header p {
+            margin: 0;
+        }
+
+        .header-actions,
+        .filter-actions,
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 9px 13px;
+            border: 0;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .details {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .edit {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn:hover {
+            filter: brightness(0.96);
+        }
 
         .card {
-            background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .alert {
+            margin-bottom: 16px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .search-field {
+            flex: 1 1 280px;
+        }
+
+        .category-field {
+            flex: 0 1 240px;
+        }
+
+        .filter-field label {
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .filter-field input,
+        .filter-field select {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            color: #1f2937;
+            font: inherit;
+        }
+
+        .filter-field input:focus,
+        .filter-field select:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        .result-count {
+            margin: 0 0 14px;
+        }
+
+        .table-wrapper {
+            width: 100%;
             overflow-x: auto;
         }
 
         table {
             width: 100%;
+            min-width: 1250px;
             border-collapse: collapse;
-            min-width: 900px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 13px 12px;
+            border-bottom: 1px solid #e2e8f0;
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
             vertical-align: middle;
+            font-size: 13px;
         }
 
         th {
             background: #f8fafc;
             color: #475569;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
         }
 
         .product-image {
-            width: 75px;
-            height: 65px;
-            object-fit: contain;
-            border-radius: 7px;
-            border: 1px solid #e5e7eb;
-            background: #fff;
-            padding: 3px;
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: #f8fafc;
         }
 
         .no-image {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 75px;
-            height: 65px;
-            background: #f1f5f9;
-            color: #64748b;
-            border-radius: 7px;
-            font-size: 11px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 9px 12px;
+            width: 55px;
+            height: 55px;
+            border: 1px dashed #cbd5e1;
             border-radius: 6px;
-            text-decoration: none;
-            border: 0;
-            cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
+            color: #94a3b8;
+            font-size: 10px;
         }
 
-        .primary { background: #2563eb; color: white; }
-        .secondary { background: #e5e7eb; color: #111827; }
-        .danger { background: #dc2626; color: white; }
-
-        .actions {
-            display: flex;
-            gap: 6px;
-            align-items: center;
+        .product-name {
+            margin-bottom: 5px;
+            color: #0f172a;
+            font-weight: 700;
         }
 
-        .message {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 7px;
+        .description {
+            max-width: 220px;
+            color: #64748b;
+            font-size: 12px;
+            overflow-wrap: anywhere;
         }
 
-        .success { background: #dcfce7; color: #166534; }
-        .error { background: #fee2e2; color: #991b1b; }
+        .supplier-list {
+            min-width: 140px;
+            max-width: 230px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .supplier-name {
+            display: inline-block;
+            margin: 2px 3px 2px 0;
+            padding: 4px 8px;
+            border-radius: 5px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .no-supplier {
+            color: #94a3b8;
+            font-size: 12px;
+            font-style: italic;
+        }
 
         .badge {
             display: inline-block;
+            padding: 5px 8px;
             border-radius: 20px;
-            padding: 5px 9px;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .active { background: #dcfce7; color: #166534; }
-        .inactive { background: #fee2e2; color: #991b1b; }
-        .low-stock { background: #fef3c7; color: #92400e; }
-
-        .top-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .active-badge {
+            background: #dcfce7;
+            color: #166534;
         }
 
-        .muted { color: #64748b; font-size: 13px; }
+        .inactive-badge {
+            background: #e2e8f0;
+            color: #475569;
+        }
 
-        @media (max-width: 600px) {
-            body { padding: 12px; }
-            .card { padding: 10px; }
+        .low-stock {
+            color: #b91c1c;
+            font-weight: 700;
+        }
+
+        .normal-stock {
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .action-buttons form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .empty-state {
+            padding: 35px 15px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .empty-state strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 15px;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .search-field,
+            .category-field {
+                flex: 1 1 100%;
+            }
+
+            .filter-actions {
+                width: 100%;
+            }
+
+            .filter-actions .btn {
+                flex: 1;
+            }
         }
     </style>
 </head>
@@ -141,15 +346,17 @@
 <body>
 <div class="container">
 
-    <div class="header">
+    <!-- Header -->
+    <header class="header">
         <div>
             <h1>Product Management</h1>
             <p class="muted">
-                Manage hardware products, images, prices, and stock.
+                Search products, filter by category, view suppliers,
+                and manage store inventory.
             </p>
         </div>
 
-        <div class="top-links">
+        <div class="header-actions">
             <a th:href="@{/dashboard}" class="btn secondary">
                 Dashboard
             </a>
@@ -162,132 +369,232 @@
                 + Add Product
             </a>
         </div>
-    </div>
+    </header>
 
+    <!-- Alerts -->
     <div th:if="${successMessage}"
-         class="message success"
+         class="alert success"
          th:text="${successMessage}">
     </div>
 
     <div th:if="${errorMessage}"
-         class="message error"
+         class="alert error"
          th:text="${errorMessage}">
     </div>
 
-    <div class="card">
-        <table>
-            <thead>
-            <tr>
-                <th>Image</th>
-                <th>Product</th>
-                <th>SKU</th>
-                <th>Category</th>
-                <th>Purchase Price</th>
-                <th>Selling Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
+    <section class="card">
 
-            <tbody>
-            <tr th:each="product : ${products}">
+        <!-- Search and Category Filter -->
+        <form th:action="@{/products}" method="get" class="filter-form">
 
-                <td>
-                    <img th:if="${product.imagePath != null
-                                  and !product.imagePath.isBlank()}"
-                         th:src="${product.imagePath}"
-                         th:alt="${product.name}"
-                         class="product-image">
+            <div class="filter-field search-field">
+                <label for="search">Search products</label>
 
-                    <span th:unless="${product.imagePath != null
-                                       and !product.imagePath.isBlank()}"
-                          class="no-image">
-                        No image
-                    </span>
-                </td>
+                <input
+                        type="search"
+                        id="search"
+                        name="search"
+                        placeholder="Search by name, SKU or description..."
+                        th:value="${search}">
+            </div>
 
-                <td>
-                    <strong th:text="${product.name}">Product name</strong>
-                    <div class="muted"
-                         th:text="${product.description}">
-                    </div>
-                </td>
+            <div class="filter-field category-field">
+                <label for="categoryId">Filter by category</label>
 
-                <td th:text="${product.sku}">SKU</td>
+                <select id="categoryId" name="categoryId">
+                    <option value="">All Categories</option>
 
-                <td th:text="${product.category.name}">
-                    Category
-                </td>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${selectedCategoryId != null
+                                and category.id == selectedCategoryId}">
+                    </option>
+                </select>
+            </div>
 
-                <td>
-                    NPR
-                    <span th:text="${#numbers.formatDecimal(
-                        product.purchasePrice, 1, 2)}"></span>
-                </td>
+            <div class="filter-actions">
+                <button type="submit" class="btn primary">
+                    Search / Filter
+                </button>
 
-                <td>
-                    NPR
-                    <span th:text="${#numbers.formatDecimal(
-                        product.sellingPrice, 1, 2)}"></span>
-                </td>
+                <a th:href="@{/products}" class="btn secondary">
+                    Clear
+                </a>
+            </div>
 
-                <td>
-                    <span th:text="${product.stockQuantity}"></span>
+        </form>
 
-                    <div th:if="${product.stockQuantity.compareTo(
-                                    product.minimumStock) <= 0}"
-                         class="badge low-stock">
-                        Low stock
-                    </div>
-                </td>
+        <!-- Product Count -->
+        <p class="muted result-count">
+            Showing
+            <strong th:text="${#lists.size(products)}">0</strong>
+            product(s)
+        </p>
 
-                <td>
-                    <span th:if="${product.active}"
-                          class="badge active">
-                        Active
-                    </span>
+        <!-- Product Table -->
+        <div class="table-wrapper">
+            <table>
 
-                    <span th:unless="${product.active}"
-                          class="badge inactive">
-                        Inactive
-                    </span>
-                </td>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Suppliers</th>
+                    <th>Purchase Price</th>
+                    <th>Selling Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
 
-                <td>
-                    <div class="actions">
-                        <a th:href="@{/products/details/{id}(id=${product.id})}"
-                           class="btn secondary">
-                            Details
-                        </a>
+                <tbody>
 
-                        <a th:href="@{/products/edit/{id}(id=${product.id})}"
-                           class="btn primary">
-                            Edit
-                        </a>
+                <!-- Product Rows -->
+                <tr th:each="product : ${products}">
 
-                        <form th:action="@{/products/delete/{id}(id=${product.id})}"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to delete this product?');">
+                    <!-- Image -->
+                    <td>
+                        <img th:if="${product.imagePath != null
+                                     and !product.imagePath.isEmpty()}"
+                             th:src="@{${product.imagePath}}"
+                             th:alt="${product.name}"
+                             class="product-image">
 
-                            <button type="submit" class="btn danger">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </td>
+                        <div th:unless="${product.imagePath != null
+                                         and !product.imagePath.isEmpty()}"
+                             class="no-image">
+                            No image
+                        </div>
+                    </td>
 
-            </tr>
+                    <!-- Product -->
+                    <td>
+                        <div class="product-name"
+                             th:text="${product.name}">
+                            Product name
+                        </div>
 
-            <tr th:if="${#lists.isEmpty(products)}">
-                <td colspan="9" style="text-align:center;padding:30px;">
-                    No products found. Click Add Product to create one.
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+                        <div class="description"
+                             th:if="${product.description != null
+                                     and !product.description.isEmpty()}"
+                             th:text="${product.description}">
+                        </div>
+                    </td>
 
+                    <!-- SKU -->
+                    <td th:text="${product.sku}">
+                        SKU
+                    </td>
+
+                    <!-- Category -->
+                    <td th:text="${product.category != null
+                                    ? product.category.name
+                                    : 'Uncategorized'}">
+                        Category
+                    </td>
+
+                    <!-- Suppliers -->
+                    <td>
+                        <div class="supplier-list"
+                             th:with="names=${supplierNames != null
+                                ? supplierNames.get(product.id)
+                                : null}">
+
+                            <span th:if="${names != null and !names.isEmpty()}"
+                                  class="supplier-name"
+                                  th:text="${names}">
+                            </span>
+
+                            <span th:if="${names == null or names.isEmpty()}"
+                                  class="no-supplier">
+                                No supplier assigned
+                            </span>
+
+                        </div>
+                    </td>
+
+                    <!-- Purchase Price -->
+                    <td th:text="${product.purchasePrice}">
+                        0.00
+                    </td>
+
+                    <!-- Selling Price -->
+                    <td th:text="${product.sellingPrice}">
+                        0.00
+                    </td>
+
+                    <!-- Stock -->
+                    <td>
+                        <span th:class="${product.stockQuantity
+                                         <= product.minimumStock
+                                         ? 'low-stock'
+                                         : 'normal-stock'}"
+                              th:text="${product.stockQuantity}">
+                            0
+                        </span>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                        <span th:if="${product.active}"
+                              class="badge active-badge">
+                            Active
+                        </span>
+
+                        <span th:unless="${product.active}"
+                              class="badge inactive-badge">
+                            Inactive
+                        </span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                        <div class="action-buttons">
+
+                            <a th:href="@{/products/details/{id}(id=${product.id})}"
+                               class="btn details">
+                                View
+                            </a>
+
+                            <a th:href="@{/products/edit/{id}(id=${product.id})}"
+                               class="btn edit">
+                                Edit
+                            </a>
+
+                            <form th:action="@{/products/delete/{id}(id=${product.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this product?');">
+
+                                <button type="submit" class="btn delete">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                <!-- Empty State -->
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="10">
+                        <div class="empty-state">
+                            <strong>No matching products found.</strong>
+                            Try another search term or category, or clear the filters.
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </section>
 </div>
 </body>
 </html>

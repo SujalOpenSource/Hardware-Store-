@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Sale</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            background: #f4f6fa;
+            color: #1e293b;
+            font-family: Arial, sans-serif;
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        h1 { margin: 0 0 6px; font-size: 27px; }
+        .subtitle { margin: 0; color: #64748b; }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 23px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+        }
+
+        h2 { font-size: 18px; margin: 0 0 20px; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            color: #1e293b;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .field { margin-bottom: 18px; }
+
+        .customer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        .product-row {
+            display: grid;
+            grid-template-columns: minmax(180px, 2fr)
+                minmax(100px, .8fr)
+                minmax(110px, .8fr)
+                45px;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 13px;
+        }
+
+        .row-total {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .add-btn, .submit-btn, .back-btn {
+            display: inline-block;
+            padding: 11px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .add-btn { background: #e0eaff; color: #1d4ed8; }
+        .submit-btn { background: #2563eb; color: white; }
+        .back-btn { background: #e2e8f0; color: #334155; }
+
+        .add-btn:hover { background: #c7d9ff; }
+        .submit-btn:hover { background: #1d4ed8; }
+
+        .total-box {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            padding-top: 18px;
+            margin-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .total-value { color: #166534; font-size: 22px; }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .message {
+            padding: 13px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+        }
+
+        .error { background: #fee2e2; color: #991b1b; }
+
+        .help {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 15px; }
+
+            .customer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width { grid-column: auto; }
+
+            .product-row {
+                grid-template-columns: 1fr 1fr;
+                padding-bottom: 14px;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .product-field { grid-column: 1 / -1; }
+
+            .actions { justify-content: stretch; }
+
+            .actions a, .actions button {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Create New Sale</h1>
+            <p class="subtitle">Add products and complete a customer sale.</p>
+        </div>
+
+        <a th:href="@{/sales}" class="back-btn">Back to Sales</a>
+    </div>
+
+    <div th:if="${errorMessage}" class="message error"
+         th:text="${errorMessage}"></div>
+
+    <form th:action="@{/sales}" method="post" id="saleForm">
+
+        <!-- CUSTOMER INFORMATION -->
+        <div class="panel">
+            <h2>Customer Information</h2>
+
+            <div class="field">
+                <label for="customerId">Customer Type</label>
+
+                <select id="customerId" name="customerId">
+                    <option value="">Walk-in Customer</option>
+
+                    <option th:each="customer : ${customers}"
+                            th:value="${customer.id}"
+                            th:text="${customer.name + ' - ' + customer.phone}">
+                    </option>
+                </select>
+
+                <p class="help">
+                    Select a registered customer or enter details for a walk-in customer.
+                </p>
+            </div>
+
+            <div id="walkInFields">
+
+                <div class="customer-grid">
+
+                    <div class="field">
+                        <label for="walkInName">Customer Name</label>
+                        <input type="text"
+                               id="walkInName"
+                               name="walkInName"
+                               maxlength="150"
+                               placeholder="Enter customer name">
+                    </div>
+
+                    <div class="field">
+                        <label for="walkInPhone">Phone Number</label>
+                        <input type="tel"
+                               id="walkInPhone"
+                               name="walkInPhone"
+                               maxlength="30"
+                               placeholder="Enter phone number">
+                    </div>
+
+                    <div class="field full-width">
+                        <label for="walkInAddress">Address</label>
+                        <textarea id="walkInAddress"
+                                  name="walkInAddress"
+                                  rows="2"
+                                  maxlength="500"
+                                  placeholder="Enter customer address"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SALE PRODUCTS -->
+        <div class="panel">
+            <h2>Sale Products</h2>
+
+            <div id="productRows"></div>
+
+            <button type="button" class="add-btn" id="addProductBtn">
+                + Add Product
+            </button>
+
+            <div class="total-box">
+                <span>Grand Total</span>
+                <span class="total-value">
+                    Rs. <span id="grandTotal">0.00</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- ADDITIONAL INFORMATION -->
+        <div class="panel">
+            <h2>Additional Information</h2>
+
+            <div class="field">
+                <label for="notes">Notes (Optional)</label>
+                <textarea id="notes"
+                          name="notes"
+                          rows="3"
+                          maxlength="500"
+                          placeholder="Enter any notes about this sale..."></textarea>
+            </div>
+
+            <div class="actions">
+                <a th:href="@{/sales}" class="back-btn">Cancel</a>
+
+                <button type="submit" class="submit-btn">
+                    Complete Sale
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- PRODUCT ROW TEMPLATE -->
+<template id="productRowTemplate">
+    <div class="product-row">
+
+        <div class="product-field">
+            <label>Product</label>
+
+            <select name="productIds" class="product-select" required>
+                <option value="">Select Product</option>
+
+                <option th:each="product : ${products}"
+                        th:value="${product.id}"
+                        th:attr="data-price=${product.sellingPrice},
+                                 data-stock=${product.stockQuantity}"
+                        th:text="${product.name + ' (' + product.sku + ')'}">
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label>Quantity</label>
+
+            <input type="number"
+                   name="quantities"
+                   class="quantity-input"
+                   min="0.001"
+                   step="0.001"
+                   placeholder="0.000"
+                   required>
+        </div>
+
+        <div>
+            <label>Subtotal</label>
+
+            <div class="row-total">
+                Rs. <span class="subtotal">0.00</span>
+            </div>
+        </div>
+
+        <button type="button"
+                class="remove-btn"
+                title="Remove product"
+                aria-label="Remove product">×</button>
+
+    </div>
+</template>
+
+<script th:src="@{/js/sales-create.js}"></script>
+
+</body>
+</html>

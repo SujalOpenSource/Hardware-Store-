@@ -1,79 +1,42 @@
 package com.hardwarestore.customer;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name="customers")
+@Table(name = "customers")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Customer {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
-    @NotBlank(message = "Customer name is required.")
-    @Size(max = 50,message = "Name cannot exceed 30 characters.")
-    @Column(nullable=false,length =50)
-    private String fullname;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotBlank(message = "Email is required." )
-    @Email(message = "Please enter your valid email address.")
-    @Column(nullable = false,unique = true)
-    private String email;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-    @NotBlank(message = "Phone number is required")
-    @Size(max = 15, message = "Phone number cannot exceed 20 characters")
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 20)
     private String phone;
 
-    @Size(max=50,message = "Address cannot exceed 50 characters.")
-    @Column(length = 50)
+    @Column(length = 120)
+    private String email;
+
+    @Column(length = 500)
     private String address;
 
-    public Customer() {
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
-    public Customer(String fullname, String email, String phone, String address) {
-
-        this.fullname = fullname;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-
-    }
-
-
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
-    public String getFullname() {
-        return fullname;
-
-    }
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-
 }

@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock History</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #f4f6f9;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container { max-width: 1200px; margin: auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        h1 { margin: 0 0 8px; font-size: 25px; }
+        h2 { margin-top: 0; font-size: 18px; }
+        .muted { color: #64748b; font-size: 13px; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 9px 13px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .primary { background: #2563eb; color: white; }
+        .secondary { background: #e2e8f0; color: #334155; }
+
+        .table-wrapper { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .in { color: #166534; font-weight: 700; }
+        .out { color: #b91c1c; font-weight: 700; }
+        .empty { padding: 25px; text-align: center; color: #64748b; }
+
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            .card { padding: 14px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>Stock Movement History</h1>
+            <p class="muted">
+                Product:
+                <strong th:text="${product.name}">Product name</strong>
+                · SKU:
+                <strong th:text="${product.sku}">SKU</strong>
+            </p>
+        </div>
+
+        <div>
+            <a th:href="@{/inventory}" class="btn secondary">Inventory</a>
+            <a th:href="@{/inventory/adjust}" class="btn primary">Adjust Stock</a>
+        </div>
+    </header>
+
+    <section class="card">
+        <h2>Current Stock</h2>
+
+        <p>
+            Quantity:
+            <strong th:text="${product.stockQuantity}">0.000</strong>
+        </p>
+
+        <p>
+            Minimum stock:
+            <strong th:text="${product.minimumStock}">0.000</strong>
+        </p>
+
+        <p class="muted" th:text="${product.category.name}">Category</p>
+    </section>
+
+    <section class="card">
+        <h2>Movement Records</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Previous Stock</th>
+                    <th>New Stock</th>
+                    <th>Reason</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="movement : ${movements}">
+                    <td th:text="${#temporals.format(movement.createdAt, 'yyyy-MM-dd HH:mm')}">
+                        Date
+                    </td>
+
+                    <td>
+                        <span th:if="${movement.movementType.name() == 'STOCK_IN'}"
+                              class="in">Stock In</span>
+
+                        <span th:unless="${movement.movementType.name() == 'STOCK_IN'}"
+                              class="out">Stock Out</span>
+                    </td>
+
+                    <td th:text="${movement.quantity}">0.000</td>
+                    <td th:text="${movement.previousStock}">0.000</td>
+                    <td th:text="${movement.newStock}">0.000</td>
+                    <td th:text="${movement.reason}">Reason</td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(movements)}">
+                    <td colspan="6" class="empty">
+                        No stock movements recorded for this product yet.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Supplier Product</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: #f4f6f9;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 35px auto;
+        }
+
+        .card {
+            padding: 25px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .product-info {
+            margin: 22px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+        }
+
+        .product-info p {
+            margin: 6px 0;
+            font-size: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 19px;
+        }
+
+        label {
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            min-height: 42px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        input:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        .checkbox-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .checkbox-field input {
+            width: 17px;
+            min-height: 17px;
+        }
+
+        .checkbox-field label {
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .alert {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <section class="card">
+
+        <h1>Edit Supplier Product</h1>
+
+        <p class="muted">
+            Update the supplier-specific details for this product.
+        </p>
+
+        <div th:if="${errorMessage}"
+             class="alert"
+             th:text="${errorMessage}">
+        </div>
+
+        <div class="product-info">
+            <p>
+                <strong>Supplier:</strong>
+                <span th:text="${supplier.companyName}"></span>
+            </p>
+
+            <p>
+                <strong>Product:</strong>
+                <span th:text="${supplierProduct.product.name}"></span>
+            </p>
+
+            <p>
+                <strong>SKU:</strong>
+                <span th:text="${supplierProduct.product.sku}"></span>
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                <span th:text="${supplierProduct.product.category.name}"></span>
+            </p>
+        </div>
+
+        <form th:action="@{/suppliers/{supplierId}/products/edit/{associationId}(
+                    supplierId=${supplier.id},
+                    associationId=${supplierProduct.id}
+                )}"
+              method="post">
+
+            <div class="field">
+                <label for="supplierPrice">
+                    Supplier Purchase Price (Rs.) *
+                </label>
+
+                <input type="number"
+                       id="supplierPrice"
+                       name="supplierPrice"
+                       min="0"
+                       step="0.01"
+                       th:value="${supplierProduct.supplierPrice}"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="supplierProductCode">
+                    Supplier Product Code
+                </label>
+
+                <input type="text"
+                       id="supplierProductCode"
+                       name="supplierProductCode"
+                       maxlength="100"
+                       placeholder="Optional supplier code"
+                       th:value="${supplierProduct.supplierProductCode}">
+            </div>
+
+            <div class="checkbox-field">
+                <input type="checkbox"
+                       id="primarySupplier"
+                       name="primarySupplier"
+                       value="true"
+                       th:checked="${supplierProduct.primarySupplier}">
+
+                <label for="primarySupplier">
+                    Set this supplier as the primary supplier for this product
+                </label>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn primary">
+                    Save Changes
+                </button>
+
+                <a th:href="@{/suppliers/{supplierId}/products(
+                    supplierId=${supplier.id}
+                )}"
+                   class="btn secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>

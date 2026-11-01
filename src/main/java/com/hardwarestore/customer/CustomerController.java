@@ -1,7 +1,7 @@
-package com.hardwarestore.customer;
+
+        package com.hardwarestore.customer;
 
 import com.hardwarestore.customer.Customer;
-import com.hardwarestore.customer.CustomerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +35,26 @@ public class CustomerController {
         return "customer/form";
     }
 
-    // Save a new customer
+    // Display the edit form for an existing customer
+    @GetMapping("/customers/edit/{id}")
+    public String showEditCustomerForm(
+            @PathVariable Long id,
+            Model model) {
+
+        Customer customer = customerService.getCustomerById(id);
+
+        model.addAttribute("customer", customer);
+
+        return "customer/form";
+    }
+
+    // Save a new customer or update an existing customer
     @PostMapping("/customers/save")
     public String saveCustomer(
             @ModelAttribute("customer") Customer customer) {
+
         customerService.saveCustomer(customer);
+
         return "redirect:/customers";
     }
 

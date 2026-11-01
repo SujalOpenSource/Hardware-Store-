@@ -1,10 +1,229 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Supplier Form</title>
 
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #263238;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .panel {
+            background: white;
+            padding: 28px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+        }
+
+        h1 { margin-top: 0; font-size: 26px; }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 25px;
+        }
+
+        .form-group { margin-bottom: 19px; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required { color: #dc3545; }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d6dce5;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .error-text {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .alert {
+            padding: 13px;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #991b1b;
+            margin-bottom: 18px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .save { background: #2563eb; color: white; }
+        .cancel { background: #64748b; color: white; }
+
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="panel">
+
+        <h1 th:text="${pageTitle}">Supplier Form</h1>
+
+        <p class="subtitle">
+            Enter the supplier's company and contact information.
+        </p>
+
+        <div th:if="${errorMessage}"
+             class="alert"
+             th:text="${errorMessage}">
+        </div>
+
+        <form th:action="${formAction}"
+              th:object="${supplier}"
+              method="post">
+
+            <div class="form-group">
+                <label>Company Name <span class="required">*</span></label>
+
+                <input type="text"
+                       th:field="*{companyName}"
+                       placeholder="Enter company name"
+                       maxlength="150"
+                       required>
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('companyName')}"
+                      th:errors="*{companyName}">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Person</label>
+
+                <input type="text"
+                       th:field="*{contactPerson}"
+                       placeholder="Enter contact person's name"
+                       maxlength="100">
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('contactPerson')}"
+                      th:errors="*{contactPerson}">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number <span class="required">*</span></label>
+
+                <input type="tel"
+                       th:field="*{phone}"
+                       placeholder="Enter phone number"
+                       maxlength="20"
+                       required>
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('phone')}"
+                      th:errors="*{phone}">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+
+                <input type="email"
+                       th:field="*{email}"
+                       placeholder="Enter email address"
+                       maxlength="120">
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('email')}"
+                      th:errors="*{email}">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+
+                <textarea th:field="*{address}"
+                          placeholder="Enter supplier address"
+                          maxlength="500"></textarea>
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('address')}"
+                      th:errors="*{address}">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label>Notes</label>
+
+                <textarea th:field="*{notes}"
+                          placeholder="Additional information about this supplier"
+                          maxlength="1000"></textarea>
+
+                <span class="error-text"
+                      th:if="${#fields.hasErrors('notes')}"
+                      th:errors="*{notes}">
+                </span>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="button save">
+                    Save Supplier
+                </button>
+
+                <a th:href="@{/suppliers}"
+                   class="button cancel">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
 </body>
 </html>

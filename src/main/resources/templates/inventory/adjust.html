@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjust Stock | Hardware Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #f4f6f9;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 25px auto;
+        }
+
+        .card {
+            padding: 25px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 25px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            color: #1e293b;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 10px 15px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .notice {
+            padding: 12px;
+            background: #eff6ff;
+            color: #1e40af;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <section class="card">
+
+        <h1>Adjust Inventory Stock</h1>
+
+        <p class="muted">
+            Record stock received or stock removed. Every successful
+            adjustment is saved to the stock movement history.
+        </p>
+
+        <div th:if="${errorMessage}"
+             class="alert error"
+             th:text="${errorMessage}">
+        </div>
+
+        <div class="notice">
+            <strong>Remember:</strong> Enter a positive quantity.
+            Stock In adds the quantity; Stock Out subtracts it.
+            Stock cannot be reduced below zero.
+        </div>
+
+        <form th:action="@{/inventory/adjust}" method="post">
+
+            <!-- Product selection -->
+            <div class="field">
+                <label for="productId">Product</label>
+
+                <select id="productId"
+                        name="productId"
+                        required>
+
+                    <option value="">Select a product</option>
+
+                    <option th:each="product : ${products}"
+                            th:value="${product.id}"
+                            th:text="${product.name + ' (' + product.sku + ') — Stock: ' + product.stockQuantity}"
+                            th:selected="${selectedProductId != null
+                                and product.id == selectedProductId}">
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- Movement type -->
+            <div class="field">
+                <label for="movementType">Movement Type</label>
+
+                <select id="movementType"
+                        name="movementType"
+                        required>
+
+                    <option value="">Select movement type</option>
+
+                    <option th:each="type : ${movementTypes}"
+                            th:value="${type}"
+                            th:text="${type == T(com.hardwarestore.inventory.StockMovementType).STOCK_IN
+                                ? 'Stock In — Receive items'
+                                : 'Stock Out — Remove items'}"
+                            th:selected="${selectedMovementType != null
+                                and type == selectedMovementType}">
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- Quantity -->
+            <div class="field">
+                <label for="quantity">Quantity</label>
+
+                <input type="number"
+                       id="quantity"
+                       name="quantity"
+                       min="0.001"
+                       step="0.001"
+                       required
+                       placeholder="e.g. 10 or 2.500"
+                       th:value="${enteredQuantity}">
+            </div>
+
+            <!-- Reason -->
+            <div class="field">
+                <label for="reason">Reason</label>
+
+                <textarea id="reason"
+                          name="reason"
+                          maxlength="500"
+                          required
+                          placeholder="e.g. Received supplier delivery or damaged items removed"
+                          th:text="${enteredReason}"></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+
+                <button type="submit"
+                        class="btn primary"
+                        onclick="return confirm('Confirm this stock adjustment?');">
+                    Save Adjustment
+                </button>
+
+                <a th:href="@{/inventory}"
+                   class="btn secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+    </section>
+</div>
+</body>
+</html>

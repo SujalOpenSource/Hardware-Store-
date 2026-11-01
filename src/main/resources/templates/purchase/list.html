@@ -1,10 +1,309 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            background: #f4f6f9;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 17px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .dashboard-button {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .dashboard-button:hover {
+            background: #d1d5db;
+        }
+
+        .card {
+            padding: 22px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .message {
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .received {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .view-link {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            padding: 35px 15px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .button {
+                text-align: center;
+            }
+        }
+    </style>
 </head>
+
+
 <body>
 
+<div class="container">
+
+    <!-- Page Header -->
+    <div class="header">
+
+        <div>
+            <h1>Purchase Management</h1>
+            <p class="subtitle">
+                Manage supplier purchases and incoming stock.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <!-- Back to Dashboard -->
+            <a th:href="@{/dashboard}"
+               class="button dashboard-button">
+                &#8592; Back to Dashboard
+            </a>
+
+            <!-- Create Purchase -->
+            <a th:href="@{/purchases/new}"
+               class="button">
+                + Create Purchase
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <!-- Purchase Table -->
+    <div class="card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Purchase No.</th>
+                    <th>Supplier</th>
+                    <th>Purchase Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="purchase : ${purchases}">
+
+                    <td th:text="${purchase.purchaseNumber}"></td>
+
+                    <td th:text="${purchase.supplier.companyName}"></td>
+
+                    <td th:text="${#temporals.format(purchase.purchaseDate, 'dd MMM yyyy, hh:mm a')}"></td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(purchase.totalAmount, 1, 2)}"></span>
+                    </td>
+
+                    <td>
+                        <span class="status"
+                              th:classappend="${purchase.status.name() == 'PENDING' ? ' pending' :
+                                  (purchase.status.name() == 'RECEIVED' ? ' received' : ' cancelled')}"
+                              th:text="${purchase.status}">
+                        </span>
+                    </td>
+
+                    <td>
+                        <a class="view-link"
+                           th:href="@{/purchases/{id}(id=${purchase.id})}">
+                            View Details
+                        </a>
+                    </td>
+
+                </tr>
+
+                <!-- Empty State -->
+                <tr th:if="${#lists.isEmpty(purchases)}">
+                    <td colspan="6" class="empty">
+                        No purchases found. Create your first purchase to get started.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/purchase-list.js}" defer></script>
 </body>
 </html>

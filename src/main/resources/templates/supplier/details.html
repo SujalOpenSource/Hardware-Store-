@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Details</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #263238;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+        }
+
+        h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin: 0;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .detail-item {
+            padding-bottom: 14px;
+            border-bottom: 1px solid #edf0f4;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-label {
+            display: block;
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+        }
+
+        .secondary {
+            background: #64748b;
+        }
+
+        .edit {
+            background: #e0a800;
+            color: #222;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf0f4;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alternative {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .empty {
+            text-align: center;
+            color: #718096;
+            padding: 30px;
+        }
+
+        .alert {
+            padding: 13px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 14px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1 th:text="${supplier.companyName}">
+                Supplier Name
+            </h1>
+
+            <p class="subtitle">
+                Supplier profile and supplied products
+            </p>
+        </div>
+
+        <a th:href="@{/suppliers}"
+           class="button secondary">
+            Back to Suppliers
+        </a>
+    </div>
+
+    <div th:if="${successMessage}"
+         class="alert success-message"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert error-message"
+         th:text="${errorMessage}">
+    </div>
+
+    <!-- Supplier Information -->
+    <div class="panel">
+
+        <h2>Supplier Information</h2>
+        <p class="subtitle">Company and contact details</p>
+
+        <div class="details-grid" style="margin-top:25px;">
+
+            <div class="detail-item">
+                <span class="detail-label">Supplier ID</span>
+                <span class="detail-value"
+                      th:text="${supplier.id}"></span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Company Name</span>
+                <span class="detail-value"
+                      th:text="${supplier.companyName}"></span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Contact Person</span>
+                <span class="detail-value"
+                      th:text="${supplier.contactPerson != null
+                      ? supplier.contactPerson : 'Not provided'}"></span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Phone</span>
+                <span class="detail-value"
+                      th:text="${supplier.phone}"></span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value"
+                      th:text="${supplier.email != null
+                      ? supplier.email : 'Not provided'}"></span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="detail-value"
+                      th:text="${supplier.active ? 'Active' : 'Inactive'}"></span>
+            </div>
+
+            <div class="detail-item full-width">
+                <span class="detail-label">Address</span>
+                <span class="detail-value"
+                      th:text="${supplier.address != null
+                      ? supplier.address : 'Not provided'}"></span>
+            </div>
+
+            <div class="detail-item full-width">
+                <span class="detail-label">Notes</span>
+                <span class="detail-value"
+                      th:text="${supplier.notes != null
+                      ? supplier.notes : 'No additional notes'}"></span>
+            </div>
+
+            <div class="detail-item full-width">
+                <span class="detail-label">Created At</span>
+                <span class="detail-value"
+                      th:text="${supplier.createdAt != null
+                      ? #temporals.format(supplier.createdAt, 'dd MMM yyyy, hh:mm a')
+                      : '-'}"></span>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/suppliers/{id}/edit(id=${supplier.id})}"
+               class="button edit">
+                Edit Supplier
+            </a>
+
+            <a th:href="@{/suppliers/{id}/products(id=${supplier.id})}"
+               class="button primary">
+                Manage Supplied Products
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Supplied Products -->
+    <div class="panel">
+
+        <div class="header">
+            <div>
+                <h2>Products Supplied</h2>
+                <p class="subtitle">
+                    Products provided by this supplier
+                </p>
+            </div>
+
+            <span class="badge"
+                  th:text="${#lists.size(supplierProducts)} + ' Products'">
+            </span>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Supplier Price</th>
+                    <th>Supplier Product Code</th>
+                    <th>Supplier Type</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="item : ${supplierProducts}">
+
+                    <td th:text="${item.product.name}"></td>
+
+                    <td th:text="${item.product.sku}"></td>
+
+                    <td th:text="${item.product.category.name}"></td>
+
+                    <td th:text="${'Rs. ' + #numbers.formatDecimal(item.supplierPrice, 1, 2)}"></td>
+
+                    <td th:text="${item.supplierProductCode != null
+                        ? item.supplierProductCode : '-'}"></td>
+
+                    <td>
+                        <span th:if="${item.primarySupplier}"
+                              class="badge">
+                            Primary
+                        </span>
+
+                        <span th:unless="${item.primarySupplier}"
+                              class="badge alternative">
+                            Alternative
+                        </span>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(supplierProducts)}">
+                    <td colspan="6" class="empty">
+                        No products assigned to this supplier yet.
+                        Click Manage Supplied Products to add products.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

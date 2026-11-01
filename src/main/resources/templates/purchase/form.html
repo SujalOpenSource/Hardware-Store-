@@ -1,10 +1,505 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Purchase</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            background: #f4f6f9;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header { margin-bottom: 22px; }
+
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card {
+            padding: 24px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            margin: 0 0 20px;
+            font-size: 18px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 720px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+        }
+
+        .quantity-input {
+            width: 110px;
+        }
+
+        .price {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            padding-top: 20px;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .total-value {
+            color: #2563eb;
+            font-size: 21px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .primary:hover { background: #1d4ed8; }
+
+        .primary:disabled {
+            background: #93a4c5;
+            cursor: not-allowed;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .secondary:hover { background: #d1d5db; }
+
+        .message {
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 14px;
+        }
+
+        .empty {
+            padding: 25px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .loading {
+            color: #2563eb;
+            text-align: center;
+        }
+
+        .status-message {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .error-text { color: #b91c1c; }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .card { padding: 16px; }
+            h1 { font-size: 23px; }
+
+            .total-section {
+                justify-content: space-between;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Create Purchase</h1>
+        <p class="subtitle">
+            Select a supplier, choose their products and enter purchase quantities.
+        </p>
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="message"
+         th:text="${errorMessage}">
+    </div>
+
+    <form th:action="@{/purchases}"
+          method="post"
+          id="purchaseForm">
+
+        <div class="card">
+
+            <h2>Supplier Information</h2>
+
+            <div class="form-group">
+                <label for="supplierId">Select Supplier *</label>
+
+                <select id="supplierId" name="supplierId" required>
+                    <option value="">-- Select Supplier --</option>
+
+                    <option th:each="supplier : ${suppliers}"
+                            th:if="${supplier.active}"
+                            th:value="${supplier.id}"
+                            th:text="${supplier.companyName}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Purchase Notes</label>
+
+                <textarea id="notes"
+                          name="notes"
+                          maxlength="1000"
+                          placeholder="Enter optional purchase notes..."></textarea>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Supplier Products</h2>
+
+            <p class="subtitle">
+                Products and prices are loaded from the selected supplier's records.
+                Enter quantities for the products you want to purchase.
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Supplier Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="productTableBody">
+                    <tr>
+                        <td colspan="5" class="empty">
+                            Please select a supplier to load products.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="statusMessage" class="status-message"></p>
+
+            <div class="total-section">
+                <span>Estimated Total:</span>
+                <span class="total-value">
+                    Rs. <span id="estimatedTotal">0.00</span>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/purchases}" class="button secondary">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    id="submitButton"
+                    class="button primary"
+                    disabled>
+                Create Purchase
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    const supplierSelect = document.getElementById("supplierId");
+    const productTableBody = document.getElementById("productTableBody");
+    const estimatedTotal = document.getElementById("estimatedTotal");
+    const statusMessage = document.getElementById("statusMessage");
+    const submitButton = document.getElementById("submitButton");
+    const purchaseForm = document.getElementById("purchaseForm");
+
+    let supplierProducts = [];
+
+    supplierSelect.addEventListener("change", loadSupplierProducts);
+
+    async function loadSupplierProducts() {
+        const supplierId = supplierSelect.value;
+
+        supplierProducts = [];
+        updateTotal();
+
+        submitButton.disabled = true;
+        statusMessage.textContent = "";
+        statusMessage.classList.remove("error-text");
+
+        if (!supplierId) {
+            showMessage("Please select a supplier to load products.");
+            return;
+        }
+
+        productTableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty loading">
+                    Loading supplier products...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const response = await fetch(
+                `/purchases/supplier/${encodeURIComponent(supplierId)}/products`,
+                {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to load supplier products.");
+            }
+
+            const products = await response.json();
+
+            // Ignore an older response if the supplier was changed meanwhile.
+            if (supplierSelect.value !== supplierId) {
+                return;
+            }
+
+            supplierProducts = products;
+            renderProducts(products);
+
+        } catch (error) {
+            showMessage("Could not load products. Please try again.");
+            statusMessage.classList.add("error-text");
+        }
+    }
+
+    function renderProducts(products) {
+        productTableBody.innerHTML = "";
+
+        if (!products.length) {
+            showMessage("This supplier has no active products linked to it.");
+            return;
+        }
+
+        statusMessage.textContent = products.length + " product(s) available.";
+        submitButton.disabled = false;
+
+        products.forEach(function (product) {
+            const row = document.createElement("tr");
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = product.name;
+
+            const skuCell = document.createElement("td");
+            skuCell.textContent = product.sku;
+
+            const categoryCell = document.createElement("td");
+            categoryCell.textContent = product.categoryName;
+
+            const priceCell = document.createElement("td");
+            priceCell.className = "price";
+            priceCell.textContent = "Rs. " + Number(product.supplierPrice).toFixed(2);
+
+            const quantityCell = document.createElement("td");
+            const quantityInput = document.createElement("input");
+
+            quantityInput.type = "number";
+            quantityInput.className = "quantity-input";
+            quantityInput.name = "quantity_" + product.id;
+            quantityInput.min = "0.001";
+            quantityInput.step = "0.001";
+            quantityInput.placeholder = "0";
+            quantityInput.dataset.price = product.supplierPrice;
+
+            quantityInput.addEventListener("input", updateTotal);
+
+            quantityCell.appendChild(quantityInput);
+
+            row.appendChild(nameCell);
+            row.appendChild(skuCell);
+            row.appendChild(categoryCell);
+            row.appendChild(priceCell);
+            row.appendChild(quantityCell);
+
+            productTableBody.appendChild(row);
+        });
+
+        updateTotal();
+    }
+
+    function showMessage(message) {
+        productTableBody.innerHTML = "";
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.className = "empty";
+        cell.textContent = message;
+
+        row.appendChild(cell);
+        productTableBody.appendChild(row);
+
+        statusMessage.textContent = "";
+        submitButton.disabled = true;
+    }
+
+    function updateTotal() {
+        let total = 0;
+
+        document.querySelectorAll(".quantity-input").forEach(function (input) {
+            const quantity = Number(input.value);
+            const price = Number(input.dataset.price);
+
+            if (
+                input.value.trim() !== "" &&
+                Number.isFinite(quantity) &&
+                quantity > 0 &&
+                Number.isFinite(price)
+            ) {
+                total += quantity * price;
+            }
+        });
+
+        estimatedTotal.textContent = total.toFixed(2);
+    }
+
+    purchaseForm.addEventListener("submit", function (event) {
+        if (!supplierSelect.value) {
+            event.preventDefault();
+            alert("Please select a supplier.");
+            return;
+        }
+
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        let hasSelectedProduct = false;
+
+        for (const input of quantityInputs) {
+            const value = input.value.trim();
+
+            if (value === "") {
+                continue;
+            }
+
+            const quantity = Number(value);
+
+            if (!Number.isFinite(quantity) || quantity <= 0) {
+                event.preventDefault();
+                alert("Please enter a valid quantity greater than zero.");
+                input.focus();
+                return;
+            }
+
+            hasSelectedProduct = true;
+        }
+
+        if (!hasSelectedProduct) {
+            event.preventDefault();
+            alert("Please enter a quantity for at least one product.");
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -4,77 +4,513 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Hardware Store</title>
+    <title>Hardware Store | Dashboard</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sidebar: #172033;
+            --sidebar-hover: #30415f;
+            --text: #1f2937;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --page: #f4f6f9;
+            --primary: #2457c5;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--page);
+            color: var(--text);
         }
 
-        header {
+        .layout {
             display: flex;
-            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 245px;
+            flex-shrink: 0;
+            background: var(--sidebar);
+            color: #fff;
+            padding: 25px 16px;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .brand-subtitle {
+            color: #aeb9cc;
+            font-size: 12px;
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            color: #aeb9cc;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 24px 10px 10px;
+        }
+
+        .nav-link {
+            display: block;
+            text-decoration: none;
+            color: #dce3ef;
+            padding: 12px 14px;
+            border-radius: 7px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .nav-link.disabled {
+            color: #aeb9cc;
+            cursor: default;
+        }
+
+        /* Main area */
+        .main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 20px 30px;
+            display: flex;
             justify-content: space-between;
-            gap: 16px;
-            padding: 20px 28px;
-            background: #0f172a;
-            color: white;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
         }
 
-        h1 {
+        .topbar h1 {
+            font-size: 23px;
             margin: 0;
-            font-size: 22px;
         }
 
-        button {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 6px;
-            background: #dc2626;
-            color: white;
-            cursor: pointer;
+        .admin-label {
+            color: #526174;
+            font-size: 13px;
         }
 
-        main {
-            padding: 30px;
+        .content {
+            padding: 28px 30px;
         }
 
         .welcome {
-            padding: 25px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+            margin-bottom: 28px;
         }
 
         .welcome h2 {
-            margin-top: 0;
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .welcome p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .section-heading {
+            margin: 30px 0 16px;
+            font-size: 18px;
+        }
+
+        /* Dashboard cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .module-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 190px;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease;
+        }
+
+        a.module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+            border-color: #9aabc5;
+        }
+
+        a.module-card:focus-visible,
+        .nav-link:focus-visible {
+            outline: 3px solid #8db5ff;
+            outline-offset: 2px;
+        }
+
+        .card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #eaf0ff;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .module-card h3 {
+            margin: 0 0 9px;
+            font-size: 16px;
+        }
+
+        .module-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 17px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .module-card.disabled {
+            background: #fafbfc;
+            border-style: dashed;
+        }
+
+        .module-card.disabled .card-icon {
+            background: #edf0f4;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: auto;
+            padding-top: 16px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 20px 30px;
+            color: #7b8798;
+            font-size: 12px;
+        }
+
+        /* Tablet */
+        @media (max-width: 1100px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .sidebar {
+                width: 220px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand-subtitle {
+                margin-bottom: 15px;
+            }
+
+            .nav-title {
+                margin-top: 18px;
+            }
+
+            .topbar {
+                padding: 18px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+                padding: 18px;
+            }
         }
     </style>
 </head>
 
 <body>
+<div class="layout">
 
-<header>
-    <h1>🔧 Hardware Store Management</h1>
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
 
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-</header>
+        <div class="brand">Hardware Store</div>
+        <div class="brand-subtitle">Management System</div>
 
-<main>
-    <section class="welcome">
-        <h2>Welcome, Administrator!</h2>
-        <p>You have successfully logged in.</p>
-        <p>
-            The Hardware Store Management System is ready for the next
-            development stage.
-        </p>
-    </section>
-</main>
+        <div class="nav-title">Main Menu</div>
 
+        <a th:href="@{/dashboard}" class="nav-link active">
+            🏠 Dashboard
+        </a>
+
+        <a th:href="@{/products}" class="nav-link">
+            📦 Products
+        </a>
+
+        <a th:href="@{/categories}" class="nav-link">
+            🗂️ Categories
+        </a>
+
+        <div class="nav-title">Store Operations</div>
+
+        <a th:href="@{/inventory}" class="nav-link">
+            📊 Inventory
+        </a>
+
+        <a th:href="@{/inventory/low-stock}" class="nav-link">
+            ⚠️ Low Stock Alerts
+        </a>
+
+        <a th:href="@{/suppliers}" class="nav-link">
+            🚚 Suppliers
+        </a>
+
+        <a th:href="@{/purchases}" class="nav-link">
+            🛒 Purchases
+        </a>
+
+        <a th:href="@{/purchases/reports}" class="nav-link">
+            📈 Purchase Reports
+        </a>
+
+        <a th:href="@{/inventory/reports}" class="nav-link">
+            📊 Inventory Reports
+        </a>
+
+        <span class="nav-link disabled">
+            💰 Sales
+        </span>
+
+        <div class="nav-title">Business Management</div>
+
+        <a th:href="@{/customers}" class="nav-link">
+            👥 Customers
+        </a>
+
+        <span class="nav-link disabled">
+            🧾 Billing
+        </span>
+
+    </aside>
+
+    <!-- Main content -->
+    <main class="main">
+
+        <header class="topbar">
+            <h1>Dashboard</h1>
+            <span class="admin-label">Administrator Panel</span>
+        </header>
+
+        <section class="content">
+
+            <div class="welcome">
+                <h2>Welcome to your store</h2>
+                <p>
+                    Manage your hardware products, categories, inventory
+                    and business operations from one place.
+                </p>
+            </div>
+
+            <!-- Product Management -->
+            <h2 class="section-heading">Product Management</h2>
+
+            <div class="cards">
+
+                <a th:href="@{/products}" class="module-card">
+                    <div class="card-icon">📦</div>
+                    <h3>Products</h3>
+                    <p>
+                        View products, add new items, update prices,
+                        manage stock quantities and edit product details.
+                    </p>
+                    <div class="card-footer">Open Products →</div>
+                </a>
+
+                <a th:href="@{/categories}" class="module-card">
+                    <div class="card-icon">🗂️</div>
+                    <h3>Categories</h3>
+                    <p>
+                        Organize products into categories such as tools,
+                        electrical supplies, pipes, paints and fittings.
+                    </p>
+                    <div class="card-footer">Open Categories →</div>
+                </a>
+
+            </div>
+
+            <!-- Store Operations -->
+            <h2 class="section-heading">Store Operations</h2>
+
+            <div class="cards">
+
+                <a th:href="@{/inventory}" class="module-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Inventory Management</h3>
+                    <p>
+                        Review product stock, record stock-in and stock-out
+                        adjustments, and view recent inventory movements.
+                    </p>
+                    <div class="card-footer">Open Inventory →</div>
+                </a>
+
+                <a th:href="@{/inventory/low-stock}" class="module-card">
+                    <div class="card-icon">⚠️</div>
+                    <h3>Low Stock Alerts</h3>
+                    <p>
+                        Identify products whose available quantity has
+                        reached or fallen below the minimum stock level.
+                    </p>
+                    <div class="card-footer">Review Low Stock →</div>
+                </a>
+
+                <a th:href="@{/suppliers}" class="module-card">
+                    <div class="card-icon">🚚</div>
+                    <h3>Suppliers</h3>
+                    <p>
+                        Maintain supplier names, contact information
+                        and supply details.
+                    </p>
+                    <div class="card-footer">Open Suppliers →</div>
+                </a>
+
+                <a th:href="@{/purchases}" class="module-card">
+                    <div class="card-icon">🛒</div>
+                    <h3>Purchases</h3>
+                    <p>
+                        Record incoming stock purchases and update
+                        inventory when goods arrive.
+                    </p>
+                    <div class="card-footer">Open Purchases →</div>
+                </a>
+
+                <a th:href="@{/purchases/reports}" class="module-card">
+                    <div class="card-icon">📈</div>
+                    <h3>Purchase Reports</h3>
+                    <p>
+                        View purchase summaries, supplier-wise and
+                        product-wise reports, filter records and
+                        download professional PDF reports.
+                    </p>
+                    <div class="card-footer">Open Purchase Reports →</div>
+                </a>
+
+                <a th:href="@{/inventory/reports}" class="module-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Inventory Reports</h3>
+                    <p>
+                        Review current stock valuation, low-stock products,
+                        stock-in and stock-out movements, and download
+                        inventory PDF reports.
+                    </p>
+                    <div class="card-footer">Open Inventory Reports →</div>
+                </a>
+
+                <div class="module-card disabled">
+                    <div class="card-icon">💰</div>
+                    <h3>Sales</h3>
+                    <p>
+                        Record store sales, calculate totals and
+                        update product stock quantities.
+                    </p>
+                    <span class="status">Module not implemented yet</span>
+                </div>
+
+            </div>
+
+            <!-- Business Management -->
+            <h2 class="section-heading">Business Management</h2>
+
+            <div class="cards">
+
+                <a th:href="@{/customers}" class="module-card">
+                    <div class="card-icon">👥</div>
+                    <h3>Customers</h3>
+                    <p>
+                        Maintain customer contact details and access
+                        customer records managed by the store.
+                    </p>
+                    <div class="card-footer">Open Customers →</div>
+                </a>
+
+                <div class="module-card disabled">
+                    <div class="card-icon">🧾</div>
+                    <h3>Billing</h3>
+                    <p>
+                        Prepare sales invoices and printable bills
+                        for store transactions.
+                    </p>
+                    <span class="status">Module not implemented yet</span>
+                </div>
+
+                <div class="module-card disabled">
+                    <div class="card-icon">📊</div>
+                    <h3>Sales Reports</h3>
+                    <p>
+                        Review sales performance and sales trends
+                        once the sales module is implemented.
+                    </p>
+                    <span class="status">Module not implemented yet</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            Hardware Store Management System
+        </footer>
+
+    </main>
+</div>
 </body>
 </html>
