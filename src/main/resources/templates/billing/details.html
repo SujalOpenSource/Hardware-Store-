@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Details</title>
+    <link rel="stylesheet" th:href="@{/css/billing-details.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <header class="page-header">
+        <div>
+            <h1>Bill Details</h1>
+            <p>Review billing information and manage payments.</p>
+        </div>
+
+        <div class="header-actions">
+            <a th:href="@{/billing}" class="btn btn-secondary">Back to Billing</a>
+            <a th:href="@{/billing/{id}/pdf(id=${bill.id})}"
+               class="btn btn-primary">Download PDF</a>
+        </div>
+    </header>
+
+    <div th:if="${successMessage}" class="alert success"
+         th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert error"
+         th:text="${errorMessage}"></div>
+
+    <section class="bill-card">
+
+        <div class="bill-heading">
+            <div>
+                <span class="muted">BILL NUMBER</span>
+                <h2 th:text="${bill.billNumber}"></h2>
+            </div>
+
+            <span class="status"
+                  th:classappend="${bill.paymentStatus.name() == 'PAID'
+                    ? ' paid'
+                    : (bill.paymentStatus.name() == 'PARTIALLY_PAID'
+                        ? ' partial' : ' unpaid')}"
+                  th:text="${bill.paymentStatus.name() == 'PARTIALLY_PAID'
+                    ? 'PARTIALLY PAID' : bill.paymentStatus.name()}">
+            </span>
+        </div>
+
+        <div class="details-grid">
+            <div>
+                <span class="muted">Invoice Number</span>
+                <strong th:text="${bill.sale.invoiceNumber}"></strong>
+            </div>
+
+            <div>
+                <span class="muted">Bill Date</span>
+                <strong th:text="${#temporals.format(bill.billDate, 'dd MMM yyyy, hh:mm a')}"></strong>
+            </div>
+
+            <div>
+                <span class="muted">Customer</span>
+                <strong th:text="${bill.sale.customerName != null
+                    and !#strings.isEmpty(bill.sale.customerName)
+                    ? bill.sale.customerName : 'Walk-in Customer'}"></strong>
+            </div>
+
+            <div>
+                <span class="muted">Phone</span>
+                <strong th:text="${bill.sale.customerPhone != null
+                    and !#strings.isEmpty(bill.sale.customerPhone)
+                    ? bill.sale.customerPhone : '—'}"></strong>
+            </div>
+
+            <div class="full-width">
+                <span class="muted">Address</span>
+                <strong th:text="${bill.sale.customerAddress != null
+                    and !#strings.isEmpty(bill.sale.customerAddress)
+                    ? bill.sale.customerAddress : '—'}"></strong>
+            </div>
+        </div>
+
+
+
+        <h3>Purchased Products</h3>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="item, iter : ${saleItems}">
+                    <td th:text="${iter.count}"></td>
+
+                    <td th:text="${item.product.name}"></td>
+
+                    <td th:text="${item.product.sku}"></td>
+
+                    <td th:text="${#numbers.formatDecimal(item.quantity, 1, 3)}"></td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></span>
+                    </td>
+
+                    <td>
+                        Rs.
+                        <span th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)}"></span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(saleItems)}">
+                    <td colspan="6" class="empty">
+                        No product details available for this sale.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Bill Summary</h3>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>Rs. <span th:text="${#numbers.formatDecimal(bill.subtotal, 1, 2)}"></span></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Discount</span>
+            <strong>Rs. <span th:text="${#numbers.formatDecimal(bill.discountAmount, 1, 2)}"></span></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>VAT (13%)</span>
+            <strong>Rs. <span th:text="${#numbers.formatDecimal(bill.taxAmount, 1, 2)}"></span></strong>
+        </div>
+
+        <div class="summary-row total-row">
+            <span>Total Payable</span>
+            <strong>Rs. <span th:text="${#numbers.formatDecimal(bill.totalAmount, 1, 2)}"></span></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Amount Paid</span>
+            <strong class="green">
+                Rs. <span th:text="${#numbers.formatDecimal(bill.amountPaid, 1, 2)}"></span>
+            </strong>
+        </div>
+
+        <div class="summary-row balance-row">
+            <span>Outstanding Balance</span>
+            <strong class="red">
+                Rs. <span th:text="${#numbers.formatDecimal(bill.balanceAmount, 1, 2)}"></span>
+            </strong>
+        </div>
+
+        <div th:if="${bill.notes != null and !#strings.isEmpty(bill.notes)}"
+             class="notes">
+            <strong>Notes</strong>
+            <p th:text="${bill.notes}"></p>
+        </div>
+
+    </section>
+
+    <section class="payment-card">
+        <h2>Record Payment</h2>
+        <p class="muted">Record cash, wallet or bank payments received from the customer.</p>
+
+        <div th:if="${bill.balanceAmount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+
+            <form th:action="@{/billing/{id}/payments(id=${bill.id})}"
+                  method="post" id="paymentForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="amount">Payment Amount (Rs.)</label>
+                        <input type="number"
+                               id="amount"
+                               name="amount"
+                               min="0.01"
+                               step="0.01"
+                               th:attr="max=${bill.balanceAmount}"
+                               required>
+                        <small>
+                            Outstanding: Rs.
+                            <span th:text="${#numbers.formatDecimal(bill.balanceAmount, 1, 2)}"></span>
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" required>
+                            <option value="">Select method</option>
+                            <option value="CASH">Cash</option>
+                            <option value="ESEWA">eSewa</option>
+                            <option value="KHALTI">Khalti</option>
+                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentReference">Transaction Reference</label>
+                        <input type="text"
+                               id="paymentReference"
+                               name="paymentReference"
+                               maxlength="60"
+                               placeholder="Optional transaction ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Payment Notes</label>
+                        <input type="text"
+                               id="notes"
+                               name="notes"
+                               maxlength="500"
+                               placeholder="Optional notes">
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Record Payment
+                </button>
+
+            </form>
+
+        </div>
+
+        <div th:if="${bill.balanceAmount.compareTo(T(java.math.BigDecimal).ZERO) <= 0}"
+             class="paid-message">
+            This bill has been fully paid. No outstanding balance remains.
+        </div>
+
+    </section>
+
+    <section class="payment-card">
+        <h2>Payment History</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Method</th>
+                    <th>Reference</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${#temporals.format(payment.paymentDate, 'dd MMM yyyy, hh:mm a')}"></td>
+
+                    <td th:text="${payment.paymentMethod.name() == 'BANK_TRANSFER'
+                        ? 'Bank Transfer' : payment.paymentMethod.name()}"></td>
+
+                    <td th:text="${payment.paymentReference != null
+                        ? payment.paymentReference : '—'}"></td>
+
+                    <td class="amount">
+                        Rs. <span th:text="${#numbers.formatDecimal(payment.amount, 1, 2)}"></span>
+                    </td>
+
+                    <td th:text="${payment.notes != null ? payment.notes : '—'}"></td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(payments)}">
+                    <td colspan="5" class="empty">
+                        No payments have been recorded for this bill.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script th:src="@{/js/billing-details.js}" defer></script>
+</body>
+</html>

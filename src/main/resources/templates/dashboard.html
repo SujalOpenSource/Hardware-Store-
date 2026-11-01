@@ -279,6 +279,7 @@
 </head>
 
 <body>
+
 <div class="layout">
 
     <!-- Sidebar navigation -->
@@ -327,9 +328,9 @@
             📊 Inventory Reports
         </a>
 
-        <span class="nav-link disabled">
+        <a th:href="@{/sales}" class="nav-link">
             💰 Sales
-        </span>
+        </a>
 
         <div class="nav-title">Business Management</div>
 
@@ -337,9 +338,9 @@
             👥 Customers
         </a>
 
-        <span class="nav-link disabled">
+        <a th:href="@{/billing}" class="nav-link">
             🧾 Billing
-        </span>
+        </a>
 
     </aside>
 
@@ -455,15 +456,15 @@
                     <div class="card-footer">Open Inventory Reports →</div>
                 </a>
 
-                <div class="module-card disabled">
+                <a th:href="@{/sales}" class="module-card">
                     <div class="card-icon">💰</div>
-                    <h3>Sales</h3>
+                    <h3>Sales Management</h3>
                     <p>
-                        Record store sales, calculate totals and
-                        update product stock quantities.
+                        Record customer and walk-in sales, generate invoices,
+                        manage sales transactions and automatically update inventory.
                     </p>
-                    <span class="status">Module not implemented yet</span>
-                </div>
+                    <div class="card-footer">Open Sales →</div>
+                </a>
 
             </div>
 
@@ -482,24 +483,24 @@
                     <div class="card-footer">Open Customers →</div>
                 </a>
 
-                <div class="module-card disabled">
+                <a th:href="@{/billing}" class="module-card">
                     <div class="card-icon">🧾</div>
-                    <h3>Billing</h3>
+                    <h3>Billing Management</h3>
                     <p>
-                        Prepare sales invoices and printable bills
-                        for store transactions.
+                        Generate bills from completed sales, record payments,
+                        manage outstanding balances and download PDF bills.
                     </p>
-                    <span class="status">Module not implemented yet</span>
-                </div>
+                    <div class="card-footer">Open Billing →</div>
+                </a>
 
                 <div class="module-card disabled">
                     <div class="card-icon">📊</div>
                     <h3>Sales Reports</h3>
                     <p>
                         Review sales performance and sales trends
-                        once the sales module is implemented.
+                        once the sales reports module is implemented.
                     </p>
-                    <span class="status">Module not implemented yet</span>
+                    <span class="status">Coming soon</span>
                 </div>
 
             </div>
@@ -511,6 +512,8 @@
         </footer>
 
     </main>
+
 </div>
+
 </body>
 </html>
