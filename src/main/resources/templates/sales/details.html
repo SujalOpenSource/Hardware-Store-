@@ -47,6 +47,15 @@
         .print { background: #2563eb; color: white; }
         .pdf { background: #dc2626; color: white; }
 
+        .generate-bill {
+            background: #16a34a;
+            color: white;
+        }
+
+        .generate-bill:hover {
+            background: #15803d;
+        }
+
         .invoice {
             background: white;
             padding: 38px;
@@ -180,6 +189,18 @@
         <a th:href="@{/sales}" class="btn back">← Back to Sales</a>
 
         <div class="action-group">
+
+            <!-- Generate Bill: only available for completed sales -->
+            <form th:if="${sale.status == T(com.hardwarestore.sales.SaleStatus).COMPLETED}"
+                  th:action="@{/billing/generate/{saleId}(saleId=${sale.id})}"
+                  method="post"
+                  style="display: inline;">
+
+                <button type="submit" class="btn generate-bill">
+                    Generate Bill
+                </button>
+            </form>
+
             <a th:href="@{/sales/{id}/pdf(id=${sale.id})}"
                class="btn pdf">
                 Download PDF
@@ -190,6 +211,7 @@
                     onclick="window.print()">
                 Print Invoice
             </button>
+
         </div>
     </div>
 
