@@ -14,7 +14,7 @@
 <body><div class="wrap">
     <h1>Record a Sale</h1>
     <p th:if="${errorMessage}" class="error" th:text="${errorMessage}"></p>
-    <form th:action="@{/com/hardwarestore/sales}" th:object="${saleForm}" method="post">
+    <form th:action="@{/sales}" th:object="${saleForm}" method="post">
         <div class="row">
             <label for="customerId">Customer</label>
             <select id="customerId" th:field="*{customerId}" required>
@@ -43,6 +43,6 @@
             </tbody>
         </table>
         <p><button class="btn" type="submit">Confirm Sale & Generate Invoice</button>
-           <a th:href="@{/com/hardwarestore/sales}">Cancel</a></p>
+            <a th:href="@{/sales}">Cancel</a></p>
     </form>
 </div></body></html>

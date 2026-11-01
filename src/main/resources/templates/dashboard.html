@@ -1,12 +1,18 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard | Hardware Store</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -47,10 +53,72 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+            margin-bottom: 28px;
         }
 
         .welcome h2 {
             margin-top: 0;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #0f172a;
+        }
+
+        .card p {
+            color: #64748b;
+            min-height: 40px;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .card a:hover {
+            background: #1d4ed8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 16px;
+            }
+
+            main {
+                padding: 16px;
+            }
         }
     </style>
 </head>
@@ -66,15 +134,64 @@
 </header>
 
 <main>
+
     <section class="welcome">
         <h2>Welcome, Administrator!</h2>
         <p>You have successfully logged in.</p>
         <p>
-            The Hardware Store Management System is ready for the next
-            development stage.
+            Manage your hardware store operations using
+            the modules below.
         </p>
     </section>
+
+    <h2 class="section-title">Management Modules</h2>
+
+    <section class="dashboard-grid">
+
+        <div class="card">
+            <h3>👥 Customer Management</h3>
+            <p>Register, search, update and manage customers.</p>
+            <a th:href="@{/customers}">Open Customers</a>
+        </div>
+
+        <div class="card">
+            <h3>📦 Product Management</h3>
+            <p>Add, edit, view and manage hardware products.</p>
+            <a th:href="@{/products}">Open Products</a>
+        </div>
+
+        <div class="card">
+            <h3>📁 Category Management</h3>
+            <p>Organize products into different categories.</p>
+            <a th:href="@{/categories}">Open Categories</a>
+        </div>
+
+        <div class="card">
+            <h3>🛒 Sales Management</h3>
+            <p>View previous sales and record new sales.</p>
+            <a th:href="@{/sales}">Sales History</a>
+            <a th:href="@{/sales/new}">Create Sale</a>
+        </div>
+
+        <div class="card">
+            <h3>🧾 Billing Management</h3>
+            <p>Access invoices generated from completed sales.</p>
+            <a th:href="@{/sales}">View Sales</a>
+        </div>
+
+        <div class="card">
+            <h3>📊 Reports</h3>
+            <p>View daily and monthly sales summaries.</p>
+            <a th:href="@{/reports}">Open Reports</a>
+        </div>
+
+    </section>
+
 </main>
+
+<footer>
+    Hardware Store Management System
+</footer>
 
 </body>
 </html>
