@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,18 +29,24 @@
             color: var(--text);
         }
 
+        body.menu-open {
+            overflow: hidden;
+        }
+
         .layout {
             display: flex;
             min-height: 100vh;
         }
 
         /* Sidebar */
+
         .sidebar {
             width: 245px;
             flex-shrink: 0;
             background: var(--sidebar);
             color: #fff;
             padding: 25px 16px;
+            transition: transform 0.25s ease;
         }
 
         .brand {
@@ -79,12 +86,15 @@
             color: #fff;
         }
 
-        .nav-link.disabled {
-            color: #aeb9cc;
-            cursor: default;
+        .nav-link:focus-visible,
+        .module-card:focus-visible,
+        .menu-toggle:focus-visible {
+            outline: 3px solid #8db5ff;
+            outline-offset: 2px;
         }
 
-        /* Main area */
+        /* Main */
+
         .main {
             flex: 1;
             min-width: 0;
@@ -110,12 +120,26 @@
             font-size: 13px;
         }
 
+        .menu-toggle {
+            display: none;
+            border: none;
+            background: var(--sidebar);
+            color: white;
+            padding: 9px 13px;
+            border-radius: 7px;
+            font-size: 21px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
         .content {
             padding: 28px 30px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
         .welcome {
-            margin-bottom: 28px;
+            margin-bottom: 25px;
         }
 
         .welcome h2 {
@@ -130,11 +154,166 @@
         }
 
         .section-heading {
-            margin: 30px 0 16px;
+            margin: 32px 0 16px;
             font-size: 18px;
         }
 
-        /* Dashboard cards */
+        /* Statistics */
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 0;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: #eaf0ff;
+            border-radius: 10px;
+            font-size: 23px;
+        }
+
+        .stat-card p {
+            margin: 0 0 7px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stat-card h2 {
+            margin: 0;
+            color: #172033;
+            font-size: 21px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Dashboard panels */
+
+        .dashboard-panel {
+            margin: 25px 0;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .dashboard-panel h2 {
+            margin: 0 0 6px;
+            font-size: 19px;
+        }
+
+        .panel-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0 0 25px;
+            line-height: 1.5;
+        }
+
+        /* Weekly sales chart */
+
+        .weekly-sales {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 15px;
+            min-height: 200px;
+        }
+
+        .sales-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 9px;
+            min-width: 0;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .sales-bar-container {
+            height: 140px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .sales-bar {
+            width: 65%;
+            min-height: 3px;
+            background: var(--primary);
+            border-radius: 6px 6px 0 0;
+            transition: height 0.3s ease;
+        }
+
+        .sales-day strong {
+            font-size: 11px;
+            overflow-wrap: anywhere;
+        }
+
+        .sales-day span {
+            color: var(--muted);
+        }
+
+        /* Tables */
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .dashboard-table {
+            width: 100%;
+            min-width: 550px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 13px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dashboard-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .dashboard-table td {
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 25px !important;
+        }
+
+        /* Module cards */
+
         .cards {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -158,16 +337,10 @@
             border-color 0.15s ease;
         }
 
-        a.module-card:hover {
+        .module-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
             border-color: #9aabc5;
-        }
-
-        a.module-card:focus-visible,
-        .nav-link:focus-visible {
-            outline: 3px solid #8db5ff;
-            outline-offset: 2px;
         }
 
         .card-icon {
@@ -203,24 +376,8 @@
             font-weight: bold;
         }
 
-        .module-card.disabled {
-            background: #fafbfc;
-            border-style: dashed;
-        }
-
-        .module-card.disabled .card-icon {
-            background: #edf0f4;
-        }
-
-        .status {
-            display: inline-block;
-            margin-top: auto;
-            padding-top: 16px;
-            color: var(--muted);
-            font-size: 12px;
-        }
-
         /* Footer */
+
         .footer {
             padding: 20px 30px;
             color: #7b8798;
@@ -228,51 +385,217 @@
         }
 
         /* Tablet */
+
         @media (max-width: 1100px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
             .cards {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .dashboard-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Tablet and mobile navigation */
+
+        @media (max-width: 900px) {
+            .layout {
+                display: block;
+            }
+
             .sidebar {
-                width: 220px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 1000;
+                width: min(290px, 85vw);
+                height: 100vh;
+                height: 100dvh;
+                overflow-y: auto;
+                transform: translateX(-105%);
+                padding: 22px 16px;
+                box-shadow: 8px 0 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar.nav-open {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+                flex-shrink: 0;
+            }
+
+            .topbar {
+                justify-content: flex-start;
+                padding: 15px 20px;
+            }
+
+            .topbar h1 {
+                font-size: 21px;
+            }
+
+            .admin-label {
+                margin-left: auto;
+            }
+
+            .sidebar .brand-subtitle {
+                margin-bottom: 25px;
+            }
+
+            .sidebar .nav-title,
+            .sidebar .nav-link {
+                display: block;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 999;
+                background: rgba(15, 23, 42, 0.5);
+            }
+
+            .sidebar-overlay.visible {
+                display: block;
             }
         }
 
         /* Mobile */
-        @media (max-width: 700px) {
-            .layout {
-                flex-direction: column;
-            }
 
-            .sidebar {
-                width: 100%;
-                padding: 18px;
-            }
-
-            .brand-subtitle {
-                margin-bottom: 15px;
-            }
-
-            .nav-title {
-                margin-top: 18px;
-            }
-
+        @media (max-width: 600px) {
             .topbar {
-                padding: 18px;
-                align-items: flex-start;
-                flex-direction: column;
+                padding: 13px 15px;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .topbar h1 {
+                font-size: 19px;
+            }
+
+            .admin-label {
+                width: 100%;
+                margin-left: 0;
+                padding-left: 48px;
             }
 
             .content {
-                padding: 20px 16px;
+                padding: 20px 14px;
+            }
+
+            .welcome h2 {
+                font-size: 22px;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .stat-card h2 {
+                font-size: 20px;
             }
 
             .cards {
                 grid-template-columns: 1fr;
+                gap: 13px;
+            }
+
+            .module-card {
+                min-height: 165px;
+                padding: 19px;
+            }
+
+            .dashboard-panel {
+                padding: 16px;
+                margin: 20px 0;
+            }
+
+            .dashboard-panel h2 {
+                font-size: 17px;
+            }
+
+            .panel-description {
+                margin-bottom: 18px;
+            }
+
+            .weekly-sales {
+                gap: 5px;
+                min-height: 160px;
+            }
+
+            .sales-bar-container {
+                height: 110px;
+            }
+
+            .sales-day {
+                gap: 7px;
+                font-size: 10px;
+            }
+
+            .sales-day strong {
+                font-size: 9px;
+            }
+
+            .sales-day span {
+                font-size: 10px;
+            }
+
+            .sales-bar {
+                width: 75%;
+            }
+
+            .dashboard-table th,
+            .dashboard-table td {
+                padding: 11px 12px;
             }
 
             .footer {
-                padding: 18px;
+                padding: 18px 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .weekly-sales {
+                gap: 3px;
+            }
+
+            .sales-day strong {
+                font-size: 8px;
+            }
+
+            .sales-day span {
+                font-size: 9px;
+            }
+
+            .stat-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
             }
         }
     </style>
@@ -282,8 +605,8 @@
 
 <div class="layout">
 
-    <!-- Sidebar navigation -->
-    <aside class="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
 
         <div class="brand">Hardware Store</div>
         <div class="brand-subtitle">Management System</div>
@@ -342,25 +665,216 @@
             🧾 Billing
         </a>
 
+        <a th:href="@{/reports/sales}" class="nav-link">
+            📊 Sales Reports
+        </a>
+
     </aside>
+
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Main content -->
     <main class="main">
 
         <header class="topbar">
+
+            <button type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="sidebar">
+                ☰
+            </button>
+
             <h1>Dashboard</h1>
+
             <span class="admin-label">Administrator Panel</span>
+
         </header>
 
         <section class="content">
 
+            <!-- Welcome -->
             <div class="welcome">
+
                 <h2>Welcome to your store</h2>
+
                 <p>
                     Manage your hardware products, categories, inventory
                     and business operations from one place.
                 </p>
+
             </div>
+
+            <!-- Dashboard Statistics -->
+            <section class="dashboard-stats">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">📦</div>
+
+                    <div>
+                        <p>Active Products</p>
+                        <h2 th:text="${dashboard.activeProducts}">0</h2>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">💰</div>
+
+                    <div>
+                        <p>Today's Sales Revenue</p>
+
+                        <h2>
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(dashboard.todayRevenue, 1, 2)}">
+                                0.00
+                            </span>
+                        </h2>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">🧾</div>
+
+                    <div>
+                        <p>Today's Sales</p>
+                        <h2 th:text="${dashboard.todaySalesCount}">0</h2>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">⚠️</div>
+
+                    <div>
+                        <p>Low Stock Products</p>
+                        <h2 th:text="${dashboard.lowStockProducts}">0</h2>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">🚚</div>
+
+                    <div>
+                        <p>Today's Received Purchases</p>
+
+                        <h2>
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(dashboard.todayPurchaseTotal, 1, 2)}">
+                                0.00
+                            </span>
+                        </h2>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Weekly Sales -->
+            <section class="dashboard-panel">
+
+                <h2>Sales Overview</h2>
+
+                <p class="panel-description">
+                    Completed sales revenue over the last seven days.
+                </p>
+
+                <div class="weekly-sales">
+
+                    <div class="sales-day"
+                         th:each="day : ${dashboard.weeklySales}">
+
+                        <div class="sales-bar-container">
+
+                            <div class="sales-bar"
+                                 th:attr="data-revenue=${day.revenue}">
+                            </div>
+
+                        </div>
+
+                        <strong th:text="'Rs. ' + ${#numbers.formatDecimal(day.revenue, 1, 0)}">
+                            Rs. 0
+                        </strong>
+
+                        <span th:text="${#temporals.format(day.date, 'EEE')}">
+                            Mon
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Top Selling Products -->
+            <section class="dashboard-panel">
+
+                <h2>Top Selling Products</h2>
+
+                <p class="panel-description">
+                    Best-selling products over the last 30 days.
+                </p>
+
+                <div class="table-responsive">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>SKU</th>
+                            <th>Quantity Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="product : ${dashboard.topProducts}">
+
+                            <td th:text="${product.productName}">
+                                Product
+                            </td>
+
+                            <td th:text="${product.sku}">
+                                SKU
+                            </td>
+
+                            <td th:text="${product.quantitySold}">
+                                0
+                            </td>
+
+                            <td th:text="'Rs. ' + ${#numbers.formatDecimal(product.revenue, 1, 2)}">
+                                Rs. 0.00
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(dashboard.topProducts)}">
+
+                            <td colspan="4" class="empty-state">
+                                No completed sales found in the last 30 days.
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
 
             <!-- Product Management -->
             <h2 class="section-heading">Product Management</h2>
@@ -368,23 +882,33 @@
             <div class="cards">
 
                 <a th:href="@{/products}" class="module-card">
+
                     <div class="card-icon">📦</div>
+
                     <h3>Products</h3>
+
                     <p>
                         View products, add new items, update prices,
                         manage stock quantities and edit product details.
                     </p>
+
                     <div class="card-footer">Open Products →</div>
+
                 </a>
 
                 <a th:href="@{/categories}" class="module-card">
+
                     <div class="card-icon">🗂️</div>
+
                     <h3>Categories</h3>
+
                     <p>
                         Organize products into categories such as tools,
                         electrical supplies, pipes, paints and fittings.
                     </p>
+
                     <div class="card-footer">Open Categories →</div>
+
                 </a>
 
             </div>
@@ -395,75 +919,110 @@
             <div class="cards">
 
                 <a th:href="@{/inventory}" class="module-card">
+
                     <div class="card-icon">📊</div>
+
                     <h3>Inventory Management</h3>
+
                     <p>
                         Review product stock, record stock-in and stock-out
                         adjustments, and view recent inventory movements.
                     </p>
+
                     <div class="card-footer">Open Inventory →</div>
+
                 </a>
 
                 <a th:href="@{/inventory/low-stock}" class="module-card">
+
                     <div class="card-icon">⚠️</div>
+
                     <h3>Low Stock Alerts</h3>
+
                     <p>
                         Identify products whose available quantity has
                         reached or fallen below the minimum stock level.
                     </p>
+
                     <div class="card-footer">Review Low Stock →</div>
+
                 </a>
 
                 <a th:href="@{/suppliers}" class="module-card">
+
                     <div class="card-icon">🚚</div>
+
                     <h3>Suppliers</h3>
+
                     <p>
                         Maintain supplier names, contact information
                         and supply details.
                     </p>
+
                     <div class="card-footer">Open Suppliers →</div>
+
                 </a>
 
                 <a th:href="@{/purchases}" class="module-card">
+
                     <div class="card-icon">🛒</div>
+
                     <h3>Purchases</h3>
+
                     <p>
                         Record incoming stock purchases and update
                         inventory when goods arrive.
                     </p>
+
                     <div class="card-footer">Open Purchases →</div>
+
                 </a>
 
                 <a th:href="@{/purchases/reports}" class="module-card">
+
                     <div class="card-icon">📈</div>
+
                     <h3>Purchase Reports</h3>
+
                     <p>
                         View purchase summaries, supplier-wise and
                         product-wise reports, filter records and
                         download professional PDF reports.
                     </p>
+
                     <div class="card-footer">Open Purchase Reports →</div>
+
                 </a>
 
                 <a th:href="@{/inventory/reports}" class="module-card">
+
                     <div class="card-icon">📊</div>
+
                     <h3>Inventory Reports</h3>
+
                     <p>
                         Review current stock valuation, low-stock products,
                         stock-in and stock-out movements, and download
                         inventory PDF reports.
                     </p>
+
                     <div class="card-footer">Open Inventory Reports →</div>
+
                 </a>
 
                 <a th:href="@{/sales}" class="module-card">
+
                     <div class="card-icon">💰</div>
+
                     <h3>Sales Management</h3>
+
                     <p>
                         Record customer and walk-in sales, generate invoices,
                         manage sales transactions and automatically update inventory.
                     </p>
+
                     <div class="card-footer">Open Sales →</div>
+
                 </a>
 
             </div>
@@ -474,34 +1033,50 @@
             <div class="cards">
 
                 <a th:href="@{/customers}" class="module-card">
+
                     <div class="card-icon">👥</div>
+
                     <h3>Customers</h3>
+
                     <p>
                         Maintain customer contact details and access
                         customer records managed by the store.
                     </p>
+
                     <div class="card-footer">Open Customers →</div>
+
                 </a>
 
                 <a th:href="@{/billing}" class="module-card">
+
                     <div class="card-icon">🧾</div>
+
                     <h3>Billing Management</h3>
+
                     <p>
                         Generate bills from completed sales, record payments,
                         manage outstanding balances and download PDF bills.
                     </p>
+
                     <div class="card-footer">Open Billing →</div>
+
                 </a>
 
-                <div class="module-card disabled">
+                <a th:href="@{/reports/sales}" class="module-card">
+
                     <div class="card-icon">📊</div>
+
                     <h3>Sales Reports</h3>
+
                     <p>
-                        Review sales performance and sales trends
-                        once the sales reports module is implemented.
+                        Analyze sales revenue, completed transactions,
+                        product-wise performance and customer purchases.
+                        Generate date-filtered reports and download PDF files.
                     </p>
-                    <span class="status">Coming soon</span>
-                </div>
+
+                    <div class="card-footer">Open Sales Reports →</div>
+
+                </a>
 
             </div>
 
@@ -514,6 +1089,8 @@
     </main>
 
 </div>
+
+<script th:src="@{/js/dashboard.js}"></script>
 
 </body>
 </html>
