@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Reports | Hardware Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 28px;
+            background: #f4f6f9;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #374151;
+            color: white;
+            padding: 11px 17px;
+            border-radius: 7px;
+        }
+
+        .filter-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        }
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 15px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            min-width: 190px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            padding: 11px 19px;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        }
+
+        .summary-card p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0 0 12px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 11px 19px;
+            background: #15803d;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .download-btn:hover {
+            background: #166534;
+        }
+
+        .summary-card h2 {
+            font-size: 25px;
+            margin: 0;
+        }
+
+        .section {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        }
+
+        .section h2 {
+            font-size: 18px;
+            margin: 0 0 18px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .empty {
+            text-align: center;
+            color: #9ca3af;
+            padding: 25px;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 15px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>Sales Reports</h1>
+            <div class="subtitle">
+                Analyze sales performance and customer purchases.
+            </div>
+        </div>
+
+        <a th:href="@{/dashboard}" class="back-btn">Back to Dashboard</a>
+    </header>
+
+    <section class="filter-card">
+        <form th:action="@{/reports/sales}" method="get" class="filter-form">
+
+            <div class="field">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" name="startDate"
+                       th:value="${report.startDate}" required>
+            </div>
+
+            <div class="field">
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate" name="endDate"
+                       th:value="${report.endDate}" required>
+            </div>
+
+            <button type="submit">Generate Report</button>
+        </form>
+
+        <a th:href="@{/reports/sales/pdf(
+    startDate=${report.startDate},
+    endDate=${report.endDate}
+)}"
+           class="download-btn">
+            Download PDF
+        </a>
+
+    </section>
+
+    <section class="summary">
+
+        <div class="summary-card">
+            <p>Total Revenue</p>
+            <h2>
+                Rs. <span th:text="${#numbers.formatDecimal(report.totalRevenue, 1, 2)}">0.00</span>
+            </h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Completed Sales</p>
+            <h2 th:text="${report.totalSales}">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Average Sale Value</p>
+            <h2>
+                Rs. <span th:text="${#numbers.formatDecimal(report.averageSaleValue, 1, 2)}">0.00</span>
+            </h2>
+        </div>
+
+    </section>
+
+    <section class="section">
+        <h2>Product-wise Sales</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Quantity Sold</th>
+                    <th>Revenue</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="item : ${report.productSales}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${item.sku}"></td>
+                    <td th:text="${item.quantitySold}"></td>
+                    <td>
+                        Rs. <span th:text="${#numbers.formatDecimal(item.revenue, 1, 2)}"></span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(report.productSales)}">
+                    <td colspan="4" class="empty">
+                        No product sales found for this period.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Customer-wise Sales</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Number of Sales</th>
+                    <th>Total Spent</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="customer : ${report.customerSales}">
+                    <td th:text="${customer.customerName}"></td>
+                    <td th:text="${customer.customerPhone ?: 'N/A'}"></td>
+                    <td th:text="${customer.numberOfSales}"></td>
+                    <td>
+                        Rs. <span th:text="${#numbers.formatDecimal(customer.totalSpent, 1, 2)}"></span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(report.customerSales)}">
+                    <td colspan="4" class="empty">
+                        No customer sales found for this period.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>
