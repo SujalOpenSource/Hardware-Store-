@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const paymentForm = document.getElementById("paymentForm");
 
@@ -8,18 +7,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     paymentForm.addEventListener("submit", function (event) {
         const amountInput = document.getElementById("amount");
+
+        if (!amountInput) {
+            return;
+        }
+
         const amount = Number(amountInput.value);
         const maximum = Number(amountInput.max);
 
         if (!Number.isFinite(amount) || amount <= 0) {
             event.preventDefault();
             alert("Enter a valid payment amount.");
+            amountInput.focus();
             return;
         }
 
-        if (amount > maximum) {
+        if (!Number.isFinite(maximum) || amount > maximum) {
             event.preventDefault();
             alert("Payment cannot exceed the outstanding balance.");
+            amountInput.focus();
             return;
         }
 

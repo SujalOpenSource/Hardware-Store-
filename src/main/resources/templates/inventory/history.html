@@ -4,86 +4,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock History</title>
+    <title>Stock Movement History</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
             padding: 24px;
+            font-family: Arial, sans-serif;
             background: #f4f6f9;
-            color: #1e293b;
-            font-family: Arial, Helvetica, sans-serif;
+            color: #1f2937;
         }
 
-        .container { max-width: 1200px; margin: auto; }
+        .container {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 16px;
             flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        .card {
-            padding: 20px;
-            margin-bottom: 20px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
+        h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
         }
 
-        h1 { margin: 0 0 8px; font-size: 25px; }
-        h2 { margin-top: 0; font-size: 18px; }
-        .muted { color: #64748b; font-size: 13px; }
+        .subtitle {
+            color: #6b7280;
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
         .btn {
             display: inline-flex;
-            align-items: center;
             justify-content: center;
-            min-height: 36px;
-            padding: 9px 13px;
-            border-radius: 6px;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 7px;
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
+            color: white;
+            background: #2563eb;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .primary { background: #2563eb; color: white; }
-        .secondary { background: #e2e8f0; color: #334155; }
+        .btn-secondary {
+            background: #475569;
+        }
 
-        .table-wrapper { overflow-x: auto; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            font-size: 19px;
+        }
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .stock-item {
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 9px;
+            min-width: 0;
+        }
+
+        .stock-item span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .stock-item strong {
+            display: block;
+            font-size: 23px;
+            overflow-wrap: anywhere;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
         table {
             width: 100%;
-            min-width: 700px;
+            min-width: 760px;
             border-collapse: collapse;
         }
 
         th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 13px 12px;
             text-align: left;
-            font-size: 13px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+            white-space: nowrap;
         }
 
         th {
             background: #f8fafc;
             color: #475569;
-            text-transform: uppercase;
-            font-size: 11px;
+            font-weight: 600;
         }
 
-        .in { color: #166534; font-weight: 700; }
-        .out { color: #b91c1c; font-weight: 700; }
-        .empty { padding: 25px; text-align: center; color: #64748b; }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-        @media (max-width: 600px) {
-            body { padding: 14px; }
-            .card { padding: 14px; }
+        .stock-in {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .stock-out {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty {
+            padding: 28px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                align-items: stretch;
+            }
+
+            .header > div:first-child {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .actions .btn {
+                flex: 1;
+            }
+
+            .stock-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -91,48 +210,52 @@
 <body>
 <div class="container">
 
-    <header class="header">
+    <div class="header">
         <div>
             <h1>Stock Movement History</h1>
-            <p class="muted">
-                Product:
-                <strong th:text="${product.name}">Product name</strong>
-                · SKU:
-                <strong th:text="${product.sku}">SKU</strong>
+            <p class="subtitle">
+                <strong th:text="${product.name}">Product Name</strong>
+                <span> | SKU: </span>
+                <span th:text="${product.sku}">SKU</span>
             </p>
         </div>
 
-        <div>
-            <a th:href="@{/inventory}" class="btn secondary">Inventory</a>
-            <a th:href="@{/inventory/adjust}" class="btn primary">Adjust Stock</a>
+        <div class="actions">
+            <a th:href="@{/inventory}" class="btn btn-secondary">Back to Inventory</a>
+            <a th:href="@{/inventory/adjust}" class="btn">Adjust Stock</a>
         </div>
-    </header>
+    </div>
 
-    <section class="card">
-        <h2>Current Stock</h2>
+    <div class="card">
+        <h2>Current Stock Information</h2>
 
-        <p>
-            Quantity:
-            <strong th:text="${product.stockQuantity}">0.000</strong>
-        </p>
+        <div class="stock-grid">
+            <div class="stock-item">
+                <span>Current Stock</span>
+                <strong th:text="${product.stockQuantity}">0</strong>
+            </div>
 
-        <p>
-            Minimum stock:
-            <strong th:text="${product.minimumStock}">0.000</strong>
-        </p>
+            <div class="stock-item">
+                <span>Minimum Stock</span>
+                <strong th:text="${product.minimumStock}">0</strong>
+            </div>
 
-        <p class="muted" th:text="${product.category.name}">Category</p>
-    </section>
+            <div class="stock-item">
+                <span>Category</span>
+                <strong th:text="${product.category.name}">Category</strong>
+            </div>
+        </div>
+    </div>
 
-    <section class="card">
+    <div class="card">
         <h2>Movement Records</h2>
 
         <div class="table-wrapper">
             <table>
                 <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
+                    <th>Date & Time</th>
+                    <th>Movement Type</th>
                     <th>Quantity</th>
                     <th>Previous Stock</th>
                     <th>New Stock</th>
@@ -147,28 +270,28 @@
                     </td>
 
                     <td>
-                        <span th:if="${movement.movementType.name() == 'STOCK_IN'}"
-                              class="in">Stock In</span>
-
-                        <span th:unless="${movement.movementType.name() == 'STOCK_IN'}"
-                              class="out">Stock Out</span>
+                        <span class="badge"
+                              th:classappend="${movement.movementType.name() == 'STOCK_IN'} ? ' stock-in' : ' stock-out'"
+                              th:text="${movement.movementType.name() == 'STOCK_IN'} ? 'STOCK IN' : 'STOCK OUT'">
+                            STOCK IN
+                        </span>
                     </td>
 
-                    <td th:text="${movement.quantity}">0.000</td>
-                    <td th:text="${movement.previousStock}">0.000</td>
-                    <td th:text="${movement.newStock}">0.000</td>
+                    <td th:text="${movement.quantity}">0</td>
+                    <td th:text="${movement.previousStock}">0</td>
+                    <td th:text="${movement.newStock}">0</td>
                     <td th:text="${movement.reason}">Reason</td>
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(movements)}">
                     <td colspan="6" class="empty">
-                        No stock movements recorded for this product yet.
+                        No stock movement records found for this product.
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-    </section>
+    </div>
 
 </div>
 </body>

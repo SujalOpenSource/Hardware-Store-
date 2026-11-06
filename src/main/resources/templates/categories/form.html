@@ -23,70 +23,117 @@
         }
 
         .container {
+            width: 100%;
             max-width: 700px;
             margin: 30px auto;
         }
 
         .card {
-            background: white;
-            padding: 28px;
+            background: #ffffff;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 3px 12px #0000000a;
         }
 
         h1 {
-            margin-top: 0;
+            margin: 0 0 10px;
+            font-size: 27px;
+            overflow-wrap: anywhere;
         }
 
         .muted {
             color: #6b7280;
-            margin-bottom: 25px;
+            margin: 0 0 28px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
         }
 
         label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
+            font-size: 14px;
         }
 
-        input, textarea {
+        input[type="text"],
+        textarea {
+            display: block;
             width: 100%;
-            padding: 12px;
+            padding: 12px 14px;
             border: 1px solid #d1d5db;
             border-radius: 7px;
             font: inherit;
-            margin-bottom: 20px;
+            font-size: 14px;
+            color: #1f2937;
+            background: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
         textarea {
+            min-height: 120px;
             resize: vertical;
+            line-height: 1.5;
         }
 
         .checkbox-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 22px;
+            gap: 11px;
+            margin-bottom: 25px;
+            padding: 13px 14px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
         }
 
         .checkbox-row input {
-            width: auto;
+            width: 17px;
+            height: 17px;
             margin: 0;
+            accent-color: #2563eb;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-row label {
+            margin: 0;
+            cursor: pointer;
         }
 
         .btn {
-            display: inline-block;
-            padding: 11px 17px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 42px;
+            padding: 11px 18px;
             border: 0;
             border-radius: 7px;
             text-decoration: none;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: background 0.2s ease;
         }
 
         .primary {
             background: #1d4ed8;
-            color: white;
+            color: #ffffff;
+        }
+
+        .primary:hover {
+            background: #1e40af;
         }
 
         .secondary {
@@ -94,17 +141,76 @@
             color: #111827;
         }
 
+        .secondary:hover {
+            background: #d1d5db;
+        }
+
         .error {
-            padding: 12px 16px;
-            margin-bottom: 18px;
+            padding: 13px 16px;
+            margin-bottom: 22px;
             border-radius: 7px;
             background: #fee2e2;
             color: #991b1b;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .buttons {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                margin: 12px auto;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 19px;
+                border-radius: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .muted {
+                margin-bottom: 23px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .buttons .btn {
+                width: 100%;
+            }
+
+            input[type="text"],
+            textarea {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -131,30 +237,36 @@
 
             <input type="hidden" th:field="*{id}"/>
 
-            <label for="name">Category Name *</label>
-            <input type="text"
-                   id="name"
-                   th:field="*{name}"
-                   maxlength="100"
-                   placeholder="e.g. Electrical Supplies"
-                   required
-                   autofocus/>
+            <div class="form-group">
+                <label for="name">Category Name *</label>
 
-            <label for="description">Description</label>
-            <textarea id="description"
-                      th:field="*{description}"
-                      rows="4"
-                      maxlength="500"
-                      placeholder="Describe the products in this category">
-            </textarea>
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       maxlength="100"
+                       placeholder="e.g. Electrical Supplies"
+                       required
+                       autofocus/>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+
+                <textarea id="description"
+                          th:field="*{description}"
+                          rows="4"
+                          maxlength="500"
+                          placeholder="Describe the products in this category"></textarea>
+            </div>
 
             <div class="checkbox-row"
                  th:if="${category.id != null}">
+
                 <input type="checkbox"
                        id="active"
                        th:field="*{active}"/>
 
-                <label for="active" style="margin:0;">
+                <label for="active">
                     Category is active
                 </label>
             </div>

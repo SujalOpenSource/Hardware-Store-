@@ -46,6 +46,7 @@
 
         .header p {
             margin: 0;
+            line-height: 1.5;
         }
 
         .header-actions,
@@ -61,7 +62,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 36px;
+            min-height: 38px;
             padding: 9px 13px;
             border: 0;
             border-radius: 6px;
@@ -98,7 +99,7 @@
         }
 
         .btn:hover {
-            filter: brightness(0.96);
+            filter: brightness(.96);
         }
 
         .card {
@@ -106,7 +107,7 @@
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
         }
 
         .alert {
@@ -157,7 +158,7 @@
         .filter-field input,
         .filter-field select {
             width: 100%;
-            min-height: 40px;
+            min-height: 42px;
             padding: 9px 11px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
@@ -176,14 +177,17 @@
             margin: 0 0 14px;
         }
 
+        /* Desktop table */
+
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
-            min-width: 1250px;
+            min-width: 1150px;
             border-collapse: collapse;
         }
 
@@ -202,7 +206,7 @@
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: .3px;
         }
 
         tbody tr:hover {
@@ -228,12 +232,14 @@
             border-radius: 6px;
             color: #94a3b8;
             font-size: 10px;
+            flex-shrink: 0;
         }
 
         .product-name {
             margin-bottom: 5px;
             color: #0f172a;
             font-weight: 700;
+            overflow-wrap: anywhere;
         }
 
         .description {
@@ -241,6 +247,7 @@
             color: #64748b;
             font-size: 12px;
             overflow-wrap: anywhere;
+            line-height: 1.5;
         }
 
         .supplier-list {
@@ -305,6 +312,7 @@
             padding: 35px 15px;
             text-align: center;
             color: #64748b;
+            line-height: 1.6;
         }
 
         .empty-state strong {
@@ -314,30 +322,215 @@
             font-size: 15px;
         }
 
-        @media (max-width: 640px) {
+        /* Mobile product cards */
+
+        .mobile-products {
+            display: none;
+        }
+
+        .mobile-product-card {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: white;
+        }
+
+        .mobile-product-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .mobile-product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mobile-product-info .description {
+            max-width: none;
+        }
+
+        .mobile-product-info .product-name {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .mobile-product-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            min-width: 0;
+        }
+
+        .meta-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            color: #1e293b;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .mobile-suppliers {
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            margin-bottom: 14px;
+        }
+
+        .mobile-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 7px;
+        }
+
+        .mobile-actions .btn {
+            width: 100%;
+            padding: 8px 5px;
+            font-size: 12px;
+        }
+
+        .mobile-actions form {
+            min-width: 0;
+            margin: 0;
+        }
+
+        .mobile-actions button {
+            width: 100%;
+        }
+
+        .mobile-empty {
+            padding: 30px 15px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
             body {
-                padding: 14px;
+                padding: 18px;
             }
 
             .card {
-                padding: 14px;
+                padding: 17px;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 1050px;
+            }
+        }
+
+        /* Mobile */
+
+        @media (max-width: 700px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
             }
 
             .header h1 {
                 font-size: 23px;
             }
 
+            .header-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+            }
+
+            .header-actions .primary {
+                grid-column: 1 / -1;
+            }
+
+            .card {
+                padding: 13px;
+                border-radius: 8px;
+            }
+
+            .filter-form {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 12px;
+            }
+
             .search-field,
             .category-field {
-                flex: 1 1 100%;
+                flex: 1 1 auto;
+                width: 100%;
             }
 
             .filter-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 width: 100%;
             }
 
             .filter-actions .btn {
-                flex: 1;
+                width: 100%;
+            }
+
+            .table-wrapper {
+                display: none;
+            }
+
+            .mobile-products {
+                display: grid;
+                gap: 12px;
+            }
+
+            .result-count {
+                margin-bottom: 13px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 9px;
+            }
+
+            .card {
+                padding: 10px;
+            }
+
+            .mobile-product-card {
+                padding: 12px;
+            }
+
+            .mobile-product-meta {
+                gap: 10px;
+            }
+
+            .mobile-actions {
+                gap: 5px;
+            }
+
+            .mobile-actions .btn {
+                font-size: 11px;
             }
         }
     </style>
@@ -346,7 +539,6 @@
 <body>
 <div class="container">
 
-    <!-- Header -->
     <header class="header">
         <div>
             <h1>Product Management</h1>
@@ -371,7 +563,6 @@
         </div>
     </header>
 
-    <!-- Alerts -->
     <div th:if="${successMessage}"
          class="alert success"
          th:text="${successMessage}">
@@ -384,12 +575,10 @@
 
     <section class="card">
 
-        <!-- Search and Category Filter -->
         <form th:action="@{/products}" method="get" class="filter-form">
 
             <div class="filter-field search-field">
                 <label for="search">Search products</label>
-
                 <input
                         type="search"
                         id="search"
@@ -425,17 +614,16 @@
 
         </form>
 
-        <!-- Product Count -->
         <p class="muted result-count">
             Showing
             <strong th:text="${#lists.size(products)}">0</strong>
             product(s)
         </p>
 
-        <!-- Product Table -->
+        <!-- Desktop and tablet table -->
+
         <div class="table-wrapper">
             <table>
-
                 <thead>
                 <tr>
                     <th>Image</th>
@@ -452,11 +640,8 @@
                 </thead>
 
                 <tbody>
-
-                <!-- Product Rows -->
                 <tr th:each="product : ${products}">
 
-                    <!-- Image -->
                     <td>
                         <img th:if="${product.imagePath != null
                                      and !product.imagePath.isEmpty()}"
@@ -471,7 +656,6 @@
                         </div>
                     </td>
 
-                    <!-- Product -->
                     <td>
                         <div class="product-name"
                              th:text="${product.name}">
@@ -485,19 +669,14 @@
                         </div>
                     </td>
 
-                    <!-- SKU -->
-                    <td th:text="${product.sku}">
-                        SKU
-                    </td>
+                    <td th:text="${product.sku}">SKU</td>
 
-                    <!-- Category -->
                     <td th:text="${product.category != null
                                     ? product.category.name
                                     : 'Uncategorized'}">
                         Category
                     </td>
 
-                    <!-- Suppliers -->
                     <td>
                         <div class="supplier-list"
                              th:with="names=${supplierNames != null
@@ -513,21 +692,12 @@
                                   class="no-supplier">
                                 No supplier assigned
                             </span>
-
                         </div>
                     </td>
 
-                    <!-- Purchase Price -->
-                    <td th:text="${product.purchasePrice}">
-                        0.00
-                    </td>
+                    <td th:text="${product.purchasePrice}">0.00</td>
+                    <td th:text="${product.sellingPrice}">0.00</td>
 
-                    <!-- Selling Price -->
-                    <td th:text="${product.sellingPrice}">
-                        0.00
-                    </td>
-
-                    <!-- Stock -->
                     <td>
                         <span th:class="${product.stockQuantity
                                          <= product.minimumStock
@@ -538,32 +708,21 @@
                         </span>
                     </td>
 
-                    <!-- Status -->
                     <td>
                         <span th:if="${product.active}"
-                              class="badge active-badge">
-                            Active
-                        </span>
+                              class="badge active-badge">Active</span>
 
                         <span th:unless="${product.active}"
-                              class="badge inactive-badge">
-                            Inactive
-                        </span>
+                              class="badge inactive-badge">Inactive</span>
                     </td>
 
-                    <!-- Actions -->
                     <td>
                         <div class="action-buttons">
-
                             <a th:href="@{/products/details/{id}(id=${product.id})}"
-                               class="btn details">
-                                View
-                            </a>
+                               class="btn details">View</a>
 
                             <a th:href="@{/products/edit/{id}(id=${product.id})}"
-                               class="btn edit">
-                                Edit
-                            </a>
+                               class="btn edit">Edit</a>
 
                             <form th:action="@{/products/delete/{id}(id=${product.id})}"
                                   method="post"
@@ -572,15 +731,11 @@
                                 <button type="submit" class="btn delete">
                                     Delete
                                 </button>
-
                             </form>
-
                         </div>
                     </td>
-
                 </tr>
 
-                <!-- Empty State -->
                 <tr th:if="${#lists.isEmpty(products)}">
                     <td colspan="10">
                         <div class="empty-state">
@@ -589,9 +744,153 @@
                         </div>
                     </td>
                 </tr>
-
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile product cards -->
+
+        <div class="mobile-products">
+
+            <article class="mobile-product-card"
+                     th:each="product : ${products}">
+
+                <div class="mobile-product-top">
+
+                    <img th:if="${product.imagePath != null
+                                 and !product.imagePath.isEmpty()}"
+                         th:src="@{${product.imagePath}}"
+                         th:alt="${product.name}"
+                         class="product-image">
+
+                    <div th:unless="${product.imagePath != null
+                                     and !product.imagePath.isEmpty()}"
+                         class="no-image">
+                        No image
+                    </div>
+
+                    <div class="mobile-product-info">
+                        <div class="product-name"
+                             th:text="${product.name}">
+                            Product name
+                        </div>
+
+                        <div class="description"
+                             th:if="${product.description != null
+                                     and !product.description.isEmpty()}"
+                             th:text="${product.description}">
+                        </div>
+
+                        <div style="margin-top: 7px;">
+                            <span th:if="${product.active}"
+                                  class="badge active-badge">Active</span>
+
+                            <span th:unless="${product.active}"
+                                  class="badge inactive-badge">Inactive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-product-meta">
+
+                    <div class="meta-item">
+                        <span class="meta-label">SKU</span>
+                        <span class="meta-value"
+                              th:text="${product.sku}">SKU</span>
+                    </div>
+
+                    <div class="meta-item">
+                        <span class="meta-label">Category</span>
+                        <span class="meta-value"
+                              th:text="${product.category != null
+                                  ? product.category.name
+                                  : 'Uncategorized'}">
+                            Category
+                        </span>
+                    </div>
+
+                    <div class="meta-item">
+                        <span class="meta-label">Purchase Price</span>
+                        <span class="meta-value"
+                              th:text="${product.purchasePrice}">0.00</span>
+                    </div>
+
+                    <div class="meta-item">
+                        <span class="meta-label">Selling Price</span>
+                        <span class="meta-value"
+                              th:text="${product.sellingPrice}">0.00</span>
+                    </div>
+
+                    <div class="meta-item">
+                        <span class="meta-label">Stock Quantity</span>
+                        <span class="meta-value"
+                              th:classappend="${product.stockQuantity
+                                  <= product.minimumStock
+                                  ? ' low-stock' : ' normal-stock'}"
+                              th:text="${product.stockQuantity}">
+                            0
+                        </span>
+                    </div>
+
+                    <div class="meta-item">
+                        <span class="meta-label">Minimum Stock</span>
+                        <span class="meta-value"
+                              th:text="${product.minimumStock}">0</span>
+                    </div>
+
+                </div>
+
+                <div class="mobile-suppliers">
+                    <span class="meta-label">Suppliers</span>
+
+                    <div th:with="names=${supplierNames != null
+                        ? supplierNames.get(product.id)
+                        : null}">
+
+                        <span th:if="${names != null and !names.isEmpty()}"
+                              class="supplier-name"
+                              th:text="${names}">
+                        </span>
+
+                        <span th:if="${names == null or names.isEmpty()}"
+                              class="no-supplier">
+                            No supplier assigned
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mobile-actions">
+
+                    <a th:href="@{/products/details/{id}(id=${product.id})}"
+                       class="btn details">
+                        View
+                    </a>
+
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}"
+                       class="btn edit">
+                        Edit
+                    </a>
+
+                    <form th:action="@{/products/delete/{id}(id=${product.id})}"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this product?');">
+
+                        <button type="submit" class="btn delete">
+                            Delete
+                        </button>
+                    </form>
+
+                </div>
+
+            </article>
+
+            <div class="mobile-empty"
+                 th:if="${#lists.isEmpty(products)}">
+
+                <strong>No matching products found.</strong>
+                <p>Try another search term or category, or clear the filters.</p>
+            </div>
+
         </div>
 
     </section>

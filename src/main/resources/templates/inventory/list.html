@@ -20,6 +20,7 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1450px;
             margin: auto;
         }
@@ -39,7 +40,7 @@
         }
 
         h2 {
-            margin: 0 0 16px;
+            margin: 0 0 12px;
             font-size: 18px;
         }
 
@@ -50,11 +51,13 @@
         .muted {
             color: #64748b;
             font-size: 13px;
+            line-height: 1.5;
         }
 
         .actions {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 8px;
         }
 
@@ -62,7 +65,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 36px;
+            min-height: 38px;
             padding: 9px 13px;
             border: 0;
             border-radius: 6px;
@@ -71,6 +74,7 @@
             text-decoration: none;
             cursor: pointer;
             white-space: nowrap;
+            font-family: inherit;
         }
 
         .primary {
@@ -85,6 +89,10 @@
         .secondary {
             background: #e2e8f0;
             color: #334155;
+        }
+
+        .secondary:hover {
+            background: #cbd5e1;
         }
 
         .danger {
@@ -107,6 +115,7 @@
 
         .summary-card,
         .panel {
+            min-width: 0;
             padding: 20px;
             background: white;
             border: 1px solid #e2e8f0;
@@ -123,6 +132,7 @@
             margin-top: 10px;
             font-size: 27px;
             font-weight: 700;
+            overflow-wrap: anywhere;
         }
 
         .alert-number {
@@ -133,11 +143,30 @@
             margin-bottom: 20px;
         }
 
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .panel-header h2 {
+            margin-bottom: 6px;
+        }
+
+        .panel-header p {
+            margin-bottom: 0;
+        }
+
         .alert {
             padding: 12px 14px;
             margin-bottom: 16px;
             border-radius: 6px;
             font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .success {
@@ -155,6 +184,12 @@
             color: #9a3412;
         }
 
+        .warning a {
+            color: inherit;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -162,7 +197,6 @@
 
         table {
             width: 100%;
-            min-width: 760px;
             border-collapse: collapse;
         }
 
@@ -181,6 +215,7 @@
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .3px;
+            white-space: nowrap;
         }
 
         tbody tr:hover {
@@ -222,18 +257,179 @@
             color: #64748b;
         }
 
-        @media (max-width: 800px) {
-            body {
-                padding: 14px;
+        @media (max-width: 1000px) {
+            .header {
+                align-items: flex-start;
             }
 
             .cards {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 16px;
             }
 
             .summary-card,
             .panel {
+                padding: 16px;
+            }
+
+            .panel-header {
+                align-items: flex-start;
+            }
+
+            .table-wrapper {
+                overflow: visible;
+            }
+
+            table,
+            tbody {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody tr:not(.empty-row) {
+                display: block;
+                width: 100%;
+                margin-bottom: 14px;
+                padding: 9px 14px;
+                border: 1px solid #e2e8f0;
+                border-radius: 9px;
+                background: #ffffff;
+            }
+
+            tbody tr:not(.empty-row):hover {
+                background: #ffffff;
+            }
+
+            tbody tr:not(.empty-row) td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 14px;
+                padding: 11px 0;
+                border-bottom: 1px solid #f1f5f9;
+                text-align: right;
+                overflow-wrap: anywhere;
+            }
+
+            tbody tr:not(.empty-row) td:last-child {
+                border-bottom: 0;
+            }
+
+            tbody tr:not(.empty-row) td::before {
+                content: attr(data-label);
+                color: #64748b;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+            }
+
+            tbody tr:not(.empty-row) td.actions-cell {
+                display: block;
+            }
+
+            tbody tr:not(.empty-row) td.actions-cell::before {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .actions-cell .actions {
+                justify-content: flex-start;
+            }
+
+            .empty-row {
+                display: block;
+            }
+
+            .empty-row td {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            h2 {
+                font-size: 17px;
+            }
+
+            .header {
+                align-items: stretch;
+            }
+
+            .header > div:first-child {
+                width: 100%;
+            }
+
+            .header > .actions {
+                width: 100%;
+            }
+
+            .header > .actions .btn {
+                flex: 1;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .summary-card {
                 padding: 15px;
+            }
+
+            .summary-card .value {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 13px;
+            }
+
+            .panel-header {
+                flex-direction: column;
+            }
+
+            .panel-header > .actions {
+                width: 100%;
+            }
+
+            .panel-header > .actions .btn {
+                flex: 1;
+            }
+
+            tbody tr:not(.empty-row) {
+                padding: 7px 11px;
+            }
+
+            tbody tr:not(.empty-row) td {
+                gap: 9px;
+                font-size: 12px;
+            }
+
+            .actions-cell .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .actions-cell .btn {
+                width: 100%;
             }
         }
     </style>
@@ -317,7 +513,7 @@
     <!-- Current stock table -->
     <section class="panel">
 
-        <div class="header">
+        <div class="panel-header">
             <div>
                 <h2 th:text="${lowStockOnly ? 'Low-Stock Products' : 'Current Stock'}">
                     Current Stock
@@ -358,23 +554,28 @@
 
                 <tr th:each="product : ${products}">
 
-                    <td th:text="${product.name}">Hammer</td>
+                    <td data-label="Product"
+                        th:text="${product.name}">Hammer</td>
 
-                    <td th:text="${product.sku}">HAM001</td>
+                    <td data-label="SKU"
+                        th:text="${product.sku}">HAM001</td>
 
-                    <td th:text="${product.category.name}">
+                    <td data-label="Category"
+                        th:text="${product.category.name}">
                         Hand Tools
                     </td>
 
-                    <td th:text="${product.stockQuantity}">
+                    <td data-label="Current Stock"
+                        th:text="${product.stockQuantity}">
                         0.000
                     </td>
 
-                    <td th:text="${product.minimumStock}">
+                    <td data-label="Minimum Stock"
+                        th:text="${product.minimumStock}">
                         0.000
                     </td>
 
-                    <td>
+                    <td data-label="Status">
                         <span
                                 th:if="${product.stockQuantity.compareTo(product.minimumStock) <= 0}"
                                 class="badge low">
@@ -388,16 +589,14 @@
                         </span>
                     </td>
 
-                    <td>
+                    <td data-label="Actions" class="actions-cell">
                         <div class="actions">
 
-                            <!-- Open adjustment form for this product -->
                             <a th:href="@{/inventory/adjust/{id}(id=${product.id})}"
                                class="btn primary">
                                 Adjust
                             </a>
 
-                            <!-- Open history for this product -->
                             <a th:href="@{/inventory/history/{id}(id=${product.id})}"
                                class="btn outline">
                                 History
@@ -408,7 +607,8 @@
 
                 </tr>
 
-                <tr th:if="${#lists.isEmpty(products)}">
+                <tr th:if="${#lists.isEmpty(products)}"
+                    class="empty-row">
                     <td colspan="7" class="empty">
                         No products match this view.
                     </td>
@@ -446,15 +646,17 @@
 
                 <tr th:each="movement : ${movements}">
 
-                    <td th:text="${#temporals.format(movement.createdAt, 'yyyy-MM-dd HH:mm')}">
+                    <td data-label="Date"
+                        th:text="${#temporals.format(movement.createdAt, 'yyyy-MM-dd HH:mm')}">
                         Date
                     </td>
 
-                    <td th:text="${movement.product.name}">
+                    <td data-label="Product"
+                        th:text="${movement.product.name}">
                         Hammer
                     </td>
 
-                    <td>
+                    <td data-label="Movement">
                         <span
                                 th:if="${movement.movementType.name() == 'STOCK_IN'}"
                                 class="movement-in">
@@ -468,17 +670,22 @@
                         </span>
                     </td>
 
-                    <td th:text="${movement.quantity}">0.000</td>
+                    <td data-label="Quantity"
+                        th:text="${movement.quantity}">0.000</td>
 
-                    <td th:text="${movement.previousStock}">0.000</td>
+                    <td data-label="Previous Stock"
+                        th:text="${movement.previousStock}">0.000</td>
 
-                    <td th:text="${movement.newStock}">0.000</td>
+                    <td data-label="New Stock"
+                        th:text="${movement.newStock}">0.000</td>
 
-                    <td th:text="${movement.reason}">Restock</td>
+                    <td data-label="Reason"
+                        th:text="${movement.reason}">Restock</td>
 
                 </tr>
 
-                <tr th:if="${#lists.isEmpty(movements)}">
+                <tr th:if="${#lists.isEmpty(movements)}"
+                    class="empty-row">
                     <td colspan="7" class="empty">
                         No stock movements have been recorded yet.
                     </td>

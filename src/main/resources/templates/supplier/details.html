@@ -1,7 +1,6 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,30 +20,35 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: auto;
+            min-width: 0;
         }
 
         .panel {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
+            min-width: 0;
+            padding: 26px;
             margin-bottom: 22px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
             flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 22px;
         }
 
         h1 {
             margin: 0 0 8px;
             font-size: 27px;
+            overflow-wrap: anywhere;
         }
 
         h2 {
@@ -53,17 +57,21 @@
         }
 
         .subtitle {
-            color: #718096;
             margin: 0;
+            color: #718096;
+            line-height: 1.5;
+            font-size: 14px;
         }
 
         .details-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 22px;
+            margin-top: 25px;
         }
 
         .detail-item {
+            min-width: 0;
             padding-bottom: 14px;
             border-bottom: 1px solid #edf0f4;
             overflow-wrap: anywhere;
@@ -71,14 +79,18 @@
 
         .detail-label {
             display: block;
+            margin-bottom: 7px;
             color: #718096;
             font-size: 13px;
-            margin-bottom: 7px;
         }
 
         .detail-value {
+            display: block;
             font-size: 15px;
             font-weight: 600;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .full-width {
@@ -86,7 +98,10 @@
         }
 
         .button {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 42px;
             padding: 11px 16px;
             border: none;
             border-radius: 6px;
@@ -95,19 +110,33 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            text-align: center;
+            transition: background .2s;
         }
 
         .primary {
             background: #2563eb;
         }
 
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
         .secondary {
             background: #64748b;
+        }
+
+        .secondary:hover {
+            background: #475569;
         }
 
         .edit {
             background: #e0a800;
             color: #222;
+        }
+
+        .edit:hover {
+            background: #c99400;
         }
 
         .actions {
@@ -118,8 +147,10 @@
         }
 
         .table-wrapper {
+            width: 100%;
             overflow-x: auto;
             margin-top: 20px;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -128,16 +159,23 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px 12px;
             text-align: left;
             border-bottom: 1px solid #edf0f4;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         th {
             background: #f8fafc;
             color: #475569;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
         }
 
         .badge {
@@ -148,6 +186,7 @@
             color: #166534;
             font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .alternative {
@@ -156,15 +195,20 @@
         }
 
         .empty {
+            padding: 30px;
             text-align: center;
             color: #718096;
-            padding: 30px;
+            white-space: normal;
+            line-height: 1.6;
         }
 
         .alert {
-            padding: 13px;
-            border-radius: 6px;
+            padding: 13px 15px;
             margin-bottom: 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .success-message {
@@ -177,20 +221,170 @@
             color: #991b1b;
         }
 
+        /* Mobile product cards */
+        .mobile-products {
+            display: none;
+            margin-top: 18px;
+        }
+
+        .product-card {
+            padding: 16px;
+            margin-bottom: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: #fff;
+        }
+
+        .product-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .product-card h3 {
+            margin: 0 0 13px;
+            font-size: 16px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .product-card-details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .product-card-item {
+            min-width: 0;
+        }
+
+        .product-card-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .product-card-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .product-card-value {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .mobile-empty {
+            padding: 25px 15px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 20px;
+            }
+
+            .panel {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .details-grid {
+                gap: 18px;
+            }
+        }
+
         @media (max-width: 650px) {
             body {
                 padding: 14px;
             }
 
             .panel {
-                padding: 17px;
+                padding: 18px;
+                border-radius: 9px;
+            }
+
+            .header {
+                align-items: flex-start;
+            }
+
+            .header > a {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            h2 {
+                font-size: 19px;
             }
 
             .details-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .full-width {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .button {
+                width: 100%;
+            }
+
+            .table-wrapper {
+                display: none;
+            }
+
+            .mobile-products {
+                display: block;
+            }
+
+            .products-header {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .detail-value {
+                font-size: 14px;
+            }
+
+            .product-card-details {
+                grid-template-columns: 1fr;
+            }
+
+            .product-card-item.full {
                 grid-column: auto;
             }
         }
@@ -234,7 +428,7 @@
         <h2>Supplier Information</h2>
         <p class="subtitle">Company and contact details</p>
 
-        <div class="details-grid" style="margin-top:25px;">
+        <div class="details-grid">
 
             <div class="detail-item">
                 <span class="detail-label">Supplier ID</span>
@@ -315,7 +509,7 @@
     <!-- Supplied Products -->
     <div class="panel">
 
-        <div class="header">
+        <div class="header products-header">
             <div>
                 <h2>Products Supplied</h2>
                 <p class="subtitle">
@@ -328,6 +522,7 @@
             </span>
         </div>
 
+        <!-- Desktop and tablet table -->
         <div class="table-wrapper">
 
             <table>
@@ -380,6 +575,67 @@
 
                 </tbody>
             </table>
+
+        </div>
+
+        <!-- Mobile product cards -->
+        <div class="mobile-products">
+
+            <div th:each="item : ${supplierProducts}"
+                 class="product-card">
+
+                <h3 th:text="${item.product.name}"></h3>
+
+                <div class="product-card-details">
+
+                    <div class="product-card-item">
+                        <span class="product-card-label">SKU</span>
+                        <span class="product-card-value"
+                              th:text="${item.product.sku}"></span>
+                    </div>
+
+                    <div class="product-card-item">
+                        <span class="product-card-label">Category</span>
+                        <span class="product-card-value"
+                              th:text="${item.product.category.name}"></span>
+                    </div>
+
+                    <div class="product-card-item">
+                        <span class="product-card-label">Supplier Price</span>
+                        <span class="product-card-value"
+                              th:text="${'Rs. ' + #numbers.formatDecimal(item.supplierPrice, 1, 2)}"></span>
+                    </div>
+
+                    <div class="product-card-item">
+                        <span class="product-card-label">Supplier Code</span>
+                        <span class="product-card-value"
+                              th:text="${item.supplierProductCode != null
+                              ? item.supplierProductCode : '-'}"></span>
+                    </div>
+
+                    <div class="product-card-item full">
+                        <span class="product-card-label">Supplier Type</span>
+
+                        <span th:if="${item.primarySupplier}"
+                              class="badge">
+                            Primary
+                        </span>
+
+                        <span th:unless="${item.primarySupplier}"
+                              class="badge alternative">
+                            Alternative
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div th:if="${#lists.isEmpty(supplierProducts)}"
+                 class="mobile-empty">
+                No products assigned to this supplier yet.
+                Click Manage Supplied Products to add products.
+            </div>
 
         </div>
 

@@ -6,7 +6,9 @@
     <title>Sales Management</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -25,13 +27,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 16px;
             flex-wrap: wrap;
+            margin-bottom: 25px;
         }
 
-        h1 { margin: 0 0 7px; font-size: 27px; }
-        .subtitle { color: #64748b; margin: 0; }
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.5;
+        }
 
         .btn {
             display: inline-block;
@@ -43,18 +53,30 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            text-align: center;
         }
 
-        .btn:hover { background: #1d4ed8; }
+        .btn:hover {
+            background: #1d4ed8;
+        }
 
         .message {
             padding: 13px 16px;
             border-radius: 7px;
             margin-bottom: 18px;
+            line-height: 1.5;
         }
 
-        .success { background: #dcfce7; color: #166534; }
-        .error { background: #fee2e2; color: #991b1b; }
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
         .panel {
             background: white;
@@ -63,7 +85,10 @@
             box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
         }
 
-        .table-wrapper { overflow-x: auto; }
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
 
         table {
             width: 100%;
@@ -76,6 +101,7 @@
             padding: 14px 12px;
             border-bottom: 1px solid #e8edf3;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         th {
@@ -84,7 +110,9 @@
             font-weight: 600;
         }
 
-        .amount { font-weight: 600; }
+        .amount {
+            font-weight: 600;
+        }
 
         .status {
             display: inline-block;
@@ -94,8 +122,15 @@
             font-weight: 600;
         }
 
-        .completed { background: #dcfce7; color: #166534; }
-        .cancelled { background: #fee2e2; color: #991b1b; }
+        .completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
         .view-link {
             color: #2563eb;
@@ -103,15 +138,138 @@
             font-weight: 600;
         }
 
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
         .empty {
             text-align: center;
             padding: 45px 15px;
             color: #64748b;
+            white-space: normal;
+            line-height: 1.7;
+        }
+
+        /* Mobile cards */
+        .mobile-sales {
+            display: none;
+        }
+
+        .sale-card {
+            border: 1px solid #e8edf3;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 13px;
+            background: #fff;
+        }
+
+        .sale-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .sale-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .invoice-number {
+            font-weight: 700;
+            color: #1e293b;
+            overflow-wrap: anywhere;
+        }
+
+        .sale-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 12px;
+        }
+
+        .info-item {
+            min-width: 0;
+        }
+
+        .info-label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            display: block;
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .sale-card-action {
+            display: block;
+            margin-top: 16px;
+            padding-top: 13px;
+            border-top: 1px solid #e8edf3;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 20px;
+            }
         }
 
         @media (max-width: 600px) {
-            body { padding: 15px; }
-            .header { align-items: flex-start; }
+            body {
+                padding: 14px;
+            }
+
+            .header {
+                align-items: stretch;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .header .btn {
+                width: 100%;
+            }
+
+            .panel {
+                padding: 12px;
+            }
+
+            .desktop-sales {
+                display: none;
+            }
+
+            .mobile-sales {
+                display: block;
+            }
+        }
+
+        .dashboard-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #1e293b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .dashboard-btn:hover {
+            background: #334155;
+        }
+
+        @media (max-width: 380px) {
+            .sale-info {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -122,74 +280,159 @@
     <div class="header">
         <div>
             <h1>Sales Management</h1>
-            <p class="subtitle">Manage sales, invoices and completed transactions.</p>
+            <p class="subtitle">
+                Manage sales, invoices and completed transactions.
+            </p>
         </div>
 
-        <a th:href="@{/sales/new}" class="btn">+ Create New Sale</a>
+        <a th:href="@{/sales/new}" class="btn">
+            + Create New Sale
+        </a>
+
+        <a th:href="@{/dashboard}" class="dashboard-btn">
+            <i class="fas fa-home"></i>
+            Dashboard
+        </a>
     </div>
 
-    <div th:if="${successMessage}" class="message success"
-         th:text="${successMessage}"></div>
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
 
-    <div th:if="${errorMessage}" class="message error"
-         th:text="${errorMessage}"></div>
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
 
     <div class="panel">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                <tr>
-                    <th>Invoice Number</th>
-                    <th>Customer</th>
-                    <th>Sale Date</th>
-                    <th>Total Amount</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
 
-                <tbody>
-                <tr th:each="sale : ${sales}">
-                    <td th:text="${sale.invoiceNumber}"></td>
+        <!-- Desktop and tablet table -->
+        <div class="desktop-sales">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Invoice Number</th>
+                        <th>Customer</th>
+                        <th>Sale Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
 
-                    <td th:text="${sale.customer != null
-                        ? sale.customer.name : 'Walk-in Customer'}"></td>
+                    <tbody>
+                    <tr th:each="sale : ${sales}">
+                        <td th:text="${sale.invoiceNumber}"></td>
 
-                    <td th:text="${#temporals.format(
-                        sale.saleDate, 'dd MMM yyyy, hh:mm a')}"></td>
+                        <td th:text="${sale.customer != null
+                            ? sale.customer.name : 'Walk-in Customer'}">
+                        </td>
 
-                    <td class="amount">
-                        Rs. <span th:text="${#numbers.formatDecimal(
-                            sale.totalAmount, 1, 2)}"></span>
-                    </td>
+                        <td th:text="${#temporals.format(
+                            sale.saleDate, 'dd MMM yyyy, hh:mm a')}">
+                        </td>
 
-                    <td>
-                        <span class="status"
-                              th:classappend="${sale.status.name() == 'COMPLETED'}
-                                  ? ' completed' : ' cancelled'"
-                              th:text="${sale.status}"></span>
-                    </td>
+                        <td class="amount">
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(
+                                sale.totalAmount, 1, 2)}">
+                            </span>
+                        </td>
 
-                    <td>
-                        <a class="view-link"
-                           th:href="@{/sales/{id}(id=${sale.id})}">
-                            View Invoice
-                        </a>
-                    </td>
-                </tr>
+                        <td>
+                            <span class="status"
+                                  th:classappend="${sale.status.name() == 'COMPLETED'}
+                                      ? ' completed' : ' cancelled'"
+                                  th:text="${sale.status}">
+                            </span>
+                        </td>
 
-                <tr th:if="${#lists.isEmpty(sales)}">
-                    <td colspan="6" class="empty">
-                        No sales have been recorded yet.
-                        <br><br>
-                        Create your first sale to get started.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        <td>
+                            <a class="view-link"
+                               th:href="@{/sales/{id}(id=${sale.id})}">
+                                View Invoice
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(sales)}">
+                        <td colspan="6" class="empty">
+                            No sales have been recorded yet.
+                            <br><br>
+                            Create your first sale to get started.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
+        <!-- Mobile sale cards -->
+        <div class="mobile-sales">
+
+            <div th:if="${#lists.isEmpty(sales)}" class="empty">
+                No sales have been recorded yet.
+                <br><br>
+                Create your first sale to get started.
+            </div>
+
+            <div class="sale-card" th:each="sale : ${sales}">
+
+                <div class="sale-card-header">
+                    <div class="invoice-number"
+                         th:text="${sale.invoiceNumber}">
+                    </div>
+
+                    <span class="status"
+                          th:classappend="${sale.status.name() == 'COMPLETED'}
+                              ? ' completed' : ' cancelled'"
+                          th:text="${sale.status}">
+                    </span>
+                </div>
+
+                <div class="sale-info">
+
+                    <div class="info-item">
+                        <span class="info-label">Customer</span>
+                        <span class="info-value"
+                              th:text="${sale.customer != null
+                                  ? sale.customer.name : 'Walk-in Customer'}">
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Sale Date</span>
+                        <span class="info-value"
+                              th:text="${#temporals.format(
+                                  sale.saleDate, 'dd MMM yyyy, hh:mm a')}">
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Total Amount</span>
+                        <span class="info-value">
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(
+                                sale.totalAmount, 1, 2)}">
+                            </span>
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="sale-card-action">
+                    <a class="view-link"
+                       th:href="@{/sales/{id}(id=${sale.id})}">
+                        View Invoice →
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
 </body>
 </html>

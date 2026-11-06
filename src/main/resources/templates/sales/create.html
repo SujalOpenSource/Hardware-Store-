@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Sale</title>
+    <title>Create New Sale</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -17,165 +19,360 @@
             font-family: Arial, sans-serif;
         }
 
-        .container { max-width: 1100px; margin: auto; }
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 22px;
+            gap: 15px;
             flex-wrap: wrap;
-            gap: 12px;
+            margin-bottom: 24px;
         }
 
-        h1 { margin: 0 0 6px; font-size: 27px; }
-        .subtitle { margin: 0; color: #64748b; }
+        h1 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 17px;
+            border: none;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .back-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .dashboard-btn {
+            background: #1e293b;
+            color: white;
+        }
+
+        .primary-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .dashboard-btn:hover {
+            background: #334155;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+        }
 
         .panel {
             background: white;
+            padding: 25px;
             border-radius: 10px;
-            padding: 23px;
-            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+            margin-bottom: 20px;
         }
 
-        h2 { font-size: 18px; margin: 0 0 20px; }
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 20px;
+            padding-bottom: 13px;
+            border-bottom: 1px solid #e8edf3;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            min-width: 0;
+        }
 
         label {
             display: block;
-            font-size: 13px;
+            margin-bottom: 7px;
+            font-size: 14px;
             font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
+            color: #334155;
         }
 
         input, select, textarea {
             width: 100%;
             padding: 11px 12px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 7px;
             background: white;
             color: #1e293b;
+            font-family: inherit;
+            font-size: 14px;
+            min-width: 0;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
         }
 
-        .field { margin-bottom: 18px; }
+        input[readonly] {
+            background: #f8fafc;
+            color: #475569;
+        }
 
-        .customer-grid {
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .walk-in-fields {
+            display: none;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 16px;
+            padding: 18px;
+            margin-top: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .walk-in-fields.visible {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
         }
 
-        .full-width { grid-column: 1 / -1; }
+        .walk-in-fields .form-group:last-child {
+            grid-column: 1 / -1;
+            margin-bottom: 0;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .product-header .section-title {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .add-btn {
+            background: #0f766e;
+            color: white;
+            padding: 10px 14px;
+        }
+
+        .add-btn:hover {
+            background: #115e59;
+        }
 
         .product-row {
             display: grid;
-            grid-template-columns: minmax(180px, 2fr)
-                minmax(100px, .8fr)
-                minmax(110px, .8fr)
-                45px;
-            gap: 12px;
+            grid-template-columns: minmax(0, 2fr) minmax(100px, .8fr)
+                                 minmax(120px, 1fr) auto;
+            gap: 13px;
             align-items: end;
+            padding: 16px;
             margin-bottom: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
         }
 
-        .row-total {
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            font-weight: 600;
+        .product-row .form-group {
+            margin: 0;
         }
 
         .remove-btn {
             height: 40px;
+            padding: 0 13px;
             border: none;
-            border-radius: 6px;
+            border-radius: 7px;
             background: #fee2e2;
-            color: #b91c1c;
-            font-size: 20px;
+            color: #991b1b;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        .add-btn, .submit-btn, .back-btn {
-            display: inline-block;
-            padding: 11px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
+        .remove-btn:hover {
+            background: #fecaca;
         }
 
-        .add-btn { background: #e0eaff; color: #1d4ed8; }
-        .submit-btn { background: #2563eb; color: white; }
-        .back-btn { background: #e2e8f0; color: #334155; }
-
-        .add-btn:hover { background: #c7d9ff; }
-        .submit-btn:hover { background: #1d4ed8; }
-
-        .total-box {
+        .total-section {
             display: flex;
             justify-content: flex-end;
             align-items: center;
             gap: 20px;
-            padding-top: 18px;
+            padding: 20px 0;
+            border-top: 1px solid #e8edf3;
             margin-top: 18px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 18px;
-            font-weight: 700;
         }
 
-        .total-value { color: #166534; font-size: 22px; }
+        .total-label {
+            font-size: 17px;
+            font-weight: 600;
+        }
 
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            flex-wrap: wrap;
+        .total-value {
+            font-size: 23px;
+            font-weight: 700;
+            color: #166534;
         }
 
         .message {
             padding: 13px 16px;
             border-radius: 7px;
             margin-bottom: 18px;
+            line-height: 1.5;
         }
 
-        .error { background: #fee2e2; color: #991b1b; }
-
-        .help {
-            color: #64748b;
-            font-size: 12px;
-            margin-top: 6px;
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
-        @media (max-width: 700px) {
-            body { padding: 15px; }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
 
-            .customer-grid {
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .submit-btn {
+            background: #2563eb;
+            color: white;
+            min-width: 150px;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 850px) {
+            body {
+                padding: 20px;
+            }
+
+            .product-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .product-row .remove-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 13px;
+            }
+
+            .header {
+                align-items: stretch;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .header-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+
+            .walk-in-fields {
+                grid-template-columns: 1fr;
+                padding: 13px;
+            }
+
+            .walk-in-fields .form-group:last-child {
+                grid-column: auto;
+            }
+
+            .product-row {
+                grid-template-columns: 1fr;
+                padding: 13px;
+                gap: 14px;
+            }
+
+            .product-header {
+                align-items: stretch;
+            }
+
+            .add-btn {
+                width: 100%;
+            }
+
+            .total-section {
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .total-value {
+                font-size: 20px;
+            }
+
+            .form-actions {
+                display: grid;
                 grid-template-columns: 1fr;
             }
 
-            .full-width { grid-column: auto; }
-
-            .product-row {
-                grid-template-columns: 1fr 1fr;
-                padding-bottom: 14px;
-                border-bottom: 1px solid #e2e8f0;
+            .form-actions .btn {
+                width: 100%;
             }
+        }
 
-            .product-field { grid-column: 1 / -1; }
-
-            .actions { justify-content: stretch; }
-
-            .actions a, .actions button {
-                flex: 1;
-                text-align: center;
+        @media (max-width: 350px) {
+            .header-actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -187,23 +384,36 @@
     <div class="header">
         <div>
             <h1>Create New Sale</h1>
-            <p class="subtitle">Add products and complete a customer sale.</p>
+            <p class="subtitle">
+                Select a customer, add products and complete the sale.
+            </p>
         </div>
 
-        <a th:href="@{/sales}" class="back-btn">Back to Sales</a>
+        <div class="header-actions">
+            <a th:href="@{/sales}" class="btn back-btn">
+                Back to Sales
+            </a>
+
+            <a th:href="@{/dashboard}" class="btn dashboard-btn">
+                Dashboard
+            </a>
+        </div>
     </div>
 
-    <div th:if="${errorMessage}" class="message error"
-         th:text="${errorMessage}"></div>
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
 
-    <form th:action="@{/sales}" method="post" id="saleForm">
+    <form id="saleForm" th:action="@{/sales}" method="post">
 
         <!-- CUSTOMER INFORMATION -->
         <div class="panel">
-            <h2>Customer Information</h2>
 
-            <div class="field">
-                <label for="customerId">Customer Type</label>
+            <h2 class="section-title">Customer Information</h2>
+
+            <div class="form-group">
+                <label for="customerId">Select Existing Customer</label>
 
                 <select id="customerId" name="customerId">
                     <option value="">Walk-in Customer</option>
@@ -214,136 +424,148 @@
                     </option>
                 </select>
 
-                <p class="help">
-                    Select a registered customer or enter details for a walk-in customer.
-                </p>
+                <span class="help-text">
+                    Select an existing customer or enter details for a walk-in customer.
+                </span>
             </div>
 
-            <div id="walkInFields">
+            <div id="walkInFields" class="walk-in-fields">
 
-                <div class="customer-grid">
+                <div class="form-group">
+                    <label for="walkInName">Customer Name *</label>
+                    <input type="text"
+                           id="walkInName"
+                           name="walkInName"
+                           maxlength="150"
+                           placeholder="Enter customer name">
+                </div>
 
-                    <div class="field">
-                        <label for="walkInName">Customer Name</label>
-                        <input type="text"
-                               id="walkInName"
-                               name="walkInName"
-                               maxlength="150"
-                               placeholder="Enter customer name">
-                    </div>
+                <div class="form-group">
+                    <label for="walkInPhone">Phone Number</label>
+                    <input type="text"
+                           id="walkInPhone"
+                           name="walkInPhone"
+                           maxlength="30"
+                           placeholder="Enter phone number">
+                </div>
 
-                    <div class="field">
-                        <label for="walkInPhone">Phone Number</label>
-                        <input type="tel"
-                               id="walkInPhone"
-                               name="walkInPhone"
-                               maxlength="30"
-                               placeholder="Enter phone number">
-                    </div>
-
-                    <div class="field full-width">
-                        <label for="walkInAddress">Address</label>
-                        <textarea id="walkInAddress"
-                                  name="walkInAddress"
-                                  rows="2"
-                                  maxlength="500"
-                                  placeholder="Enter customer address"></textarea>
-                    </div>
-
+                <div class="form-group">
+                    <label for="walkInAddress">Address</label>
+                    <input type="text"
+                           id="walkInAddress"
+                           name="walkInAddress"
+                           maxlength="500"
+                           placeholder="Enter customer address">
                 </div>
 
             </div>
+
         </div>
 
-        <!-- SALE PRODUCTS -->
+        <!-- PRODUCT INFORMATION -->
         <div class="panel">
-            <h2>Sale Products</h2>
+
+            <div class="product-header">
+                <h2 class="section-title">Sale Products</h2>
+
+                <button type="button"
+                        id="addProductBtn"
+                        class="btn add-btn">
+                    + Add Product
+                </button>
+            </div>
 
             <div id="productRows"></div>
 
-            <button type="button" class="add-btn" id="addProductBtn">
-                + Add Product
-            </button>
+            <template id="productRowTemplate">
+                <div class="product-row">
 
-            <div class="total-box">
-                <span>Grand Total</span>
-                <span class="total-value">
-                    Rs. <span id="grandTotal">0.00</span>
-                </span>
+                    <div class="form-group">
+                        <label>Product *</label>
+
+                        <select name="productIds"
+                                class="product-select"
+                                required>
+
+                            <option value="">Select Product</option>
+
+                            <option th:each="product : ${products}"
+                                    th:value="${product.id}"
+                                    th:attr="data-price=${product.sellingPrice},
+                                             data-stock=${product.stockQuantity}"
+                                    th:text="${product.name + ' (' + product.sku + ') - Stock: ' + product.stockQuantity}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity *</label>
+
+                        <input type="number"
+                               name="quantities"
+                               class="quantity-input"
+                               min="0.001"
+                               step="0.001"
+                               value="1"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Unit Price (Rs.)</label>
+
+                        <input type="text"
+                               class="unit-price"
+                               value="0.00"
+                               readonly>
+                    </div>
+
+                    <button type="button"
+                            class="remove-btn">
+                        Remove
+                    </button>
+
+                </div>
+            </template>
+
+            <div class="total-section">
+                <span class="total-label">Grand Total</span>
+                <span class="total-value" id="grandTotal">Rs. 0.00</span>
             </div>
+
         </div>
 
         <!-- ADDITIONAL INFORMATION -->
         <div class="panel">
-            <h2>Additional Information</h2>
 
-            <div class="field">
-                <label for="notes">Notes (Optional)</label>
+            <h2 class="section-title">Additional Information</h2>
+
+            <div class="form-group">
+                <label for="notes">Sale Notes</label>
+
                 <textarea id="notes"
                           name="notes"
-                          rows="3"
                           maxlength="500"
-                          placeholder="Enter any notes about this sale..."></textarea>
+                          placeholder="Optional notes about this sale..."></textarea>
             </div>
 
-            <div class="actions">
-                <a th:href="@{/sales}" class="back-btn">Cancel</a>
+            <div class="form-actions">
 
-                <button type="submit" class="submit-btn">
+                <a th:href="@{/sales}" class="btn cancel-btn">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn submit-btn">
                     Complete Sale
                 </button>
+
             </div>
+
         </div>
 
     </form>
+
 </div>
-
-<!-- PRODUCT ROW TEMPLATE -->
-<template id="productRowTemplate">
-    <div class="product-row">
-
-        <div class="product-field">
-            <label>Product</label>
-
-            <select name="productIds" class="product-select" required>
-                <option value="">Select Product</option>
-
-                <option th:each="product : ${products}"
-                        th:value="${product.id}"
-                        th:attr="data-price=${product.sellingPrice},
-                                 data-stock=${product.stockQuantity}"
-                        th:text="${product.name + ' (' + product.sku + ')'}">
-                </option>
-            </select>
-        </div>
-
-        <div>
-            <label>Quantity</label>
-
-            <input type="number"
-                   name="quantities"
-                   class="quantity-input"
-                   min="0.001"
-                   step="0.001"
-                   placeholder="0.000"
-                   required>
-        </div>
-
-        <div>
-            <label>Subtotal</label>
-
-            <div class="row-total">
-                Rs. <span class="subtotal">0.00</span>
-            </div>
-        </div>
-
-        <button type="button"
-                class="remove-btn"
-                title="Remove product"
-                aria-label="Remove product">×</button>
-
-    </div>
-</template>
 
 <script th:src="@{/js/sales-create.js}"></script>
 

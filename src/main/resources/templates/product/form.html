@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -9,57 +10,108 @@
     </title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 24px;
+            font-family: Arial, Helvetica, sans-serif;
             background: #f3f5f9;
             color: #1f2937;
         }
 
         .container {
-            max-width: 900px;
-            margin: 35px auto;
-            padding: 25px;
+            width: 100%;
+            max-width: 950px;
+            margin: 20px auto;
         }
 
         .card {
             background: white;
             padding: 30px;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, .07);
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
         }
 
-        h1 { margin-top: 0; }
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
+            gap: 21px;
         }
 
         .field {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            min-width: 0;
         }
 
-        .full { grid-column: 1 / -1; }
+        .full {
+            grid-column: 1 / -1;
+        }
 
-        label { font-weight: 600; }
+        label {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
-            padding: 11px;
+            min-height: 44px;
+            padding: 11px 12px;
             border: 1px solid #cbd5e1;
             border-radius: 7px;
+            background: white;
+            color: #1f2937;
             font: inherit;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        input[type="file"] {
+            padding: 9px;
+            background: #f8fafc;
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
+            line-height: 1.5;
+        }
+
+        .help {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .checkbox {
@@ -67,36 +119,80 @@
             flex-direction: row;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
         .checkbox input {
-            width: auto;
+            width: 18px;
+            height: 18px;
+            min-height: auto;
+            accent-color: #2563eb;
+        }
+
+        .image-section {
+            padding: 16px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .image-section p {
+            margin: 0 0 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
         }
 
         .preview {
-            width: 180px;
-            height: 150px;
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            height: 170px;
             object-fit: contain;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            background: #f9fafb;
-            padding: 5px;
+            background: white;
+            padding: 6px;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+        }
+
+        .message {
+            padding: 13px 15px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .actions {
             display: flex;
+            flex-wrap: wrap;
             gap: 12px;
-            margin-top: 25px;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid #e2e8f0;
         }
 
         .btn {
+            min-height: 43px;
+            padding: 12px 20px;
             border: 0;
             border-radius: 7px;
-            padding: 12px 18px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
+            font-weight: 600;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .primary {
@@ -109,27 +205,68 @@
             color: #111827;
         }
 
-        .message {
-            padding: 12px;
-            border-radius: 7px;
-            margin-bottom: 20px;
+        .btn:hover {
+            filter: brightness(.96);
         }
 
-        .error {
-            background: #fee2e2;
-            color: #991b1b;
+        .btn:focus-visible {
+            outline: 3px solid #93c5fd;
+            outline-offset: 2px;
         }
 
-        .help {
-            color: #64748b;
-            font-size: 13px;
+        @media (max-width: 700px) {
+            body {
+                padding: 13px;
+            }
+
+            .container {
+                margin: 8px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .full {
+                grid-column: auto;
+            }
         }
 
-        @media (max-width: 650px) {
-            .container { padding: 12px; }
-            .card { padding: 20px; }
-            .grid { grid-template-columns: 1fr; }
-            .full { grid-column: auto; }
+        @media (max-width: 420px) {
+            body {
+                padding: 9px;
+            }
+
+            .card {
+                padding: 15px;
+                border-radius: 9px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+
+            .preview {
+                max-width: 100%;
+                height: 150px;
+            }
         }
     </style>
 </head>
@@ -139,8 +276,12 @@
 <div class="container">
     <div class="card">
 
-        <h1 th:text="${pageTitle}">Add Product</h1>
-        <p>Enter the product information below.</p>
+        <header class="page-header">
+            <h1 th:text="${pageTitle}">Add Product</h1>
+            <p class="subtitle">
+                Enter the product information below.
+            </p>
+        </header>
 
         <div th:if="${errorMessage}"
              class="message error"
@@ -250,37 +391,42 @@
                 <div class="field full">
                     <label for="imageFile">Product Image</label>
 
-                    <input id="imageFile"
-                           type="file"
-                           name="imageFile"
-                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                    <div class="image-section">
+                        <input id="imageFile"
+                               type="file"
+                               name="imageFile"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
 
-                    <span class="help">
-                        JPG, JPEG, PNG or WebP. Maximum size: 5 MB.
-                        Leave empty to keep the current image when editing.
-                    </span>
+                        <p class="help">
+                            JPG, JPEG, PNG or WebP. Maximum size: 5 MB.
+                            Leave empty to keep the current image when editing.
+                        </p>
 
-                    <div th:if="${product.imagePath != null
-                                  and !product.imagePath.isBlank()}">
-                        <p>Current image:</p>
+                        <div th:if="${product.imagePath != null
+                                     and !product.imagePath.isBlank()}">
 
-                        <img class="preview"
-                             th:src="${product.imagePath}"
-                             th:alt="${product.name}">
+                            <p>Current image:</p>
+
+                            <img class="preview"
+                                 th:src="${product.imagePath}"
+                                 th:alt="${product.name}">
+                        </div>
+
+                        <div id="newImagePreviewContainer"
+                             class="preview-container"
+                             hidden>
+
+                            <p>Selected image preview:</p>
+
+                            <img id="newImagePreview"
+                                 class="preview"
+                                 alt="Selected product image">
+                        </div>
                     </div>
-
-                    <div id="newImagePreviewContainer" hidden>
-                        <p>Selected image preview:</p>
-                        <img id="newImagePreview"
-                             class="preview"
-                             alt="Selected product image">
-                    </div>
-
-
                 </div>
 
                 <div class="field full">
-                    <label class="checkbox">
+                    <label class="checkbox" for="active">
                         <input type="checkbox" th:field="*{active}">
                         Product is active
                     </label>
@@ -302,53 +448,7 @@
     </div>
 </div>
 
-<script>
-    const imageInput = document.getElementById("imageFile");
-    const previewContainer =
-        document.getElementById("newImagePreviewContainer");
-    const preview = document.getElementById("newImagePreview");
-
-    let previewUrl = null;
-
-    imageInput.addEventListener("change", function () {
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-            previewUrl = null;
-        }
-
-        const file = this.files[0];
-
-        if (!file) {
-            previewContainer.hidden = true;
-            preview.removeAttribute("src");
-            return;
-        }
-
-        const allowedTypes = [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-        ];
-
-        if (!allowedTypes.includes(file.type)) {
-            alert("Please select a JPG, PNG, or WebP image.");
-            this.value = "";
-            previewContainer.hidden = true;
-            return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            alert("Image size must not exceed 5 MB.");
-            this.value = "";
-            previewContainer.hidden = true;
-            return;
-        }
-
-        previewUrl = URL.createObjectURL(file);
-        preview.src = previewUrl;
-        previewContainer.hidden = false;
-    });
-</script>
+<script th:src="@{/js/product-form.js}" defer></script>
 
 </body>
 </html>

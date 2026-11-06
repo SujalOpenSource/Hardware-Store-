@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,72 +7,242 @@
     <title>Product Details | Hardware Store</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 25px;
+            padding: 24px;
             font-family: Arial, sans-serif;
             background: #f3f5f9;
             color: #1f2937;
         }
 
         .container {
-            max-width: 900px;
-            margin: 30px auto;
+            width: 100%;
+            max-width: 1000px;
+            margin: 24px auto;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 27px;
+            overflow-wrap: anywhere;
+        }
+
+        .subtitle {
+            margin: 8px 0 0;
+            color: #64748b;
+            font-size: 14px;
         }
 
         .layout {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            gap: 28px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .image-section {
+            min-width: 0;
         }
 
         .product-image {
+            display: block;
             width: 100%;
-            height: 330px;
+            height: 360px;
             object-fit: contain;
             background: #f8fafc;
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            border-radius: 12px;
+            padding: 12px;
         }
 
         .no-image {
-            height: 330px;
+            min-height: 360px;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            padding: 20px;
             background: #f8fafc;
             color: #64748b;
-            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
         }
 
-        .details p {
-            padding-bottom: 10px;
+        .details {
+            min-width: 0;
+        }
+
+        .details-heading {
+            margin: 0 0 18px;
+            font-size: 19px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 14px 0;
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .label { color: #64748b; }
-        .value { font-weight: 600; }
-
-        .btn {
-            display: inline-block;
-            padding: 11px 16px;
-            border-radius: 7px;
-            text-decoration: none;
-            margin: 16px 8px 0 0;
+        .label {
+            color: #64748b;
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
-        .primary { background: #2563eb; color: white; }
-        .secondary { background: #e5e7eb; color: #111827; }
+        .value {
+            font-weight: 600;
+            font-size: 14px;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
 
-        @media (max-width: 650px) {
-            .layout { grid-template-columns: 1fr; }
+        .status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .description {
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 42px;
+            padding: 11px 18px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .secondary:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                margin: 10px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+                gap: 26px;
+            }
+
+            .product-image,
+            .no-image {
+                height: 300px;
+                min-height: 300px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 16px;
+                border-radius: 10px;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+
+            .product-image,
+            .no-image {
+                height: 240px;
+                min-height: 240px;
+            }
+
+            .detail-item {
+                gap: 10px;
+            }
+
+            .label,
+            .value {
+                font-size: 13px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -80,11 +251,16 @@
 <div class="container">
     <div class="card">
 
-        <h1 th:text="${product.name}">Product Details</h1>
+        <div class="page-header">
+            <div>
+                <h1 th:text="${product.name}">Product Details</h1>
+                <p class="subtitle">View complete product information</p>
+            </div>
+        </div>
 
         <div class="layout">
 
-            <div>
+            <div class="image-section">
                 <img th:if="${product.imagePath != null
                               and !product.imagePath.isBlank()}"
                      th:src="${product.imagePath}"
@@ -99,69 +275,80 @@
             </div>
 
             <div class="details">
+                <h2 class="details-heading">Product Information</h2>
 
-                <p>
-                    <span class="label">SKU:</span>
+                <div class="detail-item">
+                    <span class="label">SKU</span>
                     <span class="value" th:text="${product.sku}"></span>
-                </p>
+                </div>
 
-                <p>
-                    <span class="label">Category:</span>
+                <div class="detail-item">
+                    <span class="label">Category</span>
                     <span class="value"
                           th:text="${product.category.name}"></span>
-                </p>
+                </div>
 
-                <p>
-                    <span class="label">Purchase price:</span>
-                    NPR <span class="value"
-                              th:text="${#numbers.formatDecimal(
-                                  product.purchasePrice, 1, 2)}"></span>
-                </p>
+                <div class="detail-item">
+                    <span class="label">Purchase Price</span>
+                    <span class="value">
+                        NPR
+                        <span th:text="${#numbers.formatDecimal(
+                            product.purchasePrice, 1, 2)}"></span>
+                    </span>
+                </div>
 
-                <p>
-                    <span class="label">Selling price:</span>
-                    NPR <span class="value"
-                              th:text="${#numbers.formatDecimal(
-                                  product.sellingPrice, 1, 2)}"></span>
-                </p>
+                <div class="detail-item">
+                    <span class="label">Selling Price</span>
+                    <span class="value">
+                        NPR
+                        <span th:text="${#numbers.formatDecimal(
+                            product.sellingPrice, 1, 2)}"></span>
+                    </span>
+                </div>
 
-                <p>
-                    <span class="label">Stock quantity:</span>
+                <div class="detail-item">
+                    <span class="label">Stock Quantity</span>
                     <span class="value"
                           th:text="${product.stockQuantity}"></span>
-                </p>
+                </div>
 
-                <p>
-                    <span class="label">Minimum stock:</span>
+                <div class="detail-item">
+                    <span class="label">Minimum Stock</span>
                     <span class="value"
                           th:text="${product.minimumStock}"></span>
-                </p>
+                </div>
 
-                <p>
-                    <span class="label">Description:</span>
-                    <span class="value"
+                <div class="detail-item">
+                    <span class="label">Description</span>
+                    <span class="value description"
                           th:text="${product.description != null
                               and !product.description.isBlank()
                               ? product.description : 'No description'}"></span>
-                </p>
+                </div>
 
-                <p>
-                    <span class="label">Status:</span>
-                    <span class="value"
-                          th:text="${product.active ? 'Active' : 'Inactive'}"></span>
-                </p>
-
+                <div class="detail-item">
+                    <span class="label">Status</span>
+                    <span class="value">
+                        <span th:if="${product.active}"
+                              class="status active">Active</span>
+                        <span th:unless="${product.active}"
+                              class="status inactive">Inactive</span>
+                    </span>
+                </div>
             </div>
+
         </div>
 
-        <a th:href="@{/products}" class="btn secondary">
-            Back to Products
-        </a>
+        <div class="actions">
+            <a th:href="@{/products}" class="btn secondary">
+                Back to Products
+            </a>
 
-        <a th:href="@{/products/edit/{id}(id=${product.id})}"
-           class="btn primary">
-            Edit Product
-        </a>
+            <a th:href="@{/products/edit/{id}(id=${product.id})}"
+               class="btn primary">
+                Edit Product
+            </a>
+        </div>
 
     </div>
 </div>

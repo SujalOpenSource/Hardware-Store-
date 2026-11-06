@@ -1,13 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Customer Management</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -18,11 +20,13 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: auto;
         }
 
-        .header, .toolbar {
+        .header,
+        .toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -30,9 +34,21 @@
             flex-wrap: wrap;
         }
 
-        h1 { margin: 0 0 8px; }
+        h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+        }
 
-        .muted { color: #64748b; }
+        h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+        }
+
+        .muted {
+            color: #64748b;
+            line-height: 1.5;
+            font-size: 14px;
+        }
 
         .panel {
             margin-top: 24px;
@@ -43,38 +59,96 @@
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             border: 0;
             border-radius: 7px;
             padding: 11px 15px;
+            min-height: 40px;
             font-size: 14px;
             text-decoration: none;
             cursor: pointer;
+            white-space: nowrap;
         }
 
-        .primary { background: #2457c5; color: white; }
-        .secondary { background: #e9edf3; color: #1f2937; }
-        .danger { background: #dc2626; color: white; }
-        .small { padding: 8px 10px; }
+        .primary {
+            background: #2457c5;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #1d46a3;
+        }
+
+        .secondary {
+            background: #e9edf3;
+            color: #1f2937;
+        }
+
+        .secondary:hover {
+            background: #dce3ed;
+        }
+
+        .danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .danger:hover {
+            background: #b91c1c;
+        }
+
+        .small {
+            padding: 8px 10px;
+            min-height: 34px;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
 
         input[type="search"] {
             width: min(330px, 100%);
+            min-width: 0;
             padding: 11px;
             border: 1px solid #cbd5e1;
             border-radius: 7px;
             font-size: 14px;
         }
 
+        input[type="search"]:focus {
+            outline: none;
+            border-color: #2457c5;
+            box-shadow: 0 0 0 3px rgba(36, 87, 197, 0.1);
+        }
+
         .message {
             padding: 12px 15px;
             margin-top: 16px;
             border-radius: 7px;
+            font-size: 14px;
         }
 
-        .success { background: #dcfce7; color: #166534; }
-        .error { background: #fee2e2; color: #991b1b; }
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
 
-        .table-wrap { overflow-x: auto; margin-top: 22px; }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 22px;
+            -webkit-overflow-scrolling: touch;
+        }
 
         table {
             width: 100%;
@@ -82,7 +156,8 @@
             min-width: 760px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px 12px;
             border-bottom: 1px solid #e5e7eb;
             text-align: left;
@@ -92,6 +167,11 @@
         th {
             background: #f8fafc;
             color: #475569;
+            white-space: nowrap;
+        }
+
+        td {
+            overflow-wrap: anywhere;
         }
 
         .actions {
@@ -100,7 +180,9 @@
             gap: 8px;
         }
 
-        .actions form { margin: 0; }
+        .actions form {
+            margin: 0;
+        }
 
         .empty {
             padding: 35px;
@@ -108,11 +190,170 @@
             color: #64748b;
         }
 
+        /* Mobile customer cards */
+        .customer-cards {
+            display: none;
+            margin-top: 20px;
+            gap: 14px;
+        }
+
+        .customer-card {
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 9px;
+            background: #fff;
+        }
+
+        .customer-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .customer-card h3 {
+            margin: 0;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .customer-id {
+            color: #64748b;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .customer-info {
+            display: grid;
+            gap: 11px;
+        }
+
+        .info-item {
+            min-width: 0;
+        }
+
+        .info-label {
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .card-actions form {
+            flex: 1;
+            margin: 0;
+        }
+
+        .card-actions .btn {
+            width: 100%;
+        }
+
+        .mobile-empty {
+            display: none;
+            padding: 28px 12px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+
         @media (max-width: 600px) {
-            body { padding: 14px; }
-            .panel { padding: 15px; }
-            .toolbar form { width: 100%; }
-            input[type="search"] { width: 100%; }
+            body {
+                padding: 14px;
+            }
+
+            .panel {
+                padding: 15px;
+                margin-top: 18px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .header {
+                align-items: flex-start;
+            }
+
+            .header > a {
+                width: 100%;
+            }
+
+            .toolbar {
+                align-items: flex-start;
+            }
+
+            .toolbar > a {
+                width: 100%;
+            }
+
+            .search-form {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-form input[type="search"] {
+                grid-column: 1 / -1;
+                width: 100%;
+            }
+
+            .search-form .btn {
+                width: 100%;
+            }
+
+            .table-wrap {
+                display: none;
+            }
+
+            .customer-cards {
+                display: grid;
+            }
+
+            .mobile-empty {
+                display: block;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 12px;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -123,7 +364,9 @@
     <div class="header">
         <div>
             <h1>Customers</h1>
-            <p class="muted">Manage your hardware store's customer records.</p>
+            <p class="muted">
+                Manage your hardware store's customer records.
+            </p>
         </div>
 
         <a th:href="@{/dashboard}" class="btn secondary">
@@ -133,18 +376,22 @@
 
     <div th:if="${successMessage}"
          class="message success"
-         th:text="${successMessage}"></div>
+         th:text="${successMessage}">
+    </div>
 
     <div th:if="${errorMessage}"
          class="message error"
-         th:text="${errorMessage}"></div>
+         th:text="${errorMessage}">
+    </div>
 
     <div class="panel">
 
         <div class="toolbar">
             <div>
                 <h2>Customer Directory</h2>
-                <p class="muted">View, search and manage customers.</p>
+                <p class="muted">
+                    View, search and manage customers.
+                </p>
             </div>
 
             <a th:href="@{/customers/new}" class="btn primary">
@@ -152,19 +399,25 @@
             </a>
         </div>
 
-        <form th:action="@{/customers}" method="get"
-              class="toolbar" style="margin-top: 22px;">
+        <form th:action="@{/customers}"
+              method="get"
+              class="search-form">
 
             <input type="search"
                    name="keyword"
                    placeholder="Search name, phone or email"
                    th:value="${keyword}">
 
-            <button type="submit" class="btn primary">Search</button>
+            <button type="submit" class="btn primary">
+                Search
+            </button>
 
-            <a th:href="@{/customers}" class="btn secondary">Clear</a>
+            <a th:href="@{/customers}" class="btn secondary">
+                Clear
+            </a>
         </form>
 
+        <!-- Desktop and tablet table -->
         <div class="table-wrap">
             <table>
                 <thead>
@@ -188,18 +441,22 @@
 
                     <td>
                         <div class="actions">
+
                             <a th:href="@{/customers/edit/{id}(id=${customer.id})}"
-                               class="btn secondary small">Edit</a>
+                               class="btn secondary small">
+                                Edit
+                            </a>
 
                             <form th:action="@{/customers/delete/{id}(id=${customer.id})}"
                                   method="post"
-                                  onsubmit="return confirm('Delete this customer?');">
+                                  class="delete-customer-form">
 
                                 <button type="submit"
                                         class="btn danger small">
                                     Delete
                                 </button>
                             </form>
+
                         </div>
                     </td>
                 </tr>
@@ -213,7 +470,73 @@
             </table>
         </div>
 
+        <!-- Mobile customer cards -->
+        <div class="customer-cards">
+
+            <div class="customer-card"
+                 th:each="customer : ${customers}">
+
+                <div class="customer-card-header">
+                    <h3 th:text="${customer.name}">Customer Name</h3>
+
+                    <span class="customer-id">
+                        ID: <span th:text="${customer.id}"></span>
+                    </span>
+                </div>
+
+                <div class="customer-info">
+
+                    <div class="info-item">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value"
+                              th:text="${customer.phone}"></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value"
+                              th:text="${customer.email != null ? customer.email : '—'}"></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Address</span>
+                        <span class="info-value"
+                              th:text="${customer.address != null ? customer.address : '—'}"></span>
+                    </div>
+
+                </div>
+
+                <div class="card-actions">
+
+                    <a th:href="@{/customers/edit/{id}(id=${customer.id})}"
+                       class="btn secondary">
+                        Edit
+                    </a>
+
+                    <form th:action="@{/customers/delete/{id}(id=${customer.id})}"
+                          method="post"
+                          class="delete-customer-form">
+
+                        <button type="submit" class="btn danger">
+                            Delete
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mobile-empty"
+             th:if="${#lists.isEmpty(customers)}">
+            No customers found. Add your first customer to get started.
+        </div>
+
     </div>
 </div>
+
+<script th:src="@{/js/customer-list.js}" defer></script>
+
 </body>
 </html>

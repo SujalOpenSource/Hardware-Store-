@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -7,7 +8,9 @@
     <title th:text="${pageTitle}">Customer Form</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -17,19 +20,33 @@
             color: #1f2937;
         }
 
-        .container { max-width: 760px; margin: auto; }
+        .container {
+            width: 100%;
+            max-width: 760px;
+            margin: auto;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
         .panel {
-            margin-top: 22px;
             padding: 26px;
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
         }
-
-        h1 { margin: 0 0 8px; }
-
-        .muted { color: #64748b; }
 
         .grid {
             display: grid;
@@ -38,8 +55,13 @@
             margin-top: 24px;
         }
 
-        .field { min-width: 0; }
-        .full { grid-column: 1 / -1; }
+        .field {
+            min-width: 0;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
 
         label {
             display: block;
@@ -48,29 +70,42 @@
             font-weight: bold;
         }
 
-        input, textarea {
+        input,
+        textarea {
             width: 100%;
+            min-width: 0;
             padding: 12px;
             border: 1px solid #cbd5e1;
             border-radius: 7px;
             font: inherit;
+            font-size: 14px;
+            color: #1f2937;
         }
 
-        textarea { min-height: 110px; resize: vertical; }
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
 
-        input:focus, textarea:focus {
-            outline: 2px solid #bfdbfe;
+        input:focus,
+        textarea:focus {
+            outline: none;
             border-color: #2457c5;
+            box-shadow: 0 0 0 3px rgba(36, 87, 197, 0.1);
         }
 
         .actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
             margin-top: 25px;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 42px;
             padding: 11px 16px;
             border: 0;
             border-radius: 7px;
@@ -79,8 +114,23 @@
             cursor: pointer;
         }
 
-        .primary { background: #2457c5; color: white; }
-        .secondary { background: #e9edf3; color: #1f2937; }
+        .primary {
+            background: #2457c5;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #1d46a3;
+        }
+
+        .secondary {
+            background: #e9edf3;
+            color: #1f2937;
+        }
+
+        .secondary:hover {
+            background: #dce3ed;
+        }
 
         .message {
             padding: 12px 15px;
@@ -88,13 +138,59 @@
             border-radius: 7px;
             background: #fee2e2;
             color: #991b1b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .panel {
+                padding: 22px;
+            }
         }
 
         @media (max-width: 600px) {
-            body { padding: 14px; }
-            .panel { padding: 18px; }
-            .grid { grid-template-columns: 1fr; }
-            .full { grid-column: auto; }
+            body {
+                padding: 14px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+                margin-top: 20px;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 14px;
+            }
         }
     </style>
 </head>
@@ -102,14 +198,19 @@
 <body>
 <div class="container">
 
-    <h1 th:text="${pageTitle}">Customer Form</h1>
-    <p class="muted">Enter the customer's contact information below.</p>
+    <div class="page-header">
+        <h1 th:text="${pageTitle}">Customer Form</h1>
+        <p class="muted">
+            Enter the customer's contact information below.
+        </p>
+    </div>
 
     <div class="panel">
 
         <div th:if="${errorMessage}"
              class="message"
-             th:text="${errorMessage}"></div>
+             th:text="${errorMessage}">
+        </div>
 
         <form th:action="@{/customers/save}"
               th:object="${customer}"
@@ -121,6 +222,7 @@
 
                 <div class="field">
                     <label for="name">Customer Name *</label>
+
                     <input id="name"
                            type="text"
                            th:field="*{name}"
@@ -131,6 +233,7 @@
 
                 <div class="field">
                     <label for="phone">Phone Number *</label>
+
                     <input id="phone"
                            type="tel"
                            th:field="*{phone}"
@@ -141,6 +244,7 @@
 
                 <div class="field full">
                     <label for="email">Email Address</label>
+
                     <input id="email"
                            type="email"
                            th:field="*{email}"
@@ -150,6 +254,7 @@
 
                 <div class="field full">
                     <label for="address">Address</label>
+
                     <textarea id="address"
                               th:field="*{address}"
                               maxlength="500"
@@ -159,6 +264,7 @@
             </div>
 
             <div class="actions">
+
                 <button type="submit" class="btn primary">
                     Save Customer
                 </button>
@@ -166,6 +272,7 @@
                 <a th:href="@{/customers}" class="btn secondary">
                     Cancel
                 </a>
+
             </div>
 
         </form>
