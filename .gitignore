@@ -31,3 +31,20 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Maven
+target/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+application-local.properties
+secrets.properties
+
+# IntelliJ local files
+.idea/
+*.iml
+
+# Logs
+*.log
