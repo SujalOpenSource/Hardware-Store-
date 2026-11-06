@@ -1,40 +1,83 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-    const rowsContainer = document.getElementById("productRows");
-    const template = document.getElementById("productRowTemplate");
-    const addButton = document.getElementById("addProductBtn");
-    const grandTotalElement = document.getElementById("grandTotal");
     const saleForm = document.getElementById("saleForm");
+    const productRows = document.getElementById("productRows");
+    const productRowTemplate = document.getElementById("productRowTemplate");
+    const addProductBtn = document.getElementById("addProductBtn");
+    const grandTotal = document.getElementById("grandTotal");
 
-    const customerSelect = document.getElementById("customerId");
+    const customerId = document.getElementById("customerId");
     const walkInFields = document.getElementById("walkInFields");
-
     const walkInName = document.getElementById("walkInName");
-    const walkInPhone = document.getElementById("walkInPhone");
-    const walkInAddress = document.getElementById("walkInAddress");
+
+    if (!saleForm || !productRows || !productRowTemplate) {
+        return;
+    }
+
+    const formatMoney = (amount) => {
+        return amount.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    };
 
     function updateCustomerFields() {
-        const isWalkIn = !customerSelect.value;
+        const isWalkIn = !customerId.value;
 
-        walkInFields.hidden = !isWalkIn;
-
+        walkInFields.classList.toggle("visible", isWalkIn);
         walkInName.required = isWalkIn;
-        walkInPhone.required = isWalkIn;
-        walkInAddress.required = isWalkIn;
+    }
+
+    function updateRow(row) {
+        const productSelect = row.querySelector(".product-select");
+        const quantityInput = row.querySelector(".quantity-input");
+        const unitPriceInput = row.querySelector(".unit-price");
+
+        const selectedOption =
+            productSelect.options[productSelect.selectedIndex];
+
+        const price = Number(selectedOption?.dataset.price || 0);
+        const stock = Number(selectedOption?.dataset.stock || 0);
+        const quantity = Number(quantityInput.value || 0);
+
+        unitPriceInput.value = formatMoney(price);
+
+        quantityInput.setCustomValidity("");
+
+        if (productSelect.value && quantity > stock) {
+            quantityInput.setCustomValidity(
+                `Available stock is ${stock}. Please enter a lower quantity.`
+            );
+        }
+
+        if (productSelect.value && quantity <= 0) {
+            quantityInput.setCustomValidity(
+                "Quantity must be greater than zero."
+            );
+        }
+
+        return productSelect.value ? price * quantity : 0;
+    }
+
+    function updateTotals() {
+        let total = 0;
+
+        productRows.querySelectorAll(".product-row").forEach(row => {
+            total += updateRow(row);
+        });
+
+        grandTotal.textContent = `Rs. ${formatMoney(total)}`;
     }
 
     function addProductRow() {
-        const fragment = template.content.cloneNode(true);
+        const fragment = productRowTemplate.content.cloneNode(true);
         const row = fragment.querySelector(".product-row");
 
         const productSelect = row.querySelector(".product-select");
         const quantityInput = row.querySelector(".quantity-input");
         const removeButton = row.querySelector(".remove-btn");
 
-        productSelect.addEventListener("change", () => {
-            quantityInput.value = "";
-            updateTotals();
-        });
-
+        productSelect.addEventListener("change", updateTotals);
         quantityInput.addEventListener("input", updateTotals);
 
         removeButton.addEventListener("click", () => {
@@ -42,67 +85,70 @@ document.addEventListener("DOMContentLoaded", () => {
             updateTotals();
         });
 
-        rowsContainer.appendChild(fragment);
+        productRows.appendChild(fragment);
         updateTotals();
     }
 
-    function updateTotals() {
-        let grandTotal = 0;
-
-        rowsContainer.querySelectorAll(".product-row").forEach(row => {
-            const select = row.querySelector(".product-select");
-            const quantityInput = row.querySelector(".quantity-input");
-            const subtotalElement = row.querySelector(".subtotal");
-
-            const selectedOption = select.options[select.selectedIndex];
-            const price = Number(selectedOption?.dataset.price || 0);
-            const stock = Number(selectedOption?.dataset.stock || 0);
-            const quantity = Number(quantityInput.value || 0);
-
-            const subtotal = price * quantity;
-
-            subtotalElement.textContent = subtotal.toFixed(2);
-            grandTotal += subtotal;
-
-            quantityInput.setCustomValidity(
-                quantity > stock && quantity > 0
-                    ? `Only ${stock} units are currently available.`
-                    : ""
-            );
-        });
-
-        grandTotalElement.textContent = grandTotal.toFixed(2);
-    }
-
-    customerSelect.addEventListener("change", updateCustomerFields);
-
-    saleForm.addEventListener("submit", event => {
-        const rows = rowsContainer.querySelectorAll(".product-row");
+    function validateProducts() {
+        const rows = productRows.querySelectorAll(".product-row");
 
         if (rows.length === 0) {
-            event.preventDefault();
             alert("Please add at least one product.");
-            return;
+            return false;
         }
 
         const selectedProducts = new Set();
 
         for (const row of rows) {
-            const productId = row.querySelector(".product-select").value;
+            const productSelect = row.querySelector(".product-select");
+            const quantityInput = row.querySelector(".quantity-input");
 
-            if (!productId) {
-                event.preventDefault();
-                alert("Please select a product for every row.");
-                return;
+            if (!productSelect.value) {
+                productSelect.setCustomValidity(
+                    "Please select a product."
+                );
+                productSelect.reportValidity();
+                productSelect.setCustomValidity("");
+                return false;
             }
 
-            if (selectedProducts.has(productId)) {
-                event.preventDefault();
-                alert("Each product should appear only once. Combine its quantity.");
-                return;
+            if (selectedProducts.has(productSelect.value)) {
+                productSelect.setCustomValidity(
+                    "This product has already been added."
+                );
+                productSelect.reportValidity();
+                productSelect.setCustomValidity("");
+                return false;
             }
 
-            selectedProducts.add(productId);
+            selectedProducts.add(productSelect.value);
+
+            if (!quantityInput.value || Number(quantityInput.value) <= 0) {
+                quantityInput.reportValidity();
+                return false;
+            }
+
+            updateRow(row);
+
+            if (!quantityInput.checkValidity()) {
+                quantityInput.reportValidity();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    customerId.addEventListener("change", updateCustomerFields);
+
+    addProductBtn.addEventListener("click", addProductRow);
+
+    saleForm.addEventListener("submit", event => {
+        updateTotals();
+
+        if (!validateProducts()) {
+            event.preventDefault();
+            return;
         }
 
         if (!saleForm.checkValidity()) {
@@ -110,8 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
             saleForm.reportValidity();
         }
     });
-
-    addButton.addEventListener("click", addProductRow);
 
     updateCustomerFields();
     addProductRow();

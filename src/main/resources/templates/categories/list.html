@@ -20,6 +20,7 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1150px;
             margin: auto;
         }
@@ -35,10 +36,19 @@
 
         h1 {
             margin: 0 0 8px;
+            font-size: 27px;
         }
 
         .muted {
             color: #6b7280;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .card {
@@ -46,17 +56,22 @@
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 3px 12px #0000000a;
-            overflow-x: auto;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 38px;
             padding: 10px 15px;
             border: 0;
             border-radius: 7px;
             text-decoration: none;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            white-space: nowrap;
         }
 
         .primary {
@@ -64,9 +79,17 @@
             color: white;
         }
 
+        .primary:hover {
+            background: #1e40af;
+        }
+
         .secondary {
             background: #e5e7eb;
             color: #111827;
+        }
+
+        .secondary:hover {
+            background: #d1d5db;
         }
 
         .danger {
@@ -74,36 +97,65 @@
             color: #b91c1c;
         }
 
+        .danger:hover {
+            background: #fecaca;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
         }
 
         th, td {
             text-align: left;
             padding: 15px 12px;
             border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
         }
 
         th {
             background: #f9fafb;
+            color: #475569;
             font-size: 13px;
+            font-weight: 700;
+        }
+
+        td {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        tbody tr:hover {
+            background: #fafbfc;
         }
 
         .status {
             display: inline-block;
-            padding: 5px 9px;
+            padding: 5px 10px;
             border-radius: 20px;
             background: #dcfce7;
             color: #166534;
             font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.inactive {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .alert {
-            padding: 12px 16px;
+            padding: 13px 16px;
             border-radius: 7px;
             margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .success {
@@ -120,13 +172,142 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .actions form {
             margin: 0;
         }
+
+        .empty-state {
+            text-align: center !important;
+            padding: 35px 16px !important;
+            color: #64748b;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            table, tbody {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody tr:not(.empty-row) {
+                display: block;
+                margin-bottom: 16px;
+                padding: 10px 15px;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                background: #ffffff;
+            }
+
+            tbody tr:not(.empty-row):hover {
+                background: #ffffff;
+            }
+
+            tbody tr:not(.empty-row) td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 12px 0;
+                border-bottom: 1px solid #f1f5f9;
+                text-align: right;
+            }
+
+            tbody tr:not(.empty-row) td:last-child {
+                border-bottom: 0;
+            }
+
+            tbody tr:not(.empty-row) td::before {
+                content: attr(data-label);
+                color: #64748b;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+            }
+
+            .actions {
+                justify-content: flex-end;
+            }
+
+            .empty-row {
+                display: block;
+            }
+
+            .empty-row td {
+                display: block;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                align-items: stretch;
+            }
+
+            .header > div:first-child {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                flex: 1;
+            }
+
+            .card {
+                padding: 13px;
+                border-radius: 10px;
+            }
+
+            tbody tr:not(.empty-row) {
+                padding: 8px 12px;
+            }
+
+            tbody tr:not(.empty-row) td {
+                gap: 10px;
+                font-size: 13px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+
+            .actions form {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -139,7 +320,7 @@
             </p>
         </div>
 
-        <div>
+        <div class="header-actions">
             <a th:href="@{/dashboard}" class="btn secondary">
                 Dashboard
             </a>
@@ -162,65 +343,72 @@
 
     <div class="card">
 
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Category Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
 
-            <tbody>
-            <tr th:each="category : ${categories}">
-                <td th:text="${category.id}"></td>
+                <tbody>
+                <tr th:each="category : ${categories}">
+                    <td data-label="ID"
+                        th:text="${category.id}"></td>
 
-                <td th:text="${category.name}"></td>
+                    <td data-label="Category Name"
+                        th:text="${category.name}"></td>
 
-                <td th:text="${category.description != null
-                    and !category.description.isBlank()
-                    ? category.description : '-'}">
-                </td>
+                    <td data-label="Description"
+                        th:text="${category.description != null
+                            and !category.description.isBlank()
+                            ? category.description : '-'}">
+                    </td>
 
-                <td>
-                    <span class="status"
-                          th:if="${category.active}">
-                        Active
-                    </span>
+                    <td data-label="Status">
+                        <span class="status"
+                              th:if="${category.active}">
+                            Active
+                        </span>
 
-                    <span th:unless="${category.active}">
-                        Inactive
-                    </span>
-                </td>
+                        <span class="status inactive"
+                              th:unless="${category.active}">
+                            Inactive
+                        </span>
+                    </td>
 
-                <td>
-                    <div class="actions">
-                        <a th:href="@{/categories/edit/{id}(id=${category.id})}"
-                           class="btn secondary">
-                            Edit
-                        </a>
+                    <td data-label="Actions">
+                        <div class="actions">
+                            <a th:href="@{/categories/edit/{id}(id=${category.id})}"
+                               class="btn secondary">
+                                Edit
+                            </a>
 
-                        <form th:action="@{/categories/delete/{id}(id=${category.id})}"
-                              method="post"
-                              onsubmit="return confirm('Delete this category?');">
+                            <form th:action="@{/categories/delete/{id}(id=${category.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Delete this category?');">
 
-                            <button type="submit" class="btn danger">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
+                                <button type="submit" class="btn danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
 
-            <tr th:if="${#lists.isEmpty(categories)}">
-                <td colspan="5" style="text-align:center; padding:32px;">
-                    No categories yet. Click "Add Category" to create one.
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                <tr th:if="${#lists.isEmpty(categories)}"
+                    class="empty-row">
+                    <td colspan="5" class="empty-state">
+                        No categories yet. Click "Add Category" to create one.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
 

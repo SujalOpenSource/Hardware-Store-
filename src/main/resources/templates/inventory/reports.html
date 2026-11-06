@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Reports | Hardware Store</title>
+    <title>Inventory Reports</title>
 
     <style>
         * {
@@ -13,250 +13,213 @@
 
         body {
             margin: 0;
-            padding: 25px;
-            background: #f4f6fa;
-            color: #263247;
+            padding: 24px;
             font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
         }
 
         .container {
-            max-width: 1500px;
-            margin: auto;
+            max-width: 1450px;
+            margin: 0 auto;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
         }
 
-        .header h1 {
+        h1 {
             margin: 0 0 7px;
-            font-size: 27px;
+            font-size: 26px;
         }
 
-        .header p {
+        .subtitle {
             margin: 0;
-            color: #718096;
-            font-size: 14px;
+            color: #64748b;
         }
 
-        .back-btn {
-            padding: 11px 17px;
-            background: #344563;
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
             color: white;
             text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #475569;
+        }
+
+        .btn-success {
+            background: #15803d;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            font-size: 19px;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) auto auto;
+            align-items: end;
+            gap: 14px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
             border-radius: 7px;
             font-size: 14px;
         }
 
-        .filter-panel {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.04);
-            margin-bottom: 25px;
-        }
-
-        .filter-form {
+        .filter-actions {
             display: flex;
-            align-items: end;
-            gap: 15px;
+            gap: 9px;
             flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .filter-group label {
-            font-size: 13px;
-            font-weight: bold;
-            color: #475569;
-        }
-
-        input[type="date"] {
-            padding: 10px;
-            border: 1px solid #d9e0e9;
-            border-radius: 6px;
-            min-width: 180px;
-        }
-
-        .btn {
-            border: none;
-            padding: 11px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #e8edf5;
-            color: #344563;
         }
 
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
+            gap: 15px;
         }
 
         .summary-card {
-            background: white;
-            padding: 21px;
+            padding: 18px;
+            border: 1px solid #e5e7eb;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.04);
-            border-left: 4px solid #2563eb;
+            background: #f8fafc;
+            min-width: 0;
         }
 
-        .summary-card:nth-child(2) {
-            border-left-color: #16a34a;
-        }
-
-        .summary-card:nth-child(3) {
-            border-left-color: #d97706;
-        }
-
-        .summary-card:nth-child(4) {
-            border-left-color: #dc2626;
-        }
-
-        .summary-card .label {
-            color: #718096;
+        .summary-card span {
+            display: block;
+            color: #64748b;
             font-size: 13px;
-            margin-bottom: 12px;
+            margin-bottom: 9px;
         }
 
-        .summary-card .value {
-            font-size: 23px;
-            font-weight: bold;
-            color: #1e293b;
+        .summary-card strong {
+            display: block;
+            font-size: 22px;
             overflow-wrap: anywhere;
-        }
-
-        .section {
-            background: white;
-            border-radius: 10px;
-            padding: 22px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.04);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .section h2 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .section-description {
-            color: #718096;
-            font-size: 13px;
-            margin-top: 6px;
         }
 
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
+            min-width: 850px;
             border-collapse: collapse;
-            min-width: 750px;
         }
 
-        th {
-            background: #f1f5f9;
-            color: #475569;
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
             text-align: left;
-            padding: 13px;
-            font-size: 12px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
-        td {
-            padding: 13px;
-            border-bottom: 1px solid #edf0f5;
-            font-size: 13px;
-            color: #334155;
-        }
-
-        tbody tr:hover {
+        th {
             background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
         }
 
-        .status {
+        .badge {
             display: inline-block;
             padding: 5px 9px;
             border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 700;
         }
 
-        .stock-in {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .stock-out {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .low-stock {
-            background: #fef3c7;
+        .badge-low {
             color: #92400e;
+            background: #fef3c7;
         }
 
-        .out-stock {
+        .badge-out {
+            color: #991b1b;
             background: #fee2e2;
-            color: #b91c1c;
         }
 
-        .normal-stock {
+        .badge-normal {
+            color: #166534;
             background: #dcfce7;
-            color: #15803d;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 25px;
-            color: #94a3b8;
         }
 
         .error-message {
             padding: 13px 16px;
-            background: #fee2e2;
-            color: #b91c1c;
-            border-radius: 7px;
             margin-bottom: 20px;
-            font-size: 14px;
+            border-radius: 8px;
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .empty {
+            padding: 22px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .section-note {
+            color: #64748b;
+            font-size: 13px;
+            margin: -8px 0 16px;
         }
 
         @media (max-width: 1000px) {
             .summary-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-form {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-actions {
+                grid-column: 1 / -1;
             }
         }
 
@@ -265,53 +228,87 @@
                 padding: 14px;
             }
 
+            h1 {
+                font-size: 22px;
+            }
+
+            .header {
+                align-items: stretch;
+            }
+
+            .header .btn {
+                width: 100%;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
             .summary-grid {
                 grid-template-columns: 1fr;
             }
 
-            .filter-group,
-            input[type="date"] {
+            .summary-card strong {
+                font-size: 20px;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                grid-column: auto;
+                flex-direction: column;
+            }
+
+            .filter-actions .btn {
                 width: 100%;
             }
+        }
 
-            .filter-form .btn {
-                flex: 1;
-                text-align: center;
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
             }
 
-            .section {
-                padding: 15px;
+            .card {
+                padding: 13px;
             }
         }
     </style>
 </head>
 
 <body>
-
 <div class="container">
 
     <div class="header">
         <div>
             <h1>Inventory Reports</h1>
-            <p>Monitor current stock levels and inventory movements.</p>
+            <p class="subtitle">
+                Review stock levels and inventory movements.
+            </p>
         </div>
 
-        <a th:href="@{/inventory}" class="back-btn">
-            ← Back to Inventory
+        <a th:href="@{/inventory}" class="btn btn-secondary">
+            Back to Inventory
         </a>
     </div>
 
-    <div class="error-message"
-         th:if="${errorMessage}"
+    <div th:if="${errorMessage != null}"
+         class="error-message"
          th:text="${errorMessage}">
+        Error message
     </div>
 
-    <div class="filter-panel">
+    <!-- Date Filter -->
+    <div class="card">
+        <h2>Filter Report</h2>
+
         <form th:action="@{/inventory/reports}"
               method="get"
               class="filter-form">
 
-            <div class="filter-group">
+            <div class="form-group">
                 <label for="startDate">Start Date</label>
                 <input type="date"
                        id="startDate"
@@ -319,7 +316,7 @@
                        th:value="${startDate}">
             </div>
 
-            <div class="filter-group">
+            <div class="form-group">
                 <label for="endDate">End Date</label>
                 <input type="date"
                        id="endDate"
@@ -327,102 +324,79 @@
                        th:value="${endDate}">
             </div>
 
-            <button type="submit" class="btn btn-primary">
-                Apply Filters
-            </button>
+            <div class="filter-actions">
+                <button type="submit" class="btn">
+                    Apply Filter
+                </button>
 
-            <a th:href="@{/inventory/reports}"
-               class="btn btn-secondary">
-                Clear Filters
-            </a>
+                <a th:href="@{/inventory/reports}"
+                   class="btn btn-secondary">
+                    Clear
+                </a>
 
-            <a th:href="@{/inventory/reports/pdf(
-        startDate=${startDate},
-        endDate=${endDate}
-    )}"
-               class="btn btn-primary">
-                ↓ Download PDF
-            </a>
-
+                <a th:href="@{/inventory/reports/pdf(startDate=${startDate},endDate=${endDate})}"
+                   class="btn btn-success">
+                    Export PDF
+                </a>
+            </div>
         </form>
-
-
-
     </div>
 
     <div th:if="${report != null}">
 
-        <!-- Summary Cards -->
-        <div class="summary-grid">
+        <!-- Inventory Summary -->
+        <div class="card">
+            <h2>Inventory Summary</h2>
 
-            <div class="summary-card">
-                <div class="label">Total Products</div>
-                <div class="value"
-                     th:text="${report.summary.totalProducts}">
-                    0
+            <div class="summary-grid">
+
+                <div class="summary-card">
+                    <span>Total Products</span>
+                    <strong th:text="${report.summary.totalProducts}">0</strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Total Units in Stock</div>
-                <div class="value"
-                     th:text="${#numbers.formatDecimal(report.summary.totalUnits, 1, 3)}">
-                    0
+                <div class="summary-card">
+                    <span>Total Units in Stock</span>
+                    <strong th:text="${report.summary.totalUnits}">0</strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Stock Value (Purchase Cost)</div>
-                <div class="value">
-                    Rs. <span th:text="${#numbers.formatDecimal(report.summary.totalStockValue, 1, 2)}">0.00</span>
+                <div class="summary-card">
+                    <span>Total Stock Value</span>
+                    <strong th:text="${#numbers.formatDecimal(report.summary.totalStockValue, 1, 2)}">
+                        0.00
+                    </strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Low-Stock Products</div>
-                <div class="value"
-                     th:text="${report.summary.lowStockCount}">
-                    0
+                <div class="summary-card">
+                    <span>Low Stock Products</span>
+                    <strong th:text="${report.summary.lowStockCount}">0</strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Out-of-Stock Products</div>
-                <div class="value"
-                     th:text="${report.summary.outOfStockCount}">
-                    0
+                <div class="summary-card">
+                    <span>Out of Stock Products</span>
+                    <strong th:text="${report.summary.outOfStockCount}">0</strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Total Stock In</div>
-                <div class="value"
-                     th:text="${#numbers.formatDecimal(report.summary.stockInQuantity, 1, 3)}">
-                    0
+                <div class="summary-card">
+                    <span>Stock In Quantity</span>
+                    <strong th:text="${report.summary.stockInQuantity}">0</strong>
                 </div>
-            </div>
 
-            <div class="summary-card">
-                <div class="label">Total Stock Out</div>
-                <div class="value"
-                     th:text="${#numbers.formatDecimal(report.summary.stockOutQuantity, 1, 3)}">
-                    0
+                <div class="summary-card">
+                    <span>Stock Out Quantity</span>
+                    <strong th:text="${report.summary.stockOutQuantity}">0</strong>
                 </div>
-            </div>
 
+            </div>
         </div>
 
-        <!-- Current Stock Report -->
-        <div class="section">
+        <!-- Current Stock Details -->
+        <div class="card">
+            <h2>Current Stock Details</h2>
 
-            <div class="section-header">
-                <div>
-                    <h2>Current Stock Report</h2>
-                    <div class="section-description">
-                        Current stock quantity and purchase-cost valuation.
-                    </div>
-                </div>
-            </div>
+            <p class="section-note">
+                Current product quantities and stock values.
+            </p>
 
             <div class="table-wrapper">
                 <table>
@@ -432,7 +406,7 @@
                         <th>SKU</th>
                         <th>Category</th>
                         <th>Purchase Price</th>
-                        <th>Current Stock</th>
+                        <th>Stock Quantity</th>
                         <th>Minimum Stock</th>
                         <th>Stock Value</th>
                         <th>Status</th>
@@ -445,45 +419,41 @@
                         <td th:text="${product.sku}">SKU</td>
                         <td th:text="${product.category.name}">Category</td>
 
-                        <td>
-                            Rs.
-                            <span th:text="${#numbers.formatDecimal(product.purchasePrice, 1, 2)}"></span>
+                        <td th:text="${#numbers.formatDecimal(product.purchasePrice, 1, 2)}">
+                            0.00
                         </td>
 
-                        <td th:text="${#numbers.formatDecimal(product.stockQuantity, 1, 3)}">
-                            0
-                        </td>
+                        <td th:text="${product.stockQuantity}">0</td>
+                        <td th:text="${product.minimumStock}">0</td>
 
-                        <td th:text="${#numbers.formatDecimal(product.minimumStock, 1, 3)}">
-                            0
-                        </td>
-
-                        <td>
-                            Rs.
-                            <span th:text="${#numbers.formatDecimal(product.purchasePrice.multiply(product.stockQuantity), 1, 2)}"></span>
+                        <td th:text="${#numbers.formatDecimal(product.purchasePrice.multiply(product.stockQuantity), 1, 2)}">
+                            0.00
                         </td>
 
                         <td>
-                            <span th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) == 0}"
-                                  class="status out-stock">
+                            <span
+                                    th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) == 0}"
+                                    class="badge badge-out">
                                 Out of Stock
                             </span>
 
-                            <span th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) > 0 and product.stockQuantity.compareTo(product.minimumStock) <= 0}"
-                                  class="status low-stock">
+                            <span
+                                    th:if="${product.stockQuantity.compareTo(T(java.math.BigDecimal).ZERO) > 0 and product.stockQuantity.compareTo(product.minimumStock) <= 0}"
+                                    class="badge badge-low">
                                 Low Stock
                             </span>
 
-                            <span th:if="${product.stockQuantity.compareTo(product.minimumStock) > 0}"
-                                  class="status normal-stock">
+                            <span
+                                    th:if="${product.stockQuantity.compareTo(product.minimumStock) > 0}"
+                                    class="badge badge-normal">
                                 Normal
                             </span>
                         </td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(report.products)}">
-                        <td colspan="8" class="empty-message">
-                            No products found.
+                        <td colspan="8" class="empty">
+                            No product records found.
                         </td>
                     </tr>
                     </tbody>
@@ -491,17 +461,9 @@
             </div>
         </div>
 
-        <!-- Low Stock Report -->
-        <div class="section">
-
-            <div class="section-header">
-                <div>
-                    <h2>Low-Stock Report</h2>
-                    <div class="section-description">
-                        Products whose current quantity is at or below minimum stock.
-                    </div>
-                </div>
-            </div>
+        <!-- Low Stock Products -->
+        <div class="card">
+            <h2>Low Stock Products</h2>
 
             <div class="table-wrapper">
                 <table>
@@ -517,15 +479,15 @@
 
                     <tbody>
                     <tr th:each="product : ${report.lowStockProducts}">
-                        <td th:text="${product.name}"></td>
-                        <td th:text="${product.sku}"></td>
-                        <td th:text="${product.category.name}"></td>
-                        <td th:text="${#numbers.formatDecimal(product.stockQuantity, 1, 3)}"></td>
-                        <td th:text="${#numbers.formatDecimal(product.minimumStock, 1, 3)}"></td>
+                        <td th:text="${product.name}">Product</td>
+                        <td th:text="${product.sku}">SKU</td>
+                        <td th:text="${product.category.name}">Category</td>
+                        <td th:text="${product.stockQuantity}">0</td>
+                        <td th:text="${product.minimumStock}">0</td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(report.lowStockProducts)}">
-                        <td colspan="5" class="empty-message">
+                        <td colspan="5" class="empty">
                             No low-stock products found.
                         </td>
                     </tr>
@@ -534,17 +496,9 @@
             </div>
         </div>
 
-        <!-- Product-wise Movement Report -->
-        <div class="section">
-
-            <div class="section-header">
-                <div>
-                    <h2>Product-wise Stock Movement</h2>
-                    <div class="section-description">
-                        Stock received and issued during the selected period.
-                    </div>
-                </div>
-            </div>
+        <!-- Product-wise Movement -->
+        <div class="card">
+            <h2>Product-wise Stock Movement</h2>
 
             <div class="table-wrapper">
                 <table>
@@ -559,15 +513,15 @@
 
                     <tbody>
                     <tr th:each="row : ${report.productRows}">
-                        <td th:text="${row.productName}"></td>
-                        <td th:text="${row.sku}"></td>
-                        <td th:text="${#numbers.formatDecimal(row.stockIn, 1, 3)}"></td>
-                        <td th:text="${#numbers.formatDecimal(row.stockOut, 1, 3)}"></td>
+                        <td th:text="${row.productName}">Product</td>
+                        <td th:text="${row.sku}">SKU</td>
+                        <td th:text="${row.stockIn}">0</td>
+                        <td th:text="${row.stockOut}">0</td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(report.productRows)}">
-                        <td colspan="4" class="empty-message">
-                            No product movement data found.
+                        <td colspan="4" class="empty">
+                            No product movement records found.
                         </td>
                     </tr>
                     </tbody>
@@ -576,16 +530,8 @@
         </div>
 
         <!-- Detailed Movement History -->
-        <div class="section">
-
-            <div class="section-header">
-                <div>
-                    <h2>Stock Movement History</h2>
-                    <div class="section-description">
-                        Detailed stock-in and stock-out records.
-                    </div>
-                </div>
-            </div>
+        <div class="card">
+            <h2>Detailed Stock Movement History</h2>
 
             <div class="table-wrapper">
                 <table>
@@ -604,31 +550,22 @@
 
                     <tbody>
                     <tr th:each="movement : ${report.movements}">
-                        <td th:text="${#temporals.format(movement.createdAt, 'dd MMM yyyy HH:mm')}"></td>
-                        <td th:text="${movement.product.name}"></td>
-                        <td th:text="${movement.product.sku}"></td>
-
-                        <td>
-                            <span th:if="${movement.movementType.name() == 'STOCK_IN'}"
-                                  class="status stock-in">
-                                STOCK IN
-                            </span>
-
-                            <span th:if="${movement.movementType.name() == 'STOCK_OUT'}"
-                                  class="status stock-out">
-                                STOCK OUT
-                            </span>
+                        <td th:text="${#temporals.format(movement.createdAt, 'yyyy-MM-dd HH:mm')}">
+                            Date
                         </td>
 
-                        <td th:text="${#numbers.formatDecimal(movement.quantity, 1, 3)}"></td>
-                        <td th:text="${#numbers.formatDecimal(movement.previousStock, 1, 3)}"></td>
-                        <td th:text="${#numbers.formatDecimal(movement.newStock, 1, 3)}"></td>
-                        <td th:text="${movement.reason}"></td>
+                        <td th:text="${movement.product.name}">Product</td>
+                        <td th:text="${movement.product.sku}">SKU</td>
+                        <td th:text="${movement.movementType}">Type</td>
+                        <td th:text="${movement.quantity}">0</td>
+                        <td th:text="${movement.previousStock}">0</td>
+                        <td th:text="${movement.newStock}">0</td>
+                        <td th:text="${movement.reason}">Reason</td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(report.movements)}">
-                        <td colspan="8" class="empty-message">
-                            No stock movements found for the selected period.
+                        <td colspan="8" class="empty">
+                            No stock movement records found for this date range.
                         </td>
                     </tr>
                     </tbody>
@@ -637,7 +574,7 @@
         </div>
 
     </div>
-</div>
 
+</div>
 </body>
 </html>

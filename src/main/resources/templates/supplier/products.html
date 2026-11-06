@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Manage Supplier Products</title>
 
     <style>
@@ -21,6 +20,7 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1350px;
             margin: auto;
         }
@@ -37,6 +37,7 @@
         h1 {
             margin: 0 0 7px;
             font-size: 27px;
+            overflow-wrap: anywhere;
         }
 
         h2 {
@@ -51,6 +52,7 @@
         .muted {
             color: #64748b;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         .card {
@@ -60,12 +62,14 @@
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+            min-width: 0;
         }
 
         .btn {
             display: inline-flex;
             justify-content: center;
             align-items: center;
+            min-height: 38px;
             padding: 10px 14px;
             border: 0;
             border-radius: 6px;
@@ -74,6 +78,7 @@
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
+            font-family: inherit;
         }
 
         .primary {
@@ -106,11 +111,13 @@
             border-radius: 6px;
             margin-bottom: 18px;
             font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
             gap: 16px;
             margin-top: 20px;
         }
@@ -119,6 +126,7 @@
             display: flex;
             flex-direction: column;
             gap: 7px;
+            min-width: 0;
         }
 
         label {
@@ -130,12 +138,14 @@
         input,
         select {
             width: 100%;
-            min-height: 41px;
+            min-width: 0;
+            min-height: 43px;
             padding: 10px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             background: white;
             font: inherit;
+            font-size: 14px;
             color: #1e293b;
         }
 
@@ -147,18 +157,21 @@
 
         .checkbox-field {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 9px;
             margin-top: 18px;
         }
 
         .checkbox-field input {
-            width: 16px;
-            min-height: 16px;
+            width: 17px;
+            min-height: 17px;
+            margin: 1px 0 0;
+            flex-shrink: 0;
         }
 
         .checkbox-field label {
             font-weight: 500;
+            line-height: 1.5;
         }
 
         .form-actions {
@@ -169,6 +182,7 @@
             width: 100%;
             overflow-x: auto;
             margin-top: 18px;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -192,6 +206,7 @@
             text-transform: uppercase;
             font-size: 11px;
             letter-spacing: .3px;
+            white-space: nowrap;
         }
 
         tbody tr:hover {
@@ -206,6 +221,7 @@
             color: #166534;
             font-size: 11px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .alternative {
@@ -217,6 +233,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 7px;
+            align-items: center;
         }
 
         .actions form {
@@ -227,6 +244,7 @@
             padding: 35px 15px;
             text-align: center;
             color: #64748b;
+            line-height: 1.6;
         }
 
         .count {
@@ -237,19 +255,222 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
-        @media (max-width: 800px) {
+        /* Mobile product cards */
+
+        .mobile-products {
+            display: none;
+            margin-top: 18px;
+        }
+
+        .product-card {
+            padding: 16px;
+            margin-bottom: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: white;
+            min-width: 0;
+        }
+
+        .product-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .product-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .product-card-header strong {
+            display: block;
+            font-size: 15px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .product-card-header small {
+            display: block;
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .product-info {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            min-width: 0;
+        }
+
+        .info-item span {
+            display: block;
+            margin-bottom: 5px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .info-item strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+
+        .product-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 13px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .product-card-actions .btn {
+            flex: 1;
+        }
+
+        .product-card-actions form {
+            display: flex;
+            flex: 1;
+            margin: 0;
+        }
+
+        .product-card-actions form button {
+            width: 100%;
+        }
+
+        .mobile-empty {
+            padding: 30px 15px;
+            text-align: center;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Tablet */
+
+        @media (max-width: 900px) {
+            body {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 19px;
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .field:first-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
             body {
                 padding: 14px;
             }
 
+            .header {
+                align-items: stretch;
+            }
+
+            .header > div {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .header > a {
+                width: 100%;
+            }
+
             .card {
                 padding: 16px;
+                margin-bottom: 16px;
             }
 
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .field:first-child {
+                grid-column: auto;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .table-wrapper {
+                display: none;
+            }
+
+            .mobile-products {
+                display: block;
+            }
+
+            .header .count {
+                align-self: flex-start;
+            }
+        }
+
+        /* Small mobile */
+
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 13px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            h2 {
+                font-size: 17px;
+            }
+
+            .product-info {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .product-card-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .product-card-actions .btn {
+                width: 100%;
+                min-width: 0;
+                padding: 9px 7px;
+                white-space: normal;
+            }
+
+            .product-card-actions form {
+                min-width: 0;
+            }
+
+            .checkbox-field label {
+                font-size: 12px;
             }
         }
     </style>
@@ -287,7 +508,8 @@
          th:text="${errorMessage}">
     </div>
 
-    <!-- Add Product -->
+    <!-- Assign Product -->
+
     <section class="card">
 
         <h2>Assign a Product to This Supplier</h2>
@@ -368,6 +590,7 @@
     </section>
 
     <!-- Assigned Products -->
+
     <section class="card">
 
         <div class="header">
@@ -383,6 +606,8 @@
                 0 Products
             </span>
         </div>
+
+        <!-- Desktop Table -->
 
         <div class="table-wrapper">
 
@@ -444,9 +669,9 @@
                         <div class="actions">
 
                             <a th:href="@{/suppliers/{supplierId}/products/edit/{associationId}(
-            supplierId=${supplier.id},
-        associationId=${item.id}
-    )}"
+                                supplierId=${supplier.id},
+                                associationId=${item.id}
+                            )}"
                                class="btn primary">
                                 Edit
                             </a>
@@ -458,8 +683,7 @@
                                   )}"
                                   method="post">
 
-                                <button type="submit"
-                                        class="btn primary">
+                                <button type="submit" class="btn primary">
                                     Make Primary
                                 </button>
                             </form>
@@ -471,8 +695,7 @@
                                   method="post"
                                   onsubmit="return confirm('Remove this product from this supplier? The product itself will not be deleted.');">
 
-                                <button type="submit"
-                                        class="btn danger">
+                                <button type="submit" class="btn danger">
                                     Remove
                                 </button>
                             </form>
@@ -491,6 +714,110 @@
 
                 </tbody>
             </table>
+
+        </div>
+
+        <!-- Mobile Product Cards -->
+
+        <div class="mobile-products">
+
+            <div th:each="item : ${supplierProducts}"
+                 class="product-card">
+
+                <div class="product-card-header">
+                    <div>
+                        <strong th:text="${item.product.name}">
+                            Product Name
+                        </strong>
+
+                        <small>
+                            SKU:
+                            <span th:text="${item.product.sku}">SKU</span>
+                        </small>
+                    </div>
+
+                    <span th:if="${item.primarySupplier}" class="badge">
+                        Primary
+                    </span>
+
+                    <span th:unless="${item.primarySupplier}"
+                          class="badge alternative">
+                        Alternative
+                    </span>
+                </div>
+
+                <div class="product-info">
+
+                    <div class="info-item">
+                        <span>Category</span>
+                        <strong th:text="${item.product.category.name}">
+                            Category
+                        </strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>Supplier Price</span>
+                        <strong>
+                            Rs.
+                            <span th:text="${#numbers.formatDecimal(
+                                item.supplierPrice, 1, 2
+                            )}">0.00</span>
+                        </strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>Supplier Product Code</span>
+                        <strong th:text="${item.supplierProductCode != null
+                            ? item.supplierProductCode : '-'}">
+                            -
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="product-card-actions">
+
+                    <a th:href="@{/suppliers/{supplierId}/products/edit/{associationId}(
+                        supplierId=${supplier.id},
+                        associationId=${item.id}
+                    )}"
+                       class="btn primary">
+                        Edit
+                    </a>
+
+                    <form th:if="${!item.primarySupplier}"
+                          th:action="@{/suppliers/{supplierId}/products/primary/{associationId}(
+                              supplierId=${supplier.id},
+                              associationId=${item.id}
+                          )}"
+                          method="post">
+
+                        <button type="submit" class="btn primary">
+                            Make Primary
+                        </button>
+                    </form>
+
+                    <form th:action="@{/suppliers/{supplierId}/products/remove/{associationId}(
+                        supplierId=${supplier.id},
+                        associationId=${item.id}
+                    )}"
+                          method="post"
+                          onsubmit="return confirm('Remove this product from this supplier? The product itself will not be deleted.');">
+
+                        <button type="submit" class="btn danger">
+                            Remove
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div th:if="${#lists.isEmpty(supplierProducts)}"
+                 class="mobile-empty">
+                This supplier does not provide any products yet.
+                Use the form above to assign the first product.
+            </div>
 
         </div>
 

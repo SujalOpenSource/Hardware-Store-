@@ -1,6 +1,4 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-
     const searchInput = document.getElementById("billSearch");
     const tableBody = document.querySelector("#billTable tbody");
     const noSearchResults = document.getElementById("noSearchResults");
@@ -10,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     searchInput.addEventListener("input", function () {
-
         const searchValue = this.value.toLowerCase().trim();
 
         const rows = tableBody.querySelectorAll(
@@ -20,6 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let visibleCount = 0;
 
         rows.forEach(function (row) {
+            const billNumberElement = row.querySelector(".bill-number");
+
+            // Ignore the original empty-list message.
+            if (!billNumberElement) {
+                return;
+            }
 
             const matches = row.innerText
                 .toLowerCase()
@@ -27,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             row.style.display = matches ? "" : "none";
 
-            if (matches && row.querySelector(".bill-number")) {
+            if (matches) {
                 visibleCount++;
             }
         });
@@ -36,7 +39,5 @@ document.addEventListener("DOMContentLoaded", function () {
             searchValue !== "" && visibleCount === 0
                 ? ""
                 : "none";
-
     });
-
 });
