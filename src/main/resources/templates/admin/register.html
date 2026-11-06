@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Administrator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f1f5f9;
+            font-family: Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .header {
+            margin-bottom: 26px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .step {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 24px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .step span {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            font-weight: bold;
+        }
+
+        .step .active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .step .completed {
+            background: #16a34a;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary-button {
+            margin-top: 10px;
+            background: #64748b;
+        }
+
+        .secondary-button:hover {
+            background: #475569;
+        }
+
+        .alert {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .verified {
+            padding: 13px;
+            margin-bottom: 20px;
+            border-radius: 7px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 14px;
+        }
+
+        .mobile-display {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 7px;
+            background: #f1f5f9;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .footer {
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px;
+                align-items: flex-start;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding: 23px 18px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Register Administrator</h1>
+        <p>Verify the mobile number before creating a new administrator account.</p>
+    </div>
+
+    <div th:if="${successMessage}"
+         class="alert success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert error"
+         th:text="${errorMessage}">
+    </div>
+
+    <!-- Step 1: Request OTP -->
+    <div th:if="${otpVerified == false}">
+
+        <div class="step">
+            <span class="active">1</span>
+            <strong>Mobile verification</strong>
+            <span th:if="${otpSent}" class="active">2</span>
+            <span th:unless="${otpSent}">2</span>
+            <strong>OTP verification</strong>
+            <span>3</span>
+            <strong>Password</strong>
+        </div>
+
+        <form th:if="${otpSent == false}"
+              th:action="@{/admin/register/send-otp}"
+              method="post">
+
+            <div class="form-group">
+                <label for="mobileNumber">Administrator mobile number</label>
+
+                <input type="tel"
+                       id="mobileNumber"
+                       name="mobileNumber"
+                       placeholder="98XXXXXXXX"
+                       pattern="(?:\+977|977)?9[78][0-9]{8}"
+                       title="Enter a valid Nepal mobile number."
+                       required>
+            </div>
+
+            <button type="submit">Send verification OTP</button>
+        </form>
+
+        <!-- Step 2: Verify OTP -->
+        <div th:if="${otpSent == true}">
+
+            <div class="mobile-display">
+                OTP sent to:
+                <strong th:text="${mobileNumber}"></strong>
+            </div>
+
+            <form th:action="@{/admin/register/verify-otp}"
+                  method="post">
+
+                <div class="form-group">
+                    <label for="otp">Six-digit verification OTP</label>
+
+                    <input type="text"
+                           id="otp"
+                           name="otp"
+                           inputmode="numeric"
+                           pattern="[0-9]{6}"
+                           maxlength="6"
+                           placeholder="Enter OTP"
+                           required>
+                </div>
+
+                <button type="submit">Verify OTP</button>
+            </form>
+
+            <form th:action="@{/admin/register/cancel}"
+                  method="post">
+
+                <button type="submit" class="secondary-button">
+                    Cancel registration
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Step 3: Create administrator -->
+    <div th:if="${otpVerified == true}">
+
+        <div class="verified">
+            Mobile number successfully verified.
+        </div>
+
+        <div class="mobile-display">
+            Verified mobile number:
+            <strong th:text="${mobileNumber}"></strong>
+        </div>
+
+        <form th:action="@{/admin/register/create}"
+              method="post">
+
+            <div class="form-group">
+                <label for="password">Create password</label>
+
+                <input type="password"
+                       id="password"
+                       name="password"
+                       minlength="8"
+                       autocomplete="new-password"
+                       placeholder="Minimum 8 characters"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm password</label>
+
+                <input type="password"
+                       id="confirmPassword"
+                       name="confirmPassword"
+                       minlength="8"
+                       autocomplete="new-password"
+                       placeholder="Enter password again"
+                       required>
+            </div>
+
+            <button type="submit">Create Administrator</button>
+        </form>
+
+        <form th:action="@{/admin/register/cancel}"
+              method="post">
+
+            <button type="submit" class="secondary-button">
+                Cancel registration
+            </button>
+        </form>
+
+    </div>
+
+    <div class="footer">
+        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    </div>
+
+</div>
+
+</body>
+</html>
